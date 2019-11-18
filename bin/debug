@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+const { execCommandSync, assertSanHTMLEqual } = require('san-ssr')
+const chalk = require('chalk')
+const fs = require('fs')
+const { resolve } = require('path')
+const { compileToPHP } = require('../dist/utils/case')
+
+const caseName = process.argv[2]
+if (!caseName) throw new Error('echo specify a test case name')
+
+const htmlPath = resolve(__dirname, '../test/cases', caseName, 'expected.html')
+const expected = fs.readFileSync(htmlPath, 'utf8')
+console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
+
+compileToPHP(caseName)
+const got = execCommandSync(resolve(__dirname, `./render.php`), [caseName])
+const pass = assertSanHTMLEqual(got, expected)
+console.log(chalk[pass ? 'green' : 'red'](`[ SSR PHP] ${caseName}`), got)
+
+if (!pass) process.exit(1)
