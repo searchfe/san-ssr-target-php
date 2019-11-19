@@ -1,9 +1,9 @@
 import { SanProject } from 'san-ssr'
-import ToPHPCompiler, { EmitContent } from '../../../src/index'
+import ToPHPCompiler, { EmitContent } from '../../src/index'
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
-const fromTestDir = x => resolve(__dirname, '../..', x)
+const fromTestDir = x => resolve(__dirname, '..', x)
 
 const tsConfigFilePath = fromTestDir('tsconfig.json')
 

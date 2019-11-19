@@ -1,5 +1,4 @@
 const { SanProject } = require('san-ssr')
-// const { ToPHPCompiler } = require('san-ssr')
 const { writeFileSync } = require('fs')
 
 const project = new SanProject()
@@ -9,4 +8,4 @@ const targetCode = project.compile(
     { nsPrefix: 'demo\\' }
 )
 
-writeFileSync('./dist/ssr.php', targetCode)
+writeFileSync('./dist/index.php', targetCode)

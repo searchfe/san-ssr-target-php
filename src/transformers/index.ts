@@ -8,9 +8,7 @@ import { replaceSanModule } from './replace-san-module'
 const uselessComponentProps = ['components']
 
 export function transformAstToPHP (sourceFile: SanSourceFile) {
-    const sanssr = process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr'
-
-    replaceSanModule(sourceFile.tsSourceFile, sanssr)
+    replaceSanModule(sourceFile.tsSourceFile, 'san-ssr')
     sourceFile.fakeProperties.forEach(prop => prop.remove())
 
     for (const clazz of sourceFile.componentClassDeclarations.values()) {
@@ -23,9 +21,9 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
         for (const prop of clazz.getProperties()) {
             if (prop.getName() === 'computed') {
-                refactorComputedProperty(prop, sanssr)
+                refactorComputedProperty(prop, 'san-ssr')
             } else if (prop.getName() === 'filters') {
-                refactorFiltersProperty(prop, sanssr)
+                refactorFiltersProperty(prop, 'san-ssr')
             }
             refactorMemberInitializer(clazz, prop)
         }

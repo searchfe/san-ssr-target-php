@@ -5,7 +5,7 @@
   "description": "demo for san-ssr-php",
   "main": "index.js",
   "scripts": {
-    "build": "san-ssr -t php -p 'demo\\' src/index.ts > dist/index.php",
+    "build": "bash build.sh",
     "jsbuild": "node build.js",
     "render": "./bin/render.php"
   },

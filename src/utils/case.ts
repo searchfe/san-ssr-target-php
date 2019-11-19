@@ -17,7 +17,7 @@ const sanProject = new SanProject({
     }
 })
 
-export function compileToPHP (caseName) {
+export function compile (caseName) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
     const targetCode = sanProject.compile(
@@ -36,11 +36,11 @@ export function compileToPHP (caseName) {
     writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)
 }
 
-export function compileAllToPHP () {
+export function compileAll () {
     const timing = startMeasure()
     for (const caseName of cases) {
         console.log(`compiling ${caseName} to php`)
-        compileToPHP(caseName)
+        compile(caseName)
     }
     console.log('compiled in', timing.duration())
 }

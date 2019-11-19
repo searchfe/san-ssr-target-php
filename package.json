@@ -13,7 +13,7 @@
     "*.md"
   ],
   "scripts": {
-    "clean": "rm -rf ./dist test/cases/*/ssr.{php,js}",
+    "clean": "rm -rf ./dist test/cases/*/ssr.php",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc",
@@ -21,10 +21,10 @@
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
-    "build-integration": "node -e \"require('./dist/utils/case').compileAllToPHP()\"",
-    "integration": "npm run build-integration && jest test/integration.spec.js",
+    "build-e2e": "node -e \"require('./dist/utils/case').compileAll()\"",
+    "e2e": "npm run build-e2e && jest test/e2e.spec.js",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
-    "test": "npm run build && npm run unit && npm run integration",
+    "test": "npm run build && npm run unit && npm run e2e",
     "render": "./bin/render.js",
     "version": "npm run build && npm run docs",
     "semantic-release": "semantic-release"
@@ -77,12 +77,14 @@
     "chalk": "^2.4.2",
     "debug": "^4.1.1",
     "lodash": "^4.17.15",
-    "san": "^3.7.8",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
     "ts2php": "^0.14.0",
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
+  },
+  "peerDependencies": {
+    "san-ssr": "*"
   },
   "release": {
     "branch": "master",

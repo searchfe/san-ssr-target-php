@@ -109,9 +109,8 @@ export default class ToPHPCompiler implements Compiler {
         const tsconfig = require(this.tsConfigFilePath)
         modules = { ...this.ts2phpModules, ...modules }
 
-        const sanssr = process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr'
-        modules[sanssr] = {
-            name: sanssr,
+        modules['san-ssr'] = {
+            name: 'san-ssr',
             namespace: nsPrefix + 'runtime\\',
             required: true
         }

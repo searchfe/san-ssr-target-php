@@ -20,7 +20,7 @@ Supported Environment
 Command line interface:
 
 ```bash
-san-ssr --target php --prefix 'demo\\' ./component.ts > ssr.php
+san-ssr --target php --compile '{"nsPrefix":"demo\\"}' ./component.ts > ssr.php
 ```
 
 ## Programmatic Interface
@@ -51,6 +51,12 @@ const targetCode = project.compile('src/component.ts', 'php')
 
 writeFileSync('ssr.php', targetCode)
 ```
+
+## Known Issues
+
+THIS SECTION IS FOR MAINTAINERS ONLY
+
+- noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同
 
 ## Contribution Guide
 
