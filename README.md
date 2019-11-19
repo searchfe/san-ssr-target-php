@@ -11,9 +11,17 @@
 [![DUB license](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/searchfe/san-ssr-target-php/blob/master/LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits)
 
+## Install
+
 Supported Environment
 
 * PHP 5 >= 5.3.0, PHP 7
+
+```bash
+npm i san san-ssr san-ssr-target-php
+```
+
+Note: ts2php requires a specific external TypeScript, you'll need `npm i typescript@3.4`, see [searchfe/ts2php/issues/93](https://github.com/searchfe/ts2php/issues/93).
 
 ## CLI Usage
 
