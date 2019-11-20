@@ -16,6 +16,6 @@ console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 compile(caseName)
 const got = execCommandSync(resolve(__dirname, `./render.php`), [caseName])
 const pass = assertSanHTMLEqual(got, expected)
-console.log(chalk[pass ? 'green' : 'red'](`[ SSR PHP] ${caseName}`), got)
+console.log(chalk[pass ? 'green' : 'red'](`[SSR  PHP] ${caseName}`), got)
 
 if (!pass) process.exit(1)
