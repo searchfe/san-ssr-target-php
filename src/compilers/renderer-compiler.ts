@@ -34,17 +34,20 @@ export class RendererCompiler {
 
         this.genComponentContextCode(this.component, emitter)
 
-        // init data
-        const defaultData = this.component.data.get()
-        emitter.writeIf('$data', () => {
-            for (const key of Object.keys(defaultData)) {
-                const val = this.stringifier.any(defaultData[key])
-                if (val === 'NaN') continue
-                emitter.writeLine(`$ctx->data->${key} = isset($ctx->data->${key}) ? $ctx->data->${key} : ${val};`)
-            }
-        })
+        // call initData()
+        const defaultData = (this.component.initData && this.component.initData()) || {}
+        for (const key of Object.keys(defaultData)) {
+            const val = this.stringifier.any(defaultData[key])
+            if (val === 'NaN') continue
+            emitter.writeLine(`$ctx->data->${key} = isset($ctx->data->${key}) ? $ctx->data->${key} : ${val};`)
+        }
 
-        // calc computed
+        // calc inited()
+        if (typeof this.component.inited === 'function') {
+            emitter.writeLine('$ctx->instance->inited();')
+        }
+
+        // populate computed data
         emitter.writeForeach('$ctx->computedNames as $i => $computedName', () => {
             emitter.writeLine('$data->$computedName = _::callComputed($ctx, $computedName);')
         })
