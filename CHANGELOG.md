@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.0...v1.1.1) (2019-11-25)
+
+
+### Bug Fixes
+
+* delete init() in compile time, working for [#3](https://github.com/searchfe/san-ssr-target-php/issues/3) ([ff22d0d](https://github.com/searchfe/san-ssr-target-php/commit/ff22d0deb8c53f736fd6029cd7ca695b4741c560))
+
 # [1.1.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.0.0...v1.1.0) (2019-11-25)
 
 
