@@ -14,9 +14,15 @@ export class RendererCompiler {
     private elementCompiler: ElementCompiler
     private emitter
     private component
+    private hasInitedMethod = false
 
     constructor (ComponentClass, emitter, nsPrefix: string) {
         this.emitter = emitter
+
+        if (typeof ComponentClass.prototype.inited === 'function') {
+            this.hasInitedMethod = true
+            delete ComponentClass.prototype.inited
+        }
         this.component = new ComponentClass()
         this.stringifier = new Stringifier(nsPrefix)
         this.elementCompiler = new ElementCompiler(
@@ -43,7 +49,7 @@ export class RendererCompiler {
         }
 
         // calc inited()
-        if (typeof this.component.inited === 'function') {
+        if (this.hasInitedMethod) {
             emitter.writeLine('$ctx->instance->inited();')
         }
 
