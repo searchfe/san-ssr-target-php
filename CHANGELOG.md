@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.1...v1.1.2) (2019-12-12)
+
+
+### Performance Improvements
+
+* upgrade ts2php ([888b9f3](https://github.com/searchfe/san-ssr-target-php/commit/888b9f348f12ad3644b03a727b526682008b2414))
+
 ## [1.1.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.0...v1.1.1) (2019-11-25)
 
 
