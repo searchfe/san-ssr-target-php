@@ -1,5 +1,5 @@
-import { compile } from 'ts2php'
-import { SourceFile } from 'ts-morph'
+import { Ts2Php } from 'ts2php'
+import { SourceFile, CompilerOptions } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:ts2php')
@@ -14,23 +14,31 @@ type ModuleInfo = {
     namespace?: string
 }
 
-export function generatePHPCode (sourceFile: SourceFile, modules: Modules, compilerOptions, nsPrefix: string) {
-    debug('compile', sourceFile.getFilePath(), 'options:', modules, 'compilerOptions:', compilerOptions)
-    debug('source code:', sourceFile.getFullText())
+export class PHPCodeGenerator {
+    private ts2php: Ts2Php
 
-    const options = {
-        source: sourceFile.getFullText(),
-        emitHeader: false,
-        plugins: [],
-        modules,
-        helperNamespace: `\\${nsPrefix}runtime\\`,
-        compilerOptions
+    constructor (compilerOptions: CompilerOptions) {
+        debug('compilerOptions:', compilerOptions)
+        this.ts2php = new Ts2Php({ compilerOptions })
     }
-    const { errors, phpCode } = compile(sourceFile.getFilePath(), options)
-    if (errors.length) {
-        const error = errors[0]
-        throw new Error(error.msg || error['messageText'])
+
+    compile (sourceFile: SourceFile, modules: Modules, nsPrefix: string) {
+        debug('compile', sourceFile.getFilePath(), 'options:', modules)
+        debug('source code:', sourceFile.getFullText())
+
+        const options = {
+            source: sourceFile.getFullText(),
+            emitHeader: false,
+            plugins: [],
+            modules,
+            helperNamespace: `\\${nsPrefix}runtime\\`
+        }
+        const { errors, phpCode } = this.ts2php.compile(sourceFile.getFilePath(), options)
+        if (errors.length) {
+            const error = errors[0]
+            throw new Error(error.msg || error['messageText'])
+        }
+        debug('target code:', phpCode)
+        return phpCode
     }
-    debug('target code:', phpCode)
-    return phpCode
 }

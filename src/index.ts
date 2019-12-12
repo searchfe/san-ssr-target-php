@@ -1,7 +1,7 @@
 import { SanProject, Compiler, SanSourceFile, SanApp, getInlineDeclarations } from 'san-ssr'
 import { keyBy } from 'lodash'
 import { isReserved } from './utils/lang'
-import { Modules, generatePHPCode } from './compilers/ts2php'
+import { Modules, PHPCodeGenerator } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
 import { Project } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
@@ -31,6 +31,7 @@ export default class ToPHPCompiler implements Compiler {
     private tsConfigFilePath: string
     private ts2phpModules: Modules
     private project: Project
+    private phpGenerator: PHPCodeGenerator
 
     constructor ({
         tsConfigFilePath,
@@ -44,6 +45,10 @@ export default class ToPHPCompiler implements Compiler {
         }], 'name')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
+
+        const tsconfig = require(this.tsConfigFilePath)
+        const options = this.formatCompilerOptions(tsconfig['compilerOptions'])
+        this.phpGenerator = new PHPCodeGenerator(options)
     }
 
     public compile (sanApp: SanApp, {
@@ -106,7 +111,6 @@ export default class ToPHPCompiler implements Compiler {
         if (!sourceFile.tsSourceFile) return ''
 
         transformAstToPHP(sourceFile)
-        const tsconfig = require(this.tsConfigFilePath)
         modules = { ...this.ts2phpModules, ...modules }
 
         modules['san-ssr'] = {
@@ -123,10 +127,9 @@ export default class ToPHPCompiler implements Compiler {
                 namespace: '\\' + ns + '\\'
             }
         }
-        return generatePHPCode(
+        return this.phpGenerator.compile(
             sourceFile.tsSourceFile,
             modules,
-            this.formatCompilerOptions(tsconfig['compilerOptions']),
             nsPrefix
         )
     }
