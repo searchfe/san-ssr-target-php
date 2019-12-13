@@ -17,13 +17,15 @@ export class ElementCompiler {
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (emitter, aNode, tagNameVariable?) {
+    tagStart (emitter, aNode, tagNameVariable?, noTemplateOutput = false) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
 
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
+        } else if (noTemplateOutput) {
+            return
         } else if (tagNameVariable) {
             emitter.bufferHTMLLiteral('<')
             emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
@@ -156,7 +158,7 @@ export class ElementCompiler {
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (emitter, aNode, tagNameVariable?) {
+    tagEnd (emitter, aNode, tagNameVariable?, noTemplateOutput = false) {
         const tagName = aNode.tagName
 
         if (tagName) {
@@ -171,6 +173,8 @@ export class ElementCompiler {
             if (tagName === 'option') {
                 emitter.writeLine('$optionValue = null;')
             }
+        } else if (noTemplateOutput) {
+            // nope
         } else {
             emitter.bufferHTMLLiteral('</')
             emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)

@@ -15,9 +15,11 @@ export class RendererCompiler {
     private emitter
     private component
     private hasInitedMethod = false
+    private noTemplateOutput: boolean
 
-    constructor (ComponentClass, emitter, nsPrefix: string) {
+    constructor (ComponentClass, emitter, noTemplateOutput: boolean, nsPrefix: string) {
         this.emitter = emitter
+        this.noTemplateOutput = noTemplateOutput
 
         if (typeof ComponentClass.prototype.inited === 'function') {
             this.hasInitedMethod = true
@@ -64,10 +66,10 @@ export class RendererCompiler {
             emitter.indent()
         }
 
-        this.elementCompiler.tagStart(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.tagStart(emitter, this.component.aNode, 'tagName', this.noTemplateOutput)
         emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
         this.elementCompiler.inner(emitter, this.component.aNode)
-        this.elementCompiler.tagEnd(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.tagEnd(emitter, this.component.aNode, 'tagName', this.noTemplateOutput)
 
         if (ifDirective) {
             emitter.unindent()

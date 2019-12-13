@@ -133,6 +133,7 @@ export class PHPEmitter extends Emitter {
         this.indent()
     }
     public endBlock () {
+        this.clearStringLiteralBuffer()
         this.unindent()
         this.writeLine(`}`)
     }

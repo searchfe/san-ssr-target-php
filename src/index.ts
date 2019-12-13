@@ -53,6 +53,7 @@ export default class ToPHPCompiler implements Compiler {
 
     public compile (sanApp: SanApp, {
         funcName = 'render',
+        noTemplateOutput = false,
         nsPrefix = 'san\\',
         emitContent = EmitContent.all,
         emitHeader = true,
@@ -60,7 +61,7 @@ export default class ToPHPCompiler implements Compiler {
     }) {
         const emitter = new PHPEmitter(emitHeader)
         if (emitContent & EmitContent.renderer) {
-            this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
+            this.compileRenderer(emitter, funcName, nsPrefix, noTemplateOutput, sanApp)
         }
         if (emitContent & EmitContent.component) {
             this.compileComponents(sanApp, emitter, nsPrefix, modules)
@@ -78,7 +79,7 @@ export default class ToPHPCompiler implements Compiler {
         })
     }
 
-    private compileRenderer (emitter: PHPEmitter, funcName: string, nsPrefix: string, sanApp: SanApp) {
+    private compileRenderer (emitter: PHPEmitter, funcName: string, nsPrefix: string, noTemplateOutput: boolean, sanApp: SanApp) {
         emitter.beginNamespace(nsPrefix + 'renderer')
         emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
@@ -87,13 +88,13 @@ export default class ToPHPCompiler implements Compiler {
             const componentClass = sanApp.componentClasses[i]
             const funcName = 'sanssrRenderer' + componentClass.sanssrCid
             emitter.writeFunction(funcName, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-                new RendererCompiler(componentClass, emitter, nsPrefix).compile()
+                new RendererCompiler(componentClass, emitter, noTemplateOutput, nsPrefix).compile()
             })
             emitter.carriageReturn()
         }
         emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
-            emitter.writeLine(`return ${funcName}($data, $noDataOutput);`)
+            emitter.writeLine(`return ${funcName}($data, $noDataOutput, []);`)
         })
         emitter.endNamespace()
     }
