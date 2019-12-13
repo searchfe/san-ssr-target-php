@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.2...v1.2.0) (2019-12-13)
+
+
+### Features
+
+* noTemplateOutput option infavor of [#4](https://github.com/searchfe/san-ssr-target-php/issues/4) ([d4fd565](https://github.com/searchfe/san-ssr-target-php/commit/d4fd565171b0e0c9ff35fed810e8c18bb33c1664))
+
 ## [1.1.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.1...v1.1.2) (2019-12-12)
 
 
