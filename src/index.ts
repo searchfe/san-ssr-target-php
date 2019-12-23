@@ -1,5 +1,4 @@
 import { SanProject, Compiler, SanSourceFile, SanApp, getInlineDeclarations } from 'san-ssr'
-import { keyBy } from 'lodash'
 import { isReserved } from './utils/lang'
 import { Modules, PHPCodeGenerator } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
@@ -16,8 +15,9 @@ const debug = debugFactory('san-ssr:target-php')
 export enum EmitContent {
     renderer = 1,
     component = 2,
-    rendererAndComponent = 3,
     runtime = 4,
+
+    rendererAndComponent = 3,
     all = 7
 }
 
@@ -26,10 +26,10 @@ export type ToPHPCompilerOptions = {
     project: Project
 }
 
+// TODO 确定 ToPHPCompiler 是否一次性使用，把 compile 参数挪到 constructor 参数
 export default class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
-    private ts2phpModules: Modules
     private project: Project
     private phpGenerator: PHPCodeGenerator
 
@@ -38,11 +38,6 @@ export default class ToPHPCompiler implements Compiler {
         project
     }: ToPHPCompilerOptions) {
         this.project = project
-        this.ts2phpModules = keyBy([{
-            name: 'san',
-            required: true,
-            namespace: '\\san\\runtime\\' // TODO what's this
-        }], 'name')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
 
@@ -64,11 +59,20 @@ export default class ToPHPCompiler implements Compiler {
             this.compileRenderer(emitter, funcName, nsPrefix, noTemplateOutput, sanApp)
         }
         if (emitContent & EmitContent.component) {
-            this.compileComponents(sanApp, emitter, nsPrefix, modules)
+            this.compileProjectFiles(sanApp, emitter, nsPrefix, modules)
         }
         if (emitContent & EmitContent.runtime) {
-            emitRuntime(emitter, nsPrefix)
+            emitRuntime(emitter, nsPrefix + 'runtime\\')
         }
+        return emitter.fullText()
+    }
+
+    public static emitRuntime ({
+        emitHeader = true,
+        namespace = 'san\\runtime\\'
+    } = {}) {
+        const emitter = new PHPEmitter(emitHeader)
+        emitRuntime(emitter, namespace)
         return emitter.fullText()
     }
 
@@ -108,54 +112,62 @@ export default class ToPHPCompiler implements Compiler {
         return compilerOptions
     }
 
-    public compileComponent (sourceFile: SanSourceFile, nsPrefix: string, modules: Modules) {
+    public compileComponent (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
         if (!sourceFile.tsSourceFile) return ''
+        const runtimeNS = nsPrefix + 'runtime\\'
 
         transformAstToPHP(sourceFile)
-        modules = { ...this.ts2phpModules, ...modules }
-
         modules['san-ssr'] = {
             name: 'san-ssr',
-            namespace: nsPrefix + 'runtime\\',
+            namespace: runtimeNS,
             required: true
         }
+
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
-            const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
+            const filepath = decl.getModuleSpecifierSourceFile().getFilePath()
+            const ns = nsPrefix + this.ns(filepath)
+
             modules[literal] = {
                 name: literal,
                 required: true,
                 namespace: '\\' + ns + '\\'
             }
         }
-        return this.phpGenerator.compile(
+        this.registerComponents(sourceFile, emitter, nsPrefix, runtimeNS)
+        emitter.writeLines(this.phpGenerator.compile(
             sourceFile.tsSourceFile,
             modules,
             nsPrefix
-        )
+        ))
     }
 
-    public compileComponents (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
+    public compileProjectFiles (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
         for (const [path, sourceFile] of entryComp.projectFiles) {
-            emitter.beginNamespace(nsPrefix + this.ns(path))
-            emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
-            emitter.writeLines(this.compileComponent(sourceFile, nsPrefix, modules))
-
-            for (const [cid, clazz] of sourceFile.componentClassDeclarations) {
-                const classReference = `\\${nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
-                emitter.writeLine(`\\${nsPrefix}runtime\\ComponentRegistry::$comps[${cid}] = '${classReference}';`)
-            }
-
-            emitter.endNamespace()
+            emitter.writeNamespace(nsPrefix + this.ns(path), () => {
+                this.compileComponent(sourceFile, emitter, nsPrefix, modules)
+            })
         }
         return emitter.fullText()
     }
 
+    private registerComponents (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, runtimeNamespace: string) {
+        for (const [cid, clazz] of sourceFile.componentClassDeclarations) {
+            const classReference = `\\${nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
+            emitter.writeLine(`\\${runtimeNamespace}ComponentRegistry::$comps[${cid}] = '${classReference}';`)
+        }
+    }
+
     private ns (file: string) {
-        const escapeName = x => isReserved(x) ? 'sanssrNS' + camelCase(x) : x
-        return file
-            .slice(this.root.length, -extname(file).length)
-            .split(sep).map(x => camelCase(x)).map(escapeName).join('\\')
+        return file.slice(this.root.length, -extname(file).length)
+            .split(sep)
+            .map(x => this.normalizeNamespaceName(x))
+            .join('\\')
             .replace(/^\\/, '')
+    }
+
+    private normalizeNamespaceName (pathname: string) {
+        const name = camelCase(pathname)
+        return isReserved(name) ? 'sanssrNS' + name : name
     }
 }

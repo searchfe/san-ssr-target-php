@@ -11,6 +11,7 @@ export interface Modules {
 type ModuleInfo = {
     name: string,
     required?: boolean,
+    path?: string,
     namespace?: string
 }
 

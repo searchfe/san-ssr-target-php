@@ -28,6 +28,12 @@ export class PHPEmitter extends Emitter {
         this.writeLine(`}`)
     }
 
+    public writeNamespace (ns: string, cb: Function) {
+        this.beginNamespace(ns)
+        cb()
+        this.endNamespace()
+    }
+
     public bufferHTMLLiteral (str: string) {
         this.buffer += str
     }

@@ -7,4 +7,8 @@ export function replaceSanModule (sourceFile: SourceFile, sanssr: string) {
             moduleSpecifier: sanssr
         })
     }
+    const sanImport = sourceFile.getImportDeclaration('san')
+    if (sanImport) {
+        sanImport.remove()
+    }
 }
