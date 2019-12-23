@@ -34,7 +34,7 @@ describe('ToPHPCompiler', function () {
         expect(result).toContain('"add" => function ($x, $y){')
     })
 
-    it('should respect modules config for ts2php', function () {
+    it('should respect to modules config for ts2php', function () {
         const result1 = compileComponent('stub/b.comp.ts')
         expect(result1).toContain('require_once("lodash")')
 
@@ -47,5 +47,37 @@ describe('ToPHPCompiler', function () {
             }
         })
         expect(result2).not.toContain('require_once("lodash")')
+    })
+
+    it('should respect to modules config for ts2php', function () {
+        const result1 = compileComponent('stub/b.comp.ts')
+        expect(result1).toContain('require_once("lodash")')
+
+        const result2 = compileComponent('stub/b.comp.ts', {
+            modules: {
+                lodash: {
+                    name: 'lodash',
+                    required: true
+                }
+            }
+        })
+        expect(result2).not.toContain('require_once("lodash")')
+    })
+
+    it('should bundle dependencies by default', function () {
+        const result = compileComponent('stub/c.comp.ts', {
+            emitContent: EmitContent.all
+        })
+        expect(result).toContain('function sum($a, $b)')
+        expect(result).toContain('class C extends SanComponent')
+        expect(result).toContain('function sanssrRenderer')
+    })
+
+    it('should support emit runtime only', function () {
+        const result = ToPHPCompiler.emitRuntime()
+
+        expect(result).toContain('namespace san\\runtime')
+        expect(result).toContain('class Ts2Php_Date')
+        expect(result).toContain('class SanData')
     })
 })
