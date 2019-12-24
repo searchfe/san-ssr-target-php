@@ -1,4 +1,5 @@
 import { compileExprSource } from '../compilers/expr-compiler'
+import { ExprType } from 'san'
 import { autoCloseTags } from 'san-ssr'
 
 /**
@@ -38,8 +39,24 @@ export class ElementCompiler {
         for (const prop of props) {
             propsIndex[prop.name] = prop
 
-            if (prop.name !== 'slot' && prop.expr.value != null) {
-                emitter.bufferHTMLLiteral(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
+            if (prop.name !== 'slot') {
+                switch (prop.expr.type) {
+                case ExprType.BOOL:
+                    emitter.bufferHTMLLiteral(' ' + prop.name)
+                    break
+
+                case ExprType.STRING:
+                    emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
+                        prop.expr.literal + '"')
+                    break
+
+                default:
+                    if (prop.expr.value != null) {
+                        emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
+                            compileExprSource.expr(prop.expr) + '"')
+                    }
+                    break
+                }
             }
         }
 
@@ -115,14 +132,12 @@ export class ElementCompiler {
                 break
 
             default:
-                if (prop.hasOwnProperty('raw')) {
-                    emitter.writeHTML('_::attrFilter(\'' + prop.name + '\', ' +
-                        (prop.x ? '_::escapeHTML(' : '') +
-                        compileExprSource.expr(prop.expr) +
-                        (prop.x ? ')' : '') +
-                        ')'
-                    )
-                }
+                const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
+                emitter.writeHTML('_::attrFilter("' + prop.name + '", ' +
+                    compileExprSource.expr(prop.expr) +
+                    (prop.x || onlyOneAccessor ? ', true' : '') +
+                    ')'
+                )
                 break
             }
         }
@@ -137,12 +152,13 @@ export class ElementCompiler {
                 emitter.writeSwitch('$key', () => {
                     emitter.writeCase('"readonly"')
                     emitter.writeCase('"disabled"')
-                    emitter.writeCase('"multiple"', () => {
-                        emitter.writeLine('$html .= _::boolAttrFilter($key, _::escapeHTML($value));')
+                    emitter.writeCase('"multiple"')
+                    emitter.writeCase('"checked"', () => {
+                        emitter.writeLine('$html .= _::boolAttrFilter($key, $value);')
                         emitter.writeBreak()
                     })
                     emitter.writeDefault(() => {
-                        emitter.writeLine('$html .= _::attrFilter($key, _::escapeHTML($value));')
+                        emitter.writeLine('$html .= _::attrFilter($key, $value, true);')
                     })
                 })
             })

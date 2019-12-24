@@ -101,7 +101,7 @@ final class _Test extends TestCase
     public function testBoolAttrFilterFalse(): void {
         $this->assertEquals(
             '',
-            _::boolAttrFilter("checked", "false")
+            _::boolAttrFilter("checked", false)
         );
     }
     public function testBoolAttrFilterTrue(): void {

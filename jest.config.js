@@ -4,7 +4,7 @@ module.exports = {
     ],
     testMatch: [
         '<rootDir>/test/unit/**/*.ts',
-        '<rootDir>/test/e2e.spec.js'
+        '<rootDir>/test/integration.spec.js'
     ],
     globals: {
         tsConfig: {
