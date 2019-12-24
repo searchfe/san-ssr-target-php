@@ -2,6 +2,7 @@
 final class _
 {
     public static $HTML_ENTITY;
+    public static $BASE_PROPS;
   
     public static function data($ctx, $seq = []) {
         $data = $ctx->data;
@@ -158,25 +159,21 @@ final class _
         return $inner;
     }
 
-    public static function attrFilter($name, $value)
+    public static function attrFilter($name, $value, $needEscape = false)
     {
-        if (!isset($value)) {
-            $value = "";
+        if (isset($value) && $value) {
+            $value = $needEscape ? _::escapeHTML($value) : _::toString($value);
+            return " " . $name . '="' . $value . '"';
         }
-
-        return " " . $name . '="' . $value . '"';
+        if (isset($value) && !array_key_exists($name, _::$BASE_PROPS)) {
+            return " " . $name . '="' . _::toString($value) . '"';
+        }
+        return '';
     }
 
     public static function boolAttrFilter($name, $value)
     {
-        return _::boolAttrTruthy($value) ? ' ' . $name : '';
-    }
-
-    private static function boolAttrTruthy($value) {
-        if (is_string($value)) {
-            return $value != '' && $value != 'false' && $value != '0';
-        }
-        return (boolean)$value;
+        return isset($value) && $value ? ' ' . $name : '';
     }
 
     public static function getClassByCtx($ctx) {
@@ -235,4 +232,10 @@ _::$HTML_ENTITY = [
     '>' => '&gt;',
     '"' => '&quot;',
     "'" => '&#39;'
+];
+
+_::$BASE_PROPS = [
+    'class' => 1,
+    'style' => 1,
+    'id' => 1
 ];
