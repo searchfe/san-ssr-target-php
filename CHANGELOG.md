@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.2.0...v1.2.1) (2019-12-24)
+
+
+### Bug Fixes
+
+* falsy attributes treatment, see https://github.com/searchfe/san-ssr/issues/31 ([e51f381](https://github.com/searchfe/san-ssr-target-php/commit/e51f38106f7250e6308e6d1b0db0184447226cbd))
+
 # [1.2.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.1.2...v1.2.0) (2019-12-13)
 
 
