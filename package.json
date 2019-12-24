@@ -84,6 +84,9 @@
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
   },
+  "peerDependencies": {
+    "san": "~3.8.0"
+  },
   "release": {
     "branch": "master",
     "plugins": [
