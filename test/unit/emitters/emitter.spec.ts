@@ -1,5 +1,4 @@
 import { PHPEmitter } from '../../../src/emitters/emitter'
-import { emit } from 'cluster';
 
 describe('PHPEmitter', function () {
     let emitter;
