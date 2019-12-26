@@ -1,7 +1,7 @@
 import { Stringifier } from '../../../src/compilers/stringifier'
 
 describe('Stringifier', function () {
-    let stringifier;
+    let stringifier
 
     beforeEach(function () {
         stringifier = new Stringifier('san')
@@ -9,7 +9,7 @@ describe('Stringifier', function () {
 
     it('should stringify string', function () {
         const str = stringifier.any('"foo"')
-        
+
         expect(str).toEqual('"\\"foo\\""')
     })
 
@@ -47,7 +47,7 @@ describe('Stringifier', function () {
             c: undefined
         }
 
-        let ret = stringifier.any(obj)
+        const ret = stringifier.any(obj)
         expect(ret).toEqual('(object)["a" => 1,"b" => 2]')
     })
 

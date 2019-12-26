@@ -1,7 +1,8 @@
 import { PHPEmitter } from '../../../src/emitters/emitter'
 
 describe('PHPEmitter', function () {
-    let emitter;
+    let emitter
+
     beforeEach(function () {
         emitter = new PHPEmitter()
     })
@@ -9,14 +10,12 @@ describe('PHPEmitter', function () {
     describe('write html literal', function () {
         it('should write no buffer html literal', function () {
             emitter.write('foo')
-    
             expect(emitter.fullText()).toEqual('foo')
         })
-    
+
         it('should write buffer html literal', function () {
             emitter.bufferHTMLLiteral('foo')
             emitter.write('bar')
-    
             expect(emitter.fullText()).toEqual('$html .= "foo";\nbar')
         })
     })
@@ -42,13 +41,13 @@ describe('PHPEmitter', function () {
             expect(emitter.fullText()).toEqual('namespace {\n}\n')
         })
     })
-   
+
     describe('write switch case', function () {
-        it('should write switch', function() {
+        it('should write switch', function () {
             emitter.writeSwitch('type', function () {
                 emitter.writeLine('case:t')
             })
-    
+
             expect(emitter.fullText()).toEqual('switch (type) {\n    case:t\n}\n')
         })
 
@@ -110,7 +109,7 @@ describe('PHPEmitter', function () {
 
         it('should write function with arguments', function () {
             emitter.writeFunction('bar', ['a', 'b'], ['foo1', 'foo2'], function () {
-                emitter.writeLine('echo');
+                emitter.writeLine('echo')
             })
 
             expect(emitter.fullText()).toEqual('function bar (a, b) use (foo1, foo2) {\n    echo\n}')
@@ -124,7 +123,7 @@ describe('PHPEmitter', function () {
 
         it('should write function call', function () {
             emitter.writeFunctionCall('bar', ['foo1', 'foo2'])
-    
+
             expect(emitter.fullText()).toEqual('bar(foo1, foo2)')
         })
     })
@@ -184,4 +183,4 @@ describe('PHPEmitter', function () {
 
         expect(emitter.fullText()).toEqual('foo {\n    bar\n}\n')
     })
-}) 
+})
