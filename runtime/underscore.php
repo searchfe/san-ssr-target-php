@@ -196,7 +196,7 @@ final class _
     public static function createComponent (&$ctx) {
         $cls = _::getClassByCtx($ctx);
         if (!class_exists($cls)) {
-          $cls = '\__NS__SanComponent';
+            $cls = '\__NS__SanComponent';
         }
         $obj = new $cls();
         $obj->data = new SanData($ctx);

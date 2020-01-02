@@ -1,4 +1,4 @@
-import { TypeGuards, PropertyDeclaration } from 'ts-morph'
+import { FunctionExpression, MethodDeclaration, TypeGuards, PropertyDeclaration } from 'ts-morph'
 
 export function refactorComputedProperty (computed: PropertyDeclaration, sanssr = 'san-ssr') {
     computed.setType(`import("${sanssr}").SanSSRComputedDeclarations`)
@@ -7,7 +7,7 @@ export function refactorComputedProperty (computed: PropertyDeclaration, sanssr 
     if (!computedDefinitions) return
     if (!TypeGuards.isObjectLiteralExpression(computedDefinitions)) return
     for (const prop of computedDefinitions.getProperties()) {
-        let body
+        let body: MethodDeclaration | FunctionExpression
         if (TypeGuards.isMethodDeclaration(prop)) {
             body = prop
         }
@@ -18,12 +18,13 @@ export function refactorComputedProperty (computed: PropertyDeclaration, sanssr 
         if (body) {
             body.insertParameter(0, {
                 name: 'sanssrSelf',
-                type: `import("${sanssr}").SanComponent`
+                type: computed.getParentOrThrow().getName()
             })
-            const text = body
-                .getBodyText()
-                .replace(/this\.data\.get\(/g, 'sanssrSelf.data.get(')
-            body.setBodyText(text)
+            body.forEachDescendant(node => {
+                if (TypeGuards.isThisExpression(node)) {
+                    node.replaceWithText('sanssrSelf')
+                }
+            })
         }
     }
 }

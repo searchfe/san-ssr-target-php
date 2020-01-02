@@ -3,6 +3,8 @@
  * 提供 generateRenderModule 方法
  */
 import { compileExprSource } from '../compilers/expr-compiler'
+import { noop } from 'lodash'
+import { Component } from 'san'
 import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ElementCompiler } from './element-compiler'
@@ -25,7 +27,7 @@ export class RendererCompiler {
             this.hasInitedMethod = true
             delete ComponentClass.prototype.inited
         }
-        this.component = new ComponentClass()
+        this.component = this.createComponentInstance(ComponentClass)
         this.stringifier = new Stringifier(nsPrefix)
         this.elementCompiler = new ElementCompiler(
             (aNodeChild, emitter) => this.aNodeCompiler.compile(aNodeChild, emitter)
@@ -99,5 +101,16 @@ export class RendererCompiler {
         emitter.unindent()
         emitter.writeLine('];')
         emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
+    }
+
+    private createComponentInstance (ComponentClass) {
+        // TODO Do not `new Component` during SSR,
+        // see https://github.com/searchfe/san-ssr/issues/42
+        const proto = ComponentClass.prototype.__proto__    // eslint-disable-line
+        const calcComputed = proto['_calcComputed']
+        proto['_calcComputed'] = noop
+        const instance = new ComponentClass()
+        proto['_calcComputed'] = calcComputed
+        return instance
     }
 }
