@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.2.1...v1.3.0) (2020-01-02)
+
+
+### Features
+
+* fully functional this in computed functions ([0a4d8be](https://github.com/searchfe/san-ssr-target-php/commit/0a4d8be24e2ed631253fda5be4ae6d133b230623))
+
 ## [1.2.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.2.0...v1.2.1) (2019-12-24)
 
 
