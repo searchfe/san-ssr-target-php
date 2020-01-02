@@ -4,7 +4,6 @@
  */
 import { compileExprSource } from '../compilers/expr-compiler'
 import { noop } from 'lodash'
-import { Component } from 'san'
 import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ElementCompiler } from './element-compiler'
