@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.3.0...v1.4.0) (2020-01-03)
+
+
+### Features
+
+* this in filters ([5c6a3db](https://github.com/searchfe/san-ssr-target-php/commit/5c6a3db60a007ebaa02006e7fce62194c37230d7))
+
 # [1.3.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.2.1...v1.3.0) (2020-01-02)
 
 
