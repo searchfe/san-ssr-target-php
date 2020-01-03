@@ -189,7 +189,7 @@ final class _
         $cls = _::getClassByCtx($ctx);
         $func = $cls::$filters[$name];
         if (is_callable($func)) {
-            array_push($args, $ctx->instance);
+            array_unshift($args, $ctx->instance);
             return call_user_func_array($func, $args);
         }
     }

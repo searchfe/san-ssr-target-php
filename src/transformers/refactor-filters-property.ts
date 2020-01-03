@@ -16,8 +16,7 @@ export function refactorFiltersProperty (filters: PropertyDeclaration, sanssr = 
             if (TypeGuards.isFunctionExpression(init)) body = init
         }
         if (body) {
-            const parameterLength = body.getParameters().length
-            body.insertParameter(parameterLength, {
+            body.insertParameter(0, {
                 name: 'sanssrSelf',
                 type: filters.getParentOrThrow().getName()
             })
