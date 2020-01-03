@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.0...v1.4.1) (2020-01-03)
+
+
+### Bug Fixes
+
+* self as first parameter to avoid optional filter parameters ([8b77988](https://github.com/searchfe/san-ssr-target-php/commit/8b779886725faa34f0aa2a62d4c0a95bca6d59f2))
+
 # [1.4.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.3.0...v1.4.0) (2020-01-03)
 
 
