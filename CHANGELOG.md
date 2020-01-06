@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.1...v1.4.2) (2020-01-06)
+
+
+### Bug Fixes
+
+* get rid of php-specific types from san-ssr ([c694d22](https://github.com/searchfe/san-ssr-target-php/commit/c694d22eef0bd090ed34358093d25b4185315d6e))
+
 ## [1.4.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.0...v1.4.1) (2020-01-03)
 
 
