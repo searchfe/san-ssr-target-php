@@ -21,9 +21,9 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
         for (const prop of clazz.getProperties()) {
             if (prop.getName() === 'computed') {
-                refactorComputedProperty(prop, 'san-ssr')
+                refactorComputedProperty(prop)
             } else if (prop.getName() === 'filters') {
-                refactorFiltersProperty(prop, 'san-ssr')
+                refactorFiltersProperty(prop)
             }
             refactorMemberInitializer(clazz, prop)
         }

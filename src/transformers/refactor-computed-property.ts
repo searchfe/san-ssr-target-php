@@ -1,8 +1,6 @@
 import { FunctionExpression, MethodDeclaration, TypeGuards, PropertyDeclaration } from 'ts-morph'
 
-export function refactorComputedProperty (computed: PropertyDeclaration, sanssr = 'san-ssr') {
-    computed.setType(`import("${sanssr}").SanSSRComputedDeclarations`)
-
+export function refactorComputedProperty (computed: PropertyDeclaration) {
     const computedDefinitions = computed.getInitializer()
     if (!computedDefinitions) return
     if (!TypeGuards.isObjectLiteralExpression(computedDefinitions)) return

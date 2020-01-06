@@ -1,8 +1,6 @@
 import { FunctionExpression, MethodDeclaration, TypeGuards, PropertyDeclaration } from 'ts-morph'
 
-export function refactorFiltersProperty (filters: PropertyDeclaration, sanssr = 'san-ssr') {
-    filters.setType(`import("${sanssr}").SanSSRFiltersDeclarations`)
-
+export function refactorFiltersProperty (filters: PropertyDeclaration) {
     const filtersDefinitions = filters.getInitializer()
     if (!filtersDefinitions) return
     if (!TypeGuards.isObjectLiteralExpression(filtersDefinitions)) return

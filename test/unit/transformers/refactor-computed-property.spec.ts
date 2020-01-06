@@ -17,7 +17,7 @@ describe('refactor computed property', function () {
         const prop = sourceFile.getClass('Foo').getProperty('computed')
         refactorComputedProperty(prop)
         expect(prop.getFullText()).toEqual(`
-            computed: import("san-ssr").SanSSRComputedDeclarations = {
+            computed = {
                 foo: function (sanssrSelf: Foo) {
                     return sanssrSelf.data.get('bar')
                 }
@@ -37,7 +37,7 @@ describe('refactor computed property', function () {
         const prop = sourceFile.getClass('Foo').getProperty('computed')
         refactorComputedProperty(prop)
         expect(prop.getFullText()).toEqual(`
-            computed: import("san-ssr").SanSSRComputedDeclarations = {
+            computed = {
                 foo (sanssrSelf: Foo) {
                     return sanssrSelf.data.get('bar')
                 }
@@ -57,7 +57,7 @@ describe('refactor computed property', function () {
         const prop = sourceFile.getClass('Foo').getProperty('computed')
         refactorComputedProperty(prop)
         expect(prop.getFullText()).toEqual(`
-            computed: import("san-ssr").SanSSRComputedDeclarations = {
+            computed = {
                 foo (sanssrSelf: Foo) {
                     return sanssrSelf.data.get('bar')
                 }
@@ -78,7 +78,7 @@ describe('refactor computed property', function () {
         const prop = sourceFile.getClass('Foo').getProperty('computed')
         refactorComputedProperty(prop)
         expect(prop.getFullText()).toEqual(`
-            computed: import("san-ssr").SanSSRComputedDeclarations = {
+            computed = {
                 foo (sanssrSelf: Foo) {
                     return sanssrSelf.bar()
                 }
