@@ -8,6 +8,7 @@ import { replaceSanModule } from './replace-san-module'
 const uselessComponentProps = ['components']
 
 export function transformAstToPHP (sourceFile: SanSourceFile) {
+    if (!sourceFile.tsSourceFile) return
     replaceSanModule(sourceFile.tsSourceFile, 'san-ssr-target-php')
     sourceFile.fakeProperties.forEach(prop => prop.remove())
 
@@ -33,7 +34,7 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
     for (const clazz of sourceFile.getClassDeclarations()) {
         const name = clazz.getName()
-        if (isReserved(name)) {
+        if (name && isReserved(name)) {
             if (clazz.isExported()) {
                 throw new Error(`${name} is a reserved keyword in PHP`)
             }

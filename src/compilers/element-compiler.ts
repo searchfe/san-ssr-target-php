@@ -1,24 +1,23 @@
-import { ExprType } from 'san'
-import { autoCloseTags, getANodePropByName } from 'san-ssr'
-import { compileExprSource } from '../compilers/expr-compiler'
+import { ExprType, ANode } from 'san'
+import { TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
+import * as compileExprSource from '../compilers/expr-compiler'
+import { PHPEmitter } from '../emitters/emitter'
 
 /**
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
-    private compileANode
+    private compileANode: (aNode: ANode, emitter: PHPEmitter) => void
 
-    constructor (compileANode) {
+    constructor (compileANode: (aNode: ANode, emitter: PHPEmitter) => void) {
         this.compileANode = compileANode
     }
     /**
      * 编译元素标签头
      *
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
-     * @param {ANode} aNode 抽象节点
-     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (emitter, aNode, tagNameVariable?, noTemplateOutput = false) {
+    tagStart (emitter: PHPEmitter, aNode: ANode, tagNameVariable?: string, noTemplateOutput = false) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
@@ -40,22 +39,14 @@ export class ElementCompiler {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot') {
-                switch (prop.expr.type) {
-                case ExprType.BOOL:
+                if (TypeGuards.isExprBoolNode(prop.expr)) {
                     emitter.bufferHTMLLiteral(' ' + prop.name)
-                    break
-
-                case ExprType.STRING:
+                } else if (TypeGuards.isExprStringNode(prop.expr)) {
                     emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
                         prop.expr.literal + '"')
-                    break
-
-                default:
-                    if (prop.expr.value != null) {
-                        emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
-                            compileExprSource.expr(prop.expr) + '"')
-                    }
-                    break
+                } else if (prop.expr.value != null) {
+                    emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
+                        compileExprSource.expr(prop.expr) + '"')
                 }
             }
         }
@@ -170,11 +161,9 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      *
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
-     * @param {ANode} aNode 抽象节点
-     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (emitter, aNode, tagNameVariable?, noTemplateOutput = false) {
+    tagEnd (emitter: PHPEmitter, aNode: ANode, tagNameVariable?: string, noTemplateOutput = false) {
         const tagName = aNode.tagName
 
         if (tagName) {

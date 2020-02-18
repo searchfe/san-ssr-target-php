@@ -1,4 +1,4 @@
-import { compileExprSource } from '../compilers/expr-compiler'
+import { stringLiteralize } from '../compilers/expr-compiler'
 
 export class Stringifier {
     private nsPrefix = ''
@@ -7,7 +7,7 @@ export class Stringifier {
         this.nsPrefix = nsPrefix
     }
 
-    obj (source) {
+    obj (source: object) {
         let prefixComma
         let result = '(object)['
 
@@ -21,7 +21,7 @@ export class Stringifier {
             }
             prefixComma = 1
 
-            const k = compileExprSource.stringLiteralize(key)
+            const k = stringLiteralize(key)
             const v = this.any(source[key])
             result += `${k} => ${v}`
         }
@@ -29,7 +29,7 @@ export class Stringifier {
         return result + ']'
     }
 
-    arr (source) {
+    arr (source: any[]) {
         let prefixComma
         let result = '['
 
@@ -45,20 +45,21 @@ export class Stringifier {
         return result + ']'
     }
 
-    str (source) {
-        return compileExprSource.stringLiteralize(source)
+    str (source: string) {
+        return stringLiteralize(source)
     }
 
-    date (source) {
+    date (source: Date) {
         return `new \\${this.nsPrefix}runtime\\Ts2Php_Date(` + source.getTime() + ')'
     }
 
-    any (source) {
+    any (source: any) {
         switch (typeof source) {
         case 'string':
             return this.str(source)
 
         case 'number':
+            if (isNaN(source)) return 'null'
             return '' + source
 
         case 'boolean':

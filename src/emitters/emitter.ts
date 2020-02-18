@@ -1,5 +1,5 @@
 import { Emitter } from 'san-ssr'
-import { compileExprSource } from '../compilers/expr-compiler'
+import { dataAccess, stringLiteralize } from '../compilers/expr-compiler'
 
 export class PHPEmitter extends Emitter {
     buffer: string = ''
@@ -9,7 +9,7 @@ export class PHPEmitter extends Emitter {
         if (emitHeader) this.writeLine('<?php')
     }
 
-    public write (str) {
+    public write (str: string) {
         this.clearStringLiteralBuffer()
         return this.defaultWrite(str)
     }
@@ -43,14 +43,14 @@ export class PHPEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeHTML('"<!--s-data:" . json_encode(' + compileExprSource.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
+        this.writeHTML('"<!--s-data:" . json_encode(' + dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
     }
 
     public clearStringLiteralBuffer () {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTML(compileExprSource.stringLiteralize(buffer))
+        this.writeHTML(stringLiteralize(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {
@@ -79,7 +79,7 @@ export class PHPEmitter extends Emitter {
         this.unindent()
     }
 
-    public writeFunction (name = '', args = [], use = [], body: Function = () => null) {
+    public writeFunction (name = '', args: string[] = [], use: string[] = [], body: Function = () => null) {
         const nameStr = name ? `${name} ` : ''
         const argsStr = args.join(', ')
         const useStr = use.length ? `use (${use.join(', ')}) ` : ''

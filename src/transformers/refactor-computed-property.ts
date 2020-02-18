@@ -5,15 +5,15 @@ export function refactorComputedProperty (computed: PropertyDeclaration) {
     if (!computedDefinitions) return
     if (!TypeGuards.isObjectLiteralExpression(computedDefinitions)) return
     for (const prop of computedDefinitions.getProperties()) {
-        let body: MethodDeclaration | FunctionExpression
+        let body: MethodDeclaration | FunctionExpression | undefined
         if (TypeGuards.isMethodDeclaration(prop)) {
             body = prop
         }
         if (TypeGuards.isPropertyAssignment(prop)) {
             const init = prop.getInitializer()
-            if (TypeGuards.isFunctionExpression(init)) body = init
+            if (init && TypeGuards.isFunctionExpression(init)) body = init
         }
-        if (body) {
+        if (typeof body !== 'undefined') {
             body.insertParameter(0, {
                 name: 'sanssrSelf',
                 type: computed.getParentOrThrow().getName()

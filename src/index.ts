@@ -2,7 +2,7 @@ import { SanProject, Compiler, SanSourceFile, SanApp, getInlineDeclarations } fr
 import { isReserved } from './utils/lang'
 import { Modules, PHPCodeGenerator } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
-import { Project } from 'ts-morph'
+import { CompilerOptions } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
 import { PHPEmitter } from './emitters/emitter'
 import camelCase from 'camelcase'
@@ -22,15 +22,15 @@ export enum EmitContent {
 }
 
 export type ToPHPCompilerOptions = {
-    tsConfigFilePath?: string,
-    project: Project
+    tsConfigFilePath?: string | null,
+    project: SanProject
 }
 
 // TODO 确定 ToPHPCompiler 是否一次性使用，把 compile 参数挪到 constructor 参数
 export default class ToPHPCompiler implements Compiler {
     private root: string
-    private tsConfigFilePath: string
-    private project: Project
+    private tsConfigFilePath?: string | null
+    private project: SanProject
     private phpGenerator: PHPCodeGenerator
 
     constructor ({
@@ -38,11 +38,11 @@ export default class ToPHPCompiler implements Compiler {
         project
     }: ToPHPCompilerOptions) {
         this.project = project
-        this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
+        this.root = tsConfigFilePath ? tsConfigFilePath.split(sep).slice(0, -1).join(sep) : __dirname
         this.tsConfigFilePath = tsConfigFilePath
 
-        const tsconfig = require(this.tsConfigFilePath)
-        const options = this.formatCompilerOptions(tsconfig['compilerOptions'])
+        const compilerOptions = tsConfigFilePath ? require(tsConfigFilePath)['compilerOptions'] : {}
+        const options = this.formatCompilerOptions(compilerOptions)
         this.phpGenerator = new PHPCodeGenerator(options)
     }
 
@@ -78,7 +78,7 @@ export default class ToPHPCompiler implements Compiler {
 
     public static fromSanProject (sanProject: SanProject) {
         return new ToPHPCompiler({
-            project: sanProject.tsProject,
+            project: sanProject,
             tsConfigFilePath: sanProject.tsConfigFilePath
         })
     }
@@ -92,8 +92,8 @@ export default class ToPHPCompiler implements Compiler {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
             emitter.writeFunction(funcName, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-                // TODO new with tree, compile with info
-                new RendererCompiler(componentInfo, emitter, noTemplateOutput, nsPrefix, sanApp.componentTree).compile()
+                const rc = new RendererCompiler(sanApp.componentTree, noTemplateOutput, nsPrefix)
+                rc.compile(componentInfo, emitter)
             })
             emitter.carriageReturn()
         }
@@ -104,9 +104,9 @@ export default class ToPHPCompiler implements Compiler {
         emitter.endNamespace()
     }
 
-    private formatCompilerOptions (compilerOptions = { baseUrl: '' }) {
+    private formatCompilerOptions (compilerOptions: CompilerOptions = { baseUrl: '' }) {
         let baseUrl = compilerOptions.baseUrl
-        if (baseUrl && !isAbsolute(baseUrl)) {
+        if (baseUrl && !isAbsolute(baseUrl) && this.root) {
             baseUrl = resolve(this.root, baseUrl)
             compilerOptions.baseUrl = baseUrl
         }
@@ -126,7 +126,7 @@ export default class ToPHPCompiler implements Compiler {
 
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
             const literal = decl.getModuleSpecifierValue()
-            const filepath = decl.getModuleSpecifierSourceFile().getFilePath()
+            const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
             const ns = nsPrefix + this.ns(filepath)
 
             modules[literal] = {

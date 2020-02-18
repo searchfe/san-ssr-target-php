@@ -2,10 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "declaration": true,
-    "skipLibCheck": true,
     "module": "CommonJS",
     "outDir": "dist",
-    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
