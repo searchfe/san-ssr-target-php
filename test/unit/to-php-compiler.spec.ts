@@ -22,7 +22,7 @@ describe('ToPHPCompiler', function () {
         const result = compileComponent('stub/a.comp.ts')
 
         expect(result).toContain('namespace san\\stub\\aComp {')
-        expect(result).toContain('class A extends SanComponent {')
+        expect(result).toContain('class A extends SanSSRComponent {')
         expect(result).toContain(`\\san\\runtime\\ComponentRegistry::$comps[0] = '\\san\\stub\\aComp\\A'`)
     })
 
@@ -69,7 +69,7 @@ describe('ToPHPCompiler', function () {
             emitContent: EmitContent.all
         })
         expect(result).toContain('function sum($a, $b)')
-        expect(result).toContain('class C extends SanComponent')
+        expect(result).toContain('class C extends SanSSRComponent')
         expect(result).toContain('function sanssrRenderer')
     })
 
@@ -78,6 +78,6 @@ describe('ToPHPCompiler', function () {
 
         expect(result).toContain('namespace san\\runtime')
         expect(result).toContain('class Ts2Php_Date')
-        expect(result).toContain('class SanData')
+        expect(result).toContain('class SanSSRData')
     })
 })

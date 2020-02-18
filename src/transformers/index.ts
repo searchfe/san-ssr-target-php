@@ -8,11 +8,13 @@ import { replaceSanModule } from './replace-san-module'
 const uselessComponentProps = ['components']
 
 export function transformAstToPHP (sourceFile: SanSourceFile) {
-    replaceSanModule(sourceFile.tsSourceFile, 'san-ssr')
+    replaceSanModule(sourceFile.tsSourceFile, 'san-ssr-target-php')
     sourceFile.fakeProperties.forEach(prop => prop.remove())
 
     for (const clazz of sourceFile.componentClassDeclarations.values()) {
-        clazz.setExtends(`SanComponent`)
+        clazz.setExtends(`SanSSRComponent`)
+        // clazz.addImplements(`CompiledComponent`)
+        // clazz.removeExtends()
 
         for (const useless of uselessComponentProps) {
             const comps = clazz.getStaticProperty(useless)

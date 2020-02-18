@@ -1,6 +1,9 @@
+import { ANode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
+import { isComponentLoader, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { compileExprSource } from '../compilers/expr-compiler'
-import { ANode, isComponentLoader, getANodePropByName, getANodeProps } from 'san-ssr'
+
+type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
 /**
 * ANode 的编译方法集合对象
@@ -10,11 +13,13 @@ export class ANodeCompiler {
     private elementCompiler
     private stringifier
     private component
+    private getComponentInfoByClass: ComponentInfoGetter
 
-    constructor (component, elementCompiler, stringifier) {
+    constructor (component, elementCompiler, stringifier, getComponentInfoByClass: ComponentInfoGetter) {
         this.component = component
         this.elementCompiler = elementCompiler
         this.stringifier = stringifier
+        this.getComponentInfoByClass = getComponentInfoByClass
     }
 
     /**
@@ -22,8 +27,8 @@ export class ANodeCompiler {
      *
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compile (aNode: ANode, emitter: PHPEmitter, extra?) {
-        extra = extra || {}
+    compile (aNode: ANode, emitter: PHPEmitter) {
+        let info: ComponentInfo
         let compileMethod = 'compileElement'
 
         if (aNode.textExpr) {
@@ -37,21 +42,22 @@ export class ANodeCompiler {
         } else if (aNode.tagName === 'template') {
             compileMethod = 'compileTemplate'
         } else {
-            const ComponentType = this.component.getComponentType
+            let ComponentClass = this.component.getComponentType
                 ? this.component.getComponentType(aNode)
                 : this.component.components[aNode.tagName]
 
-            if (ComponentType) {
-                compileMethod = 'compileComponent'
-                extra.ComponentClass = ComponentType
-
-                if (isComponentLoader(ComponentType)) {
-                    compileMethod = 'compileComponentLoader'
+            if (ComponentClass) {
+                if (isComponentLoader(ComponentClass)) {
+                    ComponentClass = ComponentClass.placeholder
+                    // output nothing if placeholder undefined
+                    if (!ComponentClass) return
                 }
+                compileMethod = 'compileComponent'
+                info = this.getComponentInfoByClass(ComponentClass)
             }
         }
 
-        this[compileMethod](aNode, emitter, extra)
+        this[compileMethod](aNode, emitter, info)
     }
 
     /**
@@ -66,7 +72,7 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
+            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal)
         } else {
             emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
         }
@@ -89,7 +95,7 @@ export class ANodeCompiler {
     /**
      * 编译 if 节点
      */
-    compileIf (aNode: ANode, emitter: PHPEmitter) {
+    compileIf (aNode: AIfNode, emitter: PHPEmitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
@@ -119,8 +125,7 @@ export class ANodeCompiler {
             props: aNode.props,
             events: aNode.events,
             tagName: aNode.tagName,
-            directives: { ...aNode.directives },
-            hotspot: aNode.hotspot
+            directives: { ...aNode.directives }
         }
         forElementANode.directives['for'] = null
 
@@ -220,11 +225,8 @@ export class ANodeCompiler {
 
     /**
      * 编译组件节点
-     *
-     * @param {Object} extra 编译所需的一些额外信息
-     * @param {Function} extra.ComponentClass 对应组件类
      */
-    compileComponent (aNode: ANode, emitter: PHPEmitter, extra) {
+    compileComponent (aNode: ANode, emitter: PHPEmitter, info: ComponentInfo) {
         let dataLiteral = '(object)[]'
 
         emitter.writeLine('$sourceSlots = [];')
@@ -286,26 +288,11 @@ export class ANodeCompiler {
             ')'
         }
 
-        const renderId = 'sanssrRenderer' + extra.ComponentClass.sanssrCid
+        const renderId = 'sanssrRenderer' + info.cid
         emitter.nextLine(`$html .= `)
         emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', this.stringifier.str(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
         emitter.writeLine('$sourceSlots = null;')
-    }
-
-    /**
-     * 编译组件加载器节点
-     *
-     * @param {Object} extra 编译所需的一些额外信息
-     * @param {Function} extra.ComponentClass 对应类
-     */
-    compileComponentLoader (aNode: ANode, emitter: PHPEmitter, extra) {
-        const LoadingComponent = extra.ComponentClass.placeholder
-        if (typeof LoadingComponent === 'function') {
-            this.compileComponent(aNode, emitter, {
-                ComponentClass: LoadingComponent
-            })
-        }
     }
 
     private nextID () {

@@ -11,6 +11,11 @@
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,
+    "sourceMap": true,
+    "baseUrl": "src",
+    "paths": {
+      "san": ["types/san"]
+    },
     "suppressImplicitAnyIndexErrors": true
   },
   "include": [ "src" ]

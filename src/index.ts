@@ -88,16 +88,17 @@ export default class ToPHPCompiler implements Compiler {
         emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
 
-        for (let i = 0; i < sanApp.componentClasses.length; i++) {
-            const componentClass = sanApp.componentClasses[i]
-            const funcName = 'sanssrRenderer' + componentClass.sanssrCid
+        for (const componentInfo of sanApp.componentTree.preOrder()) {
+            const { cid } = componentInfo
+            const funcName = 'sanssrRenderer' + cid
             emitter.writeFunction(funcName, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-                new RendererCompiler(componentClass, emitter, noTemplateOutput, nsPrefix).compile()
+                // TODO new with tree, compile with info
+                new RendererCompiler(componentInfo, emitter, noTemplateOutput, nsPrefix, sanApp.componentTree).compile()
             })
             emitter.carriageReturn()
         }
         emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
-            const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
+            const funcName = 'sanssrRenderer' + sanApp.componentTree.root.cid
             emitter.writeLine(`return ${funcName}($data, $noDataOutput, []);`)
         })
         emitter.endNamespace()
@@ -117,8 +118,8 @@ export default class ToPHPCompiler implements Compiler {
         const runtimeNS = nsPrefix + 'runtime\\'
 
         transformAstToPHP(sourceFile)
-        modules['san-ssr'] = {
-            name: 'san-ssr',
+        modules['san-ssr-target-php'] = {
+            name: 'san-ssr-target-php',
             namespace: runtimeNS,
             required: true
         }

@@ -1,6 +1,6 @@
-import { compileExprSource } from '../compilers/expr-compiler'
 import { ExprType } from 'san'
-import { autoCloseTags } from 'san-ssr'
+import { autoCloseTags, getANodePropByName } from 'san-ssr'
+import { compileExprSource } from '../compilers/expr-compiler'
 
 /**
 * element 的编译方法集合对象
@@ -206,7 +206,7 @@ export class ElementCompiler {
      */
     inner (emitter, aNode) {
         if (aNode.tagName === 'textarea') {
-            const valueProp = aNode.props[aNode.hotspot.props['value']]
+            const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
                 emitter.writeHTML(
                     '_::escapeHTML(' +

@@ -10,6 +10,10 @@
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "san-ssr-target-php": ["types/san-ssr-target-php"]
+    },
     "suppressImplicitAnyIndexErrors": true
   },
   "all": true,

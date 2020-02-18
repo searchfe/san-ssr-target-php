@@ -2,8 +2,9 @@
  * 将组件树编译成 render 函数之间的递归调用
  * 提供 generateRenderModule 方法
  */
-import { compileExprSource } from '../compilers/expr-compiler'
+import { ComponentInfo, ComponentTree } from 'san-ssr'
 import { noop } from 'lodash'
+import { compileExprSource } from '../compilers/expr-compiler'
 import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ElementCompiler } from './element-compiler'
@@ -17,21 +18,23 @@ export class RendererCompiler {
     private component
     private hasInitedMethod = false
     private noTemplateOutput: boolean
+    private tree: ComponentTree
 
-    constructor (ComponentClass, emitter, noTemplateOutput: boolean, nsPrefix: string) {
+    constructor (info: ComponentInfo, emitter, noTemplateOutput: boolean, nsPrefix: string, tree: ComponentTree) {
+        this.tree = tree
         this.emitter = emitter
         this.noTemplateOutput = noTemplateOutput
 
-        if (typeof ComponentClass.prototype.inited === 'function') {
+        if (typeof info.ComponentClass.prototype['inited'] === 'function') {
             this.hasInitedMethod = true
-            delete ComponentClass.prototype.inited
+            delete info.ComponentClass.prototype['inited']
         }
-        this.component = this.createComponentInstance(ComponentClass)
+        this.component = this.createComponentInstance(info.ComponentClass)
         this.stringifier = new Stringifier(nsPrefix)
         this.elementCompiler = new ElementCompiler(
             (aNodeChild, emitter) => this.aNodeCompiler.compile(aNodeChild, emitter)
         )
-        this.aNodeCompiler = new ANodeCompiler(this.component, this.elementCompiler, this.stringifier)
+        this.aNodeCompiler = new ANodeCompiler(this.component, this.elementCompiler, this.stringifier, cls => this.tree.addComponentClass(cls))
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-class SanData {
+class SanSSRData {
     private $ctx;
     private $data;
     private $computedNames;
@@ -49,7 +49,7 @@ class SanData {
     }
 }
 
-class SanComponent {
+class SanSSRComponent {
     public $data;
     public function __construct () {}
 }

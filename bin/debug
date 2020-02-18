@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { execCommandSync, assertSanHTMLEqual } = require('san-ssr')
+const { execCommandSync, compareSanHTML } = require('san-ssr')
 const chalk = require('chalk')
 const fs = require('fs')
 const { resolve } = require('path')
@@ -15,7 +15,7 @@ console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
 compile(caseName)
 const got = execCommandSync(resolve(__dirname, `./render.php`), [caseName])
-const pass = assertSanHTMLEqual(got, expected)
-console.log(chalk[pass ? 'green' : 'red'](`[SSR  PHP] ${caseName}`), got)
+const diff = compareSanHTML(got, expected)
+console.log(chalk[diff ? 'red' : 'green'](`[SSR  PHP] ${caseName}`), got)
 
-if (!pass) process.exit(1)
+process.exit(!!diff)
