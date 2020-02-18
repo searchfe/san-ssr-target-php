@@ -89,7 +89,7 @@ export class PHPEmitter extends Emitter {
         this.unindent()
         this.nextLine('}')
     }
-    public writeAnonymousFunction (args = [], use = [], body: Function = () => null) {
+    public writeAnonymousFunction (args: string[] = [], use: string[] = [], body: Function = () => null) {
         this.writeFunction('', args, use, body)
     }
     public writeFunctionCall (name: string, args: string[]) {

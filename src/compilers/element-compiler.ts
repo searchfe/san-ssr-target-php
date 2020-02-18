@@ -187,13 +187,8 @@ export class ElementCompiler {
         }
     }
 
-    /**
-     * 编译元素内容
-     *
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
-     * @param {ANode} aNode 元素的抽象节点信息
-     */
-    inner (emitter, aNode) {
+    // 编译元素内容
+    inner (emitter: PHPEmitter, aNode: ANode) {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
@@ -210,7 +205,7 @@ export class ElementCompiler {
         if (htmlDirective) {
             emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
         } else {
-            for (const aNodeChild of aNode.children) {
+            for (const aNodeChild of aNode.children!) {
                 this.compileANode(aNodeChild, emitter)
             }
         }

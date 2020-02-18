@@ -3,3 +3,5 @@ dist
 coverage
 test/cases/*/component.js
 ssr.php
+test/types
+src/types

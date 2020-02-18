@@ -1,3 +1,4 @@
+import { ExprNode } from 'san'
 import { dataAccess, stringLiteralize, expr } from '../../../src/compilers/expr-compiler'
 
 describe('compileExprSource', function () {
@@ -20,7 +21,7 @@ describe('compileExprSource', function () {
             type: 1,
             value: 'value'
         }
-        expect(expr(expr1)).toEqual('"literal"')
+        expect(expr(expr1 as any)).toEqual('"literal"')
         expect(expr(expr2)).toEqual('"value"')
     })
     it('expression type = 2 should return number', function () {
@@ -29,7 +30,7 @@ describe('compileExprSource', function () {
             value: 1
         }
 
-        expect(expr(e)).toEqual(1)
+        expect(expr(e)).toEqual('1')
     })
     it('expression type = 3 should return boolean string', function () {
         const expr1 = {
@@ -118,13 +119,13 @@ describe('compileExprSource', function () {
                 { 'type': 6, 'name': { 'type': 4, 'paths': [{ 'type': 1, 'value': 'xx' }] }, 'args': [] }
             ]
         }
-        expect(expr(expr1)).toContain('_::_classFilter("erik")')
-        expect(expr(expr2)).toContain('_::_styleFilter("erik")')
-        expect(expr(expr4)).toContain('_::_xstyleFilter("erik", "")')
-        expect(expr(expr3)).toContain('_::_xclassFilter("erik", "")')
-        expect(expr(expr5)).toContain('encodeURIComponent')
-        expect(expr(expr6)).toContain('_::callFilter($ctx, "less", ["erik", "val"])')
-        expect(expr(expr7)).not.toContain('_::escapeHTML')
+        expect(expr(expr1 as any)).toContain('_::_classFilter("erik")')
+        expect(expr(expr2 as any)).toContain('_::_styleFilter("erik")')
+        expect(expr(expr4 as any)).toContain('_::_xstyleFilter("erik", "")')
+        expect(expr(expr3 as any)).toContain('_::_xclassFilter("erik", "")')
+        expect(expr(expr5 as any)).toContain('encodeURIComponent')
+        expect(expr(expr6 as any)).toContain('_::callFilter($ctx, "less", ["erik", "val"])')
+        expect(expr(expr7 as any)).not.toContain('_::escapeHTML')
     })
     it('expression type = 6 should return call expression', function () {
         const e = {
@@ -184,9 +185,9 @@ describe('compileExprSource', function () {
             'operator': 145,
             'expr': { 'type': 2, 'value': 10 }
         }
-        expect(expr(expr1)).toEqual('!10')
-        expect(expr(expr2)).toEqual('-10')
-        expect(expr(expr3)).toEqual('')
+        expect(expr(expr1 as any)).toEqual('!10')
+        expect(expr(expr2 as any)).toEqual('-10')
+        expect(expr(expr3 as any)).toEqual('')
     })
     it('expression type = 10 should return ternary expression', function () {
         const expr1 = {
@@ -208,7 +209,7 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1)).toEqual('_::objSpread([["key", 1],"erik"], [0,1])')
+        expect(expr(expr1 as any)).toEqual('_::objSpread([["key", 1],"erik"], [0,1])')
     })
     it('expression type = 12 should return array', function () {
         const expr1 = {
@@ -219,13 +220,13 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1)).toEqual('_::spread([1, "erik"], [0,1])')
+        expect(expr(expr1 as any)).toEqual('_::spread([1, "erik"], [0,1])')
     })
     it('expression type = 13 should return null', function () {
         const expr1 = {
             'type': 13
         }
-        expect(expr(expr1)).toEqual('null')
+        expect(expr(expr1 as any)).toEqual('null')
     })
     it('expression with parenthesized = true should return with ()', function () {
         const expr1 = {

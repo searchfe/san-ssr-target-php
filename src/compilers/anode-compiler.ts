@@ -1,5 +1,7 @@
-import { ANode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
-import { isComponentLoader, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
+import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
+import { CompiledComponent, isComponentLoader, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
+import { ElementCompiler } from './element-compiler'
+import { Stringifier } from './stringifier'
 import { PHPEmitter } from '../emitters/emitter'
 import * as compileExprSource from '../compilers/expr-compiler'
 
@@ -10,12 +12,13 @@ type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => Comp
 */
 export class ANodeCompiler {
     private id = 0
-    private elementCompiler
-    private stringifier
-    private component
+    private elementCompiler: ElementCompiler
+    private stringifier: Stringifier
+    private component: CompiledComponent<{}>
     private getComponentInfoByClass: ComponentInfoGetter
 
-    constructor (component, elementCompiler, stringifier, getComponentInfoByClass: ComponentInfoGetter) {
+    // TODO replace CompiledComponent with componentInfo
+    constructor (component: CompiledComponent<{}>, elementCompiler: ElementCompiler, stringifier: Stringifier, getComponentInfoByClass: ComponentInfoGetter) {
         this.component = component
         this.elementCompiler = elementCompiler
         this.stringifier = stringifier
@@ -42,7 +45,7 @@ export class ANodeCompiler {
         this.compileElement(aNode, emitter)
     }
 
-    compileText (aNode: ANode, emitter: PHPEmitter) {
+    compileText (aNode: ATextNode, emitter: PHPEmitter) {
         if (aNode.textExpr.original) {
             emitter.writeIf('!$noDataOutput', () => {
                 emitter.bufferHTMLLiteral('<!--s-text-->')
@@ -51,7 +54,7 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal)
+            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal!)
         } else {
             emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
         }
@@ -97,7 +100,7 @@ export class ANodeCompiler {
             tagName: aNode.tagName,
             directives: { ...aNode.directives }
         }
-        forElementANode.directives['for'] = null
+        delete forElementANode.directives.for
 
         const forDirective = aNode.directives.for
         const itemName = forDirective.item
@@ -114,10 +117,8 @@ export class ANodeCompiler {
         })
     }
 
-    /**
-     * 编译 slot 节点
-     */
-    compileSlot (aNode: ANode, emitter: PHPEmitter) {
+    // 编译 slot 节点
+    compileSlot (aNode: ASlotNode, emitter: PHPEmitter) {
         const rendererId = this.nextID()
 
         emitter.writeIf(`!isset($ctx->slotRenderers["${rendererId}"])`, () => {
@@ -128,7 +129,7 @@ export class ANodeCompiler {
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    for (const aNodeChild of aNode.children) this.compile(aNodeChild, emitter)
+                    for (const aNodeChild of aNode.children || []) this.compile(aNodeChild, emitter)
                     emitter.writeLine('return $html;')
                 })
                 emitter.write(';')
@@ -166,7 +167,7 @@ export class ANodeCompiler {
                         emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
                     }
 
-                    for (const varItem of aNode.vars) {
+                    for (const varItem of aNode.vars || []) {
                         emitter.writeLine(
                             '$slotCtx->data->' + varItem.name + ' = ' +
                             compileExprSource.expr(varItem.expr) + ';'
@@ -195,7 +196,7 @@ export class ANodeCompiler {
 
         emitter.writeLine('$sourceSlots = [];')
         if (aNode.children) {
-            const defaultSourceSlots = []
+            const defaultSourceSlots: ANode[] = []
             const sourceSlotCodes = {}
 
             for (const child of aNode.children) {
@@ -218,7 +219,7 @@ export class ANodeCompiler {
                 emitter.nextLine('array_push($sourceSlots, [')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    defaultSourceSlots.forEach(child => this.compile(child, emitter))
+                    defaultSourceSlots.forEach((child: ANode) => this.compile(child, emitter))
                     emitter.writeLine('return $html;')
                 })
                 emitter.feedLine(']);')
@@ -229,7 +230,7 @@ export class ANodeCompiler {
                 emitter.nextLine('array_push($sourceSlots, [')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    sourceSlotCode.children.forEach(child => this.compile(child, emitter))
+                    sourceSlotCode.children.forEach((child: ANode) => this.compile(child, emitter))
                     emitter.writeLine('return $html;')
                 })
                 emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
