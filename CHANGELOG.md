@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.2...v1.4.3) (2020-02-20)
+
+
+### Bug Fixes
+
+* use fixed version of ts-morph ([ccb9af7](https://github.com/searchfe/san-ssr-target-php/commit/ccb9af74c5fe9021bad96323dbb1a6f4893d7590))
+
 ## [1.4.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.1...v1.4.2) (2020-01-06)
 
 

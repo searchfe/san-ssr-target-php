@@ -91,14 +91,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c694d22/src/transformers/replace-san-module.ts#L7">transformers/replace-san-module.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ccb9af7/src/transformers/replace-san-module.ts#L9">transformers/replace-san-module.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>PHP SSR 期间对 Component 的类型有额外要求，比如必须是 class 而非 function。
-									这里把源码中的 Component 替换为我们提供的 SanComponent 替换掉。</p>
+									<p>把源码中的 Component 替换为我们提供的 SanSSRComponent。作用：</p>
 								</div>
+								<ol>
+									<li>PHP SSR 只支持部分功能，有白名单的功效，不支持的功能编译期拒绝</li>
+									<li>Component 在 PHP 里需要是 class 而非 interface，因为我们需要基类成员</li>
+								</ol>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
