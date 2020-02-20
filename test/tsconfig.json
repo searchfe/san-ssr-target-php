@@ -6,14 +6,11 @@
     "skipLibCheck": true,
     "noImplicitThis": false,
     "noImplicitAny": false,
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,
-    "baseUrl": ".",
-    "paths": {
-      "san-ssr-target-php": ["types/san-ssr-target-php"]
-    },
+    "baseUrl": "../types",
     "suppressImplicitAnyIndexErrors": true
   },
   "all": true,
