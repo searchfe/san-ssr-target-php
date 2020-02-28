@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.1...v1.5.2) (2020-02-28)
+
+
+### Bug Fixes
+
+* $ctx->data refer to $data by reference ([b6435c8](https://github.com/searchfe/san-ssr-target-php/commit/b6435c885c184a64030e1a2b05a88a1bbbdf4e57))
+
 ## [1.5.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.0...v1.5.1) (2020-02-28)
 
 
