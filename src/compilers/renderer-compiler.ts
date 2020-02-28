@@ -32,6 +32,10 @@ export class RendererCompiler {
         const component = info.createComponentInstance()
         const aNodeCompiler: ANodeCompiler = new ANodeCompiler(component, elementCompiler, this.stringifier, cls => this.tree.addComponentClass(cls))
 
+        // 兼容 san-ssr-target-php@<=1.4.3
+        emitter.writeIf('is_object($data)', () => {
+            emitter.writeLine('$data = (array)$data;')
+        })
         emitter.writeLine('$html = "";')
 
         this.genComponentContextCode(info, component, emitter)
@@ -40,7 +44,7 @@ export class RendererCompiler {
         const defaultData = (component.initData && component.initData()) || {}
         for (const key of Object.keys(defaultData)) {
             const val = this.stringifier.any(defaultData[key])
-            emitter.writeLine(`$ctx->data->${key} = isset($ctx->data->${key}) ? $ctx->data->${key} : ${val};`)
+            emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
         }
 
         // call inited()
@@ -50,7 +54,7 @@ export class RendererCompiler {
 
         // populate computed data
         emitter.writeForeach('$ctx->computedNames as $i => $computedName', () => {
-            emitter.writeLine('$data->$computedName = _::callComputed($ctx, $computedName);')
+            emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
         const ifDirective = component.aNode.directives['if']
@@ -85,7 +89,7 @@ export class RendererCompiler {
 
         emitter.writeLine(`"sanssrCid" => ${info.cid || 0},`)
         emitter.writeLine('"sourceSlots" => $sourceSlots,')
-        emitter.writeLine('"data" => $data ? $data : (object)[],')
+        emitter.writeLine('"data" => &$data,')
         emitter.writeLine('"owner" => $parentCtx,')
         emitter.writeLine('"slotRenderers" => []')
 

@@ -9,7 +9,7 @@ export class Stringifier {
 
     obj (source: object) {
         let prefixComma
-        let result = '(object)['
+        let result = '['
 
         for (const key in source) {
             if (!source.hasOwnProperty(key) || typeof source[key] === 'undefined') {
