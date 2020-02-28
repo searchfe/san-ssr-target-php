@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.0...v1.5.1) (2020-02-28)
+
+
+### Performance Improvements
+
+* move data access seq to compile time ([3e00e81](https://github.com/searchfe/san-ssr-target-php/commit/3e00e817b170c6a16677d2a0ff94e118d8a97a6c))
+
 # [1.5.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.3...v1.5.0) (2020-02-28)
 
 
