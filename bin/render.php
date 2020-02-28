@@ -26,5 +26,5 @@ function getData($caseDir) {
         return data();
     }
     $dataStr = file_get_contents($caseDir . "/data.json");
-    return json_decode($dataStr);
+    return json_decode($dataStr, true);
 }

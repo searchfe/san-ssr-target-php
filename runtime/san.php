@@ -16,31 +16,19 @@ class SanSSRData {
         }
         $seq = $this->parseExpr($path);
         $val = $this->data;
-        foreach ($seq as $name) {
-            if (isset($val->$name)) {
-                $val = $val->$name;
-            }
-            else {
-                return null;
-            }
-        }
+        foreach ($seq as $name) $val = $val[$name];
         return $val;
     }
 
     public function set ($path, $val) {
         $seq = $this->parseExpr($path);
-        $parent = $this->data;
+        $parent = &$this->data;
         for ($i = 0; $i < count($seq) - 1; $i++) {
             $name = $seq[$i];
-            if (isset($parent->$name)) {
-                $parent = $parent->$name;
-            }
-            else {
-                return null;
-            }
+            $parent = &$parent[$name];
         }
         $key = end($seq);
-        $parent->$key = $val;
+        $parent[$key] = $val;
         return $val;
     }
 

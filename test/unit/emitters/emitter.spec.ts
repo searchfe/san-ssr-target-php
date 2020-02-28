@@ -23,7 +23,7 @@ describe('PHPEmitter', function () {
     it('should write data comment', function () {
         emitter.writeDataComment()
 
-        expect(emitter.fullText()).toEqual('$html .= "<!--s-data:" . json_encode(_::data($ctx, []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";;\n')
+        expect(emitter.fullText()).toEqual('$html .= "<!--s-data:" . _::json_encode(_::data($ctx, [])) . "-->";\n')
     })
 
     describe('write namespace', function () {

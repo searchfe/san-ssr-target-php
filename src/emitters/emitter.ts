@@ -43,7 +43,7 @@ export class PHPEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeHTML('"<!--s-data:" . json_encode(' + dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
+        this.writeHTML(`"<!--s-data:" . _::json_encode(${dataAccess()}) . "-->"`)
     }
 
     public clearStringLiteralBuffer () {

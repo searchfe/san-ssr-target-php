@@ -107,11 +107,11 @@ export class ANodeCompiler {
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
 
-        emitter.writeLine('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
+        emitter.writeLine(`$${listName} = ${compileExprSource.expr(forDirective.value)};`)
         emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
-                emitter.writeLine(`$ctx->data->${indexName} = $${indexName};`)
-                emitter.writeLine(`$ctx->data->${itemName} = $value;`)
+                emitter.writeLine(`$ctx->data["${indexName}"] = $${indexName};`)
+                emitter.writeLine(`$ctx->data["${itemName}"] = $value;`)
                 this.compile(forElementANode, emitter)
             })
         })
@@ -169,7 +169,7 @@ export class ANodeCompiler {
 
                     for (const varItem of aNode.vars || []) {
                         emitter.writeLine(
-                            '$slotCtx->data->' + varItem.name + ' = ' +
+                            `$slotCtx->data["${varItem.name}"] = ` +
                             compileExprSource.expr(varItem.expr) + ';'
                         )
                     }
@@ -192,7 +192,7 @@ export class ANodeCompiler {
     }
 
     compileComponent (aNode: ANode, emitter: PHPEmitter, info: ComponentInfo) {
-        let dataLiteral = '(object)[]'
+        let dataLiteral = '[]'
 
         emitter.writeLine('$sourceSlots = [];')
         if (aNode.children) {
@@ -244,7 +244,7 @@ export class ANodeCompiler {
             givenData.push(`${key} => ${val}`)
         }
 
-        dataLiteral = '(object)[' + givenData.join(',\n') + ']'
+        dataLiteral = '[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
             dataLiteral = '_::extend(' +
             compileExprSource.expr(aNode.directives.bind.value) +

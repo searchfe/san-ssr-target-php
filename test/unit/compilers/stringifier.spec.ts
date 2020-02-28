@@ -37,7 +37,7 @@ describe('Stringifier', function () {
             b: 2
         }
         const ret = stringifier.any(obj)
-        expect(ret).toEqual('(object)["a" => 1,"b" => 2]')
+        expect(ret).toEqual('["a" => 1,"b" => 2]')
     })
 
     it('should stringify object and skip undefined value', function () {
@@ -48,7 +48,7 @@ describe('Stringifier', function () {
         }
 
         const ret = stringifier.any(obj)
-        expect(ret).toEqual('(object)["a" => 1,"b" => 2]')
+        expect(ret).toEqual('["a" => 1,"b" => 2]')
     })
 
     it('should stringify array', function () {

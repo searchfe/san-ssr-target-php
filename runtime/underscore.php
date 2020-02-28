@@ -4,6 +4,7 @@ final class _
     public static $HTML_ENTITY;
     public static $BASE_PROPS;
   
+    // TODO make it compile time
     public static function data($ctx, $seq = []) {
         $data = $ctx->data;
         foreach ($seq as $name) {
@@ -26,26 +27,28 @@ final class _
 
       $initData = $inst->initData();
       foreach ($initData as $key => $val) {
-          if (isset($data->$key)) continue;
-          $data->$key = $val;
+          if (isset($data["$key"])) continue;
+          $data["$key"] = $val;
       }
       return $data;
     }
 
+    // TODO make it compile time
     public static function objSpread($arr, $needSpread) {
-        $obj = (object)[];
+        $obj = [];
         foreach ($arr as $idx => $val) {
             if ($needSpread[$idx]) {
                 foreach ($val as $subkey => $subvar) {
-                    $obj->{$subkey} = $subvar;
+                    $obj["$subkey"] = $subvar;
                 }
             } else {
-                $obj->{$val[0]} = $val[1];
+                $obj["$val[0]"] = $val[1];
             }
         }
         return $obj;
     }
 
+    // TODO make it compile time
     public static function spread($arr, $needSpread) {
         $ret = [];
         foreach ($arr as $idx => $val) {
@@ -58,12 +61,11 @@ final class _
         return $ret;
     }
 
-    public static function extend($target, $source)
+    public static function extend(&$target, $source)
     {
-        if (!$target) $target = (object)[];
         if ($source) {
             foreach ($source as $key => $val) {
-                $target->{$key} = $val;
+                $target["$key"] = $val;
             }
         }
         return $target;
@@ -122,8 +124,17 @@ final class _
         return htmlspecialchars($str, ENT_QUOTES);
     }
 
-    public static function json_encode ($obj) {
-        return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    public static function json_encode ($obj, $flag = 0) {
+        return json_encode($obj, $flag | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    public static function log () {
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+        for ($i = 0; $i < $numargs; $i++) {
+            echo _::json_encode($arg_list[$i], JSON_PRETTY_PRINT) . ' ';
+        }
+        echo "\n";
     }
 
     public static function _classFilter($source)

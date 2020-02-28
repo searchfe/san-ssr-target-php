@@ -17,7 +17,7 @@ const MyComponent = san.defineComponent({
     },
     initData: function () {
         return {
-            formData: {}
+            formData: {bar: 'bar'}
         }
     },
     getFooValue: function () {

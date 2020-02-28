@@ -7,11 +7,11 @@ final class _Test extends TestCase
 {
     public function testExtend(): void
     {
-        $target = (object)["foo" => "FOO", "bar" => "BAR"];
-        $source = (object)["bar" => "bar", "coo" => "COO"];
+        $target = ["foo" => "FOO", "bar" => "BAR"];
+        $source = ["bar" => "bar", "coo" => "COO"];
         _::extend($target, $source);
 
-        $this->assertEquals((object)[
+        $this->assertEquals([
             "foo" => "FOO",
             "bar" => "bar",
             "coo" => "COO"
