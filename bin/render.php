@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+error_reporting(E_ALL ^ E_NOTICE);
+
 $caseName = $argv[1];
 $caseDir = "test/cases/" . $caseName;
 include($caseDir . '/ssr.php');
