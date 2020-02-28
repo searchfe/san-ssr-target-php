@@ -247,8 +247,7 @@ export class ANodeCompiler {
         dataLiteral = '[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
             const bindData = compileExprSource.expr(aNode.directives.bind.value)
-            emitter.writeLine(`$childData = ${bindData};`)
-            dataLiteral = `_::extend($childData, ${dataLiteral})`
+            dataLiteral = `_::combine(${bindData}, ${dataLiteral})`
         }
 
         const renderId = 'sanssrRenderer' + info.cid

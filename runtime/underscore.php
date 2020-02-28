@@ -4,21 +4,6 @@ final class _
     public static $HTML_ENTITY;
     public static $BASE_PROPS;
   
-    // TODO make it compile time
-    public static function data($ctx, $seq = []) {
-        $data = $ctx->data;
-        foreach ($seq as $name) {
-            if (is_array($data)) {
-                if (isset($data[$name])) $data = $data[$name];
-                else return null;
-            } else {
-                if (isset($data->$name)) $data = $data->$name;
-                else return null;
-            }
-        }
-        return $data;
-    }
-
     public static function setDefaultData($ctx) {
       $data = $ctx->data;
       $inst = $ctx->instance;
@@ -33,7 +18,6 @@ final class _
       return $data;
     }
 
-    // TODO make it compile time
     public static function objSpread($arr, $needSpread) {
         $obj = [];
         foreach ($arr as $idx => $val) {
@@ -48,7 +32,6 @@ final class _
         return $obj;
     }
 
-    // TODO make it compile time
     public static function spread($arr, $needSpread) {
         $ret = [];
         foreach ($arr as $idx => $val) {
@@ -62,6 +45,16 @@ final class _
     }
 
     public static function extend(&$target, $source)
+    {
+        if ($source) {
+            foreach ($source as $key => $val) {
+                $target["$key"] = $val;
+            }
+        }
+        return $target;
+    }
+
+    public static function combine($target, $source)
     {
         if ($source) {
             foreach ($source as $key => $val) {
@@ -221,7 +214,7 @@ final class _
         $func = $cls::$computed[$name];
         if (is_callable($func)) {
             $result = call_user_func($func, $ctx->instance);
-            return is_array($result) ? (object)$result : $result;
+            return $result;
         }
     }
 

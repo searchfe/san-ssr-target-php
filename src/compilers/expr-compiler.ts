@@ -35,17 +35,17 @@ export function stringLiteralize (source: string) {
 
 // 生成数据访问表达式代码
 export function dataAccess (accessorExpr?: ExprAccessorNode): string {
-    const seq = []
+    let code = '$ctx->data'
     for (const path of (accessorExpr ? accessorExpr.paths : [])) {
         if (TypeGuards.isExprAccessorNode(path)) {
-            seq.push(dataAccess(path))
+            code += `[${dataAccess(path)}]`
         } else if (typeof path.value === 'string') {
-            seq.push(`"${path.value}"`)
+            code += `["${path.value}"]`
         } else if (typeof path.value === 'number') {
-            seq.push(path.value)
+            code += `[${path.value}]`
         }
     }
-    return `_::data($ctx, [${seq.join(', ')}])`
+    return code
 }
 
 // 生成调用表达式代码
@@ -132,33 +132,33 @@ function text (textExpr: ExprTextNode) {
 // 生成数组字面量代码
 function array (arrayExpr: ExprArrayNode) {
     const items = []
-    const spread = []
+    let spread = ''
 
     for (const item of arrayExpr.items) {
         items.push(expr(item.expr))
-        spread.push(item.spread ? 1 : 0)
+        spread += item.spread ? 1 : 0
     }
 
-    return `_::spread([${items.join(', ')}], ${JSON.stringify(spread)})`
+    return `_::spread([${items.join(', ')}], "${spread}")`
 }
 
 // 生成对象字面量代码
 function object (objExpr: ExprObjectNode) {
     const items = []
-    const spread = []
+    let spread = ''
 
     for (const item of objExpr.items) {
         if (item.spread) {
-            spread.push(1)
+            spread += 1
             items.push(expr(item.expr))
         } else {
-            spread.push(0)
+            spread += 0
             const key = expr(item.name)
             const val = expr(item.expr)
             items.push(`[${key}, ${val}]`)
         }
     }
-    return `_::objSpread([${items.join(',')}], ${JSON.stringify(spread)})`
+    return `_::objSpread([${items.join(',')}], "${spread}")`
 }
 
 function unary (e: ExprUnaryNode) {

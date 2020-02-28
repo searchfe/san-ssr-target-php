@@ -66,7 +66,7 @@ describe('compileExprSource', function () {
             }]
         }
 
-        expect(expr(e)).toEqual('_::data($ctx, ["ext", 1, _::data($ctx, [10])])')
+        expect(expr(e)).toEqual('$ctx->data["ext"][1][$ctx->data[10]]')
     })
     it('expression type = 5 should return interp expression', function () {
         const expr1 = {
@@ -209,7 +209,7 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1 as any)).toEqual('_::objSpread([["key", 1],"erik"], [0,1])')
+        expect(expr(expr1 as any)).toEqual('_::objSpread([["key", 1],"erik"], "01")')
     })
     it('expression type = 12 should return array', function () {
         const expr1 = {
@@ -220,7 +220,7 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1 as any)).toEqual('_::spread([1, "erik"], [0,1])')
+        expect(expr(expr1 as any)).toEqual('_::spread([1, "erik"], "01")')
     })
     it('expression type = 13 should return null', function () {
         const expr1 = {
@@ -237,6 +237,6 @@ describe('compileExprSource', function () {
         expect(expr(expr1)).toEqual('("bar")')
     })
     it('data access with default arguments', function () {
-        expect(dataAccess()).toEqual('_::data($ctx, [])')
+        expect(dataAccess()).toEqual('$ctx->data')
     })
 })
