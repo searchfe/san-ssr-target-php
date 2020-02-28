@@ -80,21 +80,14 @@ export class RendererCompiler {
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
     genComponentContextCode (info: ComponentInfo, component: CompiledComponent<{}>, emitter: PHPEmitter) {
-        emitter.nextLine('$ctx = (object)[')
-        emitter.indent()
-
-        emitter.nextLine('"computedNames" => [')
-        emitter.write(Object.keys(component['computed']).map(x => `"${x}"`).join(','))
-        emitter.feedLine('],')
-
-        emitter.writeLine(`"sanssrCid" => ${info.cid || 0},`)
-        emitter.writeLine('"sourceSlots" => $sourceSlots,')
-        emitter.writeLine('"data" => &$data,')
-        emitter.writeLine('"owner" => $parentCtx,')
-        emitter.writeLine('"slotRenderers" => []')
-
-        emitter.unindent()
-        emitter.writeLine('];')
+        emitter.nextLine('$ctx = (object)[];')
+        const computedNames = Object.keys(component['computed']).map(x => `"${x}"`)
+        emitter.writeLine(`$ctx->computedNames = [${computedNames.join(', ')}];`)
+        emitter.writeLine(`$ctx->sanssrCid = ${info.cid || 0};`)
+        emitter.writeLine('$ctx->sourceSlots = $sourceSlots;')
+        emitter.writeLine('$ctx->owner = $parentCtx;')
+        emitter.writeLine('$ctx->slotRenderers = [];')
+        emitter.writeLine('$ctx->data = &$data;')
         emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
     }
 }
