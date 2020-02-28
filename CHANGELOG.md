@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.3...v1.5.0) (2020-02-28)
+
+
+### Bug Fixes
+
+* always _::extend variables insteadof literals ([139c79c](https://github.com/searchfe/san-ssr-target-php/commit/139c79ca8506fce5c716c34a85316663cb3ab5cc))
+
+
+### Features
+
+* use associate array for data representation ([624104f](https://github.com/searchfe/san-ssr-target-php/commit/624104f0ce91eaa161e7971a2ab5359d7c854909))
+
 ## [1.4.3](https://github.com/searchfe/san-ssr-target-php/compare/v1.4.2...v1.4.3) (2020-02-20)
 
 
