@@ -19,7 +19,7 @@
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc",
     "build-watch": "tsc --watch",
-    "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
+    "unit-php": "./vendor/bin/phpunit test/unit",
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
     "build-integration": "node -e \"require('./dist/utils/case').compileAll()\"",

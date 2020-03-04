@@ -1,9 +1,9 @@
 <?php
-include(__DIR__ . '/../../runtime/underscore.php');
+require_once(__DIR__ . '/../../runtime/underscore.php');
 
 use PHPUnit\Framework\TestCase;
 
-final class _Test extends TestCase
+final class UnderscoreTest extends TestCase
 {
     public function testExtend(): void
     {

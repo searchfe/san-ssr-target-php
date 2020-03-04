@@ -53,7 +53,7 @@ export class RendererCompiler {
         }
 
         // populate computed data
-        emitter.writeForeach('$ctx->computedNames as $i => $computedName', () => {
+        emitter.writeForeach('$ctx->computedNames as $computedName', () => {
             emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
