@@ -28,6 +28,7 @@
     "test": "npm run build && npm run unit && npm run integration",
     "render": "./bin/render.js",
     "version": "npm run build && npm run docs",
+    "perf": "./test/perf/build.js && php ./test/perf/index.php",
     "semantic-release": "semantic-release"
   },
   "repository": {

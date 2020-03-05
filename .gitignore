@@ -5,3 +5,5 @@ coverage
 vendor/
 dist/
 test/cases/*/ssr.php
+test/perf/*.san.php
+templates_c/
