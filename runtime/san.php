@@ -10,13 +10,13 @@ class SanSSRData {
         $this->computedNames = array_flip($ctx->computedNames);
     }
 
-    public function get ($path) {
+    public function &get ($path) {
         if (array_key_exists($path, $this->computedNames)) {
             return _::callComputed($this->ctx, $path);
         }
         $seq = $this->parseExpr($path);
-        $val = $this->data;
-        foreach ($seq as $name) $val = $val[$name];
+        $val = &$this->data;
+        foreach ($seq as $name) $val = &$val[$name];
         return $val;
     }
 
@@ -30,6 +30,12 @@ class SanSSRData {
         $key = end($seq);
         $parent[$key] = $val;
         return $val;
+    }
+
+    public function removeAt ($path, $index) {
+        $val = &$this->get($path);
+        if (!$val) return;
+        array_splice($val, $index, 1);
     }
 
     private function parseExpr ($expr) {

@@ -14,6 +14,17 @@ final class SanSSRDataTest extends TestCase
         ];
         $data = new SanSSRData($ctx);
 
-        $this->assertEquals($data->get('foo'), 'FOO');
+        $this->assertEquals('FOO', $data->get('foo'));
+    }
+
+    public function testRemoveAt(): void
+    {
+        $ctx = (object)[
+            "data" => [ "arr" => [1, 2, 3] ],
+            "computedNames" => []
+        ];
+        $data = new SanSSRData($ctx);
+        $data->removeAt('arr', 1);
+        $this->assertEquals([1, 3], $data->get('arr'));
     }
 }

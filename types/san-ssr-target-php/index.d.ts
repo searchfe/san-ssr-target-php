@@ -21,4 +21,5 @@ export abstract class SanSSRComponent {
 export abstract class SanSSRData {
     get (path: string): any
     set (path: string, value: any): void
+    removeAt (path: string, index: number): void
 }
