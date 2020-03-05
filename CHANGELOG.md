@@ -1,3 +1,20 @@
+# [1.6.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.2...v1.6.0) (2020-03-05)
+
+
+### Bug Fixes
+
+* type for components property ([a5702a4](https://github.com/searchfe/san-ssr-target-php/commit/a5702a4d4012320e6904faea11b9379e3b2d9ebf))
+
+
+### Features
+
+* data.removeAt() during SSR ([371d4eb](https://github.com/searchfe/san-ssr-target-php/commit/371d4eb9082bfd8c46a8254715198c27466aa582))
+
+
+### Performance Improvements
+
+* benchmark for san-ssr-target-php and smarty ([cb7121a](https://github.com/searchfe/san-ssr-target-php/commit/cb7121a56a99af44fc02ac23d57272a7473ea9b0))
+
 ## [1.5.2](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.1...v1.5.2) (2020-02-28)
 
 
