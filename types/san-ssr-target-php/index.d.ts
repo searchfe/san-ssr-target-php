@@ -10,7 +10,7 @@ export abstract class SanSSRComponent {
     inited?(): void
     getComponentType?(aNode: ANode): ComponentConstructor<{}, {}>
     components: {
-        [key: string]: ComponentConstructor<{}, {}>
+        [key: string]: SanSSRComponent
     }
     data: SanSSRData
 }
