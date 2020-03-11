@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.6.0...v1.7.0) (2020-03-11)
+
+
+### Features
+
+* remove data output, +286.261% -> +209.032 ([8279e3c](https://github.com/searchfe/san-ssr-target-php/commit/8279e3c17e1793d56b93910cd0ee3edc852624ec))
+
 # [1.6.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.5.2...v1.6.0) (2020-03-05)
 
 
