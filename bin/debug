@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const { execCommandSync, compareSanHTML } = require('san-ssr')
+const { compareSanHTML } = require('san-ssr')
+const { execFileSync } = require('child_process')
 const chalk = require('chalk')
 const fs = require('fs')
 const { resolve } = require('path')
@@ -14,7 +15,7 @@ const expected = fs.readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
 compile(caseName)
-const got = execCommandSync(resolve(__dirname, `./render.php`), [caseName])
+const got = execFileSync(resolve(__dirname, `./render.php`), [caseName]).toString()
 const diff = compareSanHTML(got, expected)
 console.log(chalk[diff ? 'red' : 'green'](`[SSR  PHP] ${caseName}`), got)
 
