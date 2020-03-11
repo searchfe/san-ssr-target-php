@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/timing.class.php');
 $data = array(
     "todos" => array(),
     "categories" => array(
@@ -32,22 +33,20 @@ require_once(__DIR__ . '/../../vendor/smarty/smarty/libs/Smarty.class.php');
 $smarty = new Smarty;
 foreach ($data as $key => $val) $smarty->assign($key, $val);
 
-$begin = microtime(true);
+$base = new Timing();
 for ($i = 0; $i < $times; $i++) {
     $smarty->fetch(__DIR__ . '/todo-list.tpl');
 }
-$end = microtime(true);
-$diff = ($end - $begin) * 1000;
-echo "smarty:\t$diff ms\n";
+$base->end();
+echo "smarty:\t" . $base->durationStr() . "\n";
 
 // San
 require_once(__DIR__ . '/todo-list.san.php');
-$begin = microtime(true);
+$timing = new Timing();
 for ($i = 0; $i < $times; $i++) {
-    \san\todoList\renderer\render($data, false);
+    \san\todoList\renderer\render($data, true);
 }
-$end = microtime(true);
-$diff = ($end - $begin) * 1000;
-echo "san:\t$diff ms\n";
+$timing->end();
+echo "san:\t" . $timing->durationStr() . "\t" . $timing->diffStr($base) . "\n";
 
 echo "\n";

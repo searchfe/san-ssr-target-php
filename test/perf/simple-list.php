@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/timing.class.php');
+
 $data = [ "items" => [] ];
 for ($i = 0; $i < 10000; $i++) array_push($data['items'], $i);
 
@@ -10,32 +12,30 @@ require_once(__DIR__ . '/../../vendor/smarty/smarty/libs/Smarty.class.php');
 $smarty = new Smarty;
 foreach ($data as $key => $val) $smarty->assign($key, $val);
 
-$begin = microtime(true);
+$base = new Timing();
 for ($i = 0; $i < $times; $i++) {
     $smarty->fetch(__DIR__ . '/simple-list.tpl');
 }
-$end = microtime(true);
-$diff = ($end - $begin) * 1000;
-echo "smarty:\t$diff ms\n";
+$base->end();
+echo "smarty:\t" . $base->durationStr() . "\n";
 
 // San
 require_once(__DIR__ . '/simple-list.san.php');
-$begin = microtime(true);
+$timing = new Timing();
 for ($i = 0; $i < $times; $i++) {
-    \san\simpleList\renderer\render($data, false);
+    \san\simpleList\renderer\render($data, true);
 }
-$end = microtime(true);
-$diff = ($end - $begin) * 1000;
-echo "san:\t$diff ms\n";
+$timing->end();
+echo "san:\t" . $timing->durationStr() . "\t" . $timing->diffStr($base) . "\n";
 
 // San with item as component
 require_once(__DIR__ . '/simple-list-child-component.san.php');
-$begin = microtime(true);
+$timing = new Timing();
 for ($i = 0; $i < $times; $i++) {
     \san\simpleListChildComponent\renderer\render($data, false);
 }
-$end = microtime(true);
-$diff = ($end - $begin) * 1000;
-echo "san (item as component):\t$diff ms\n";
+$diff = number_format(($time - $time0) / 100, 3);
+$timing->end();
+echo "san (item as component):\t" . $timing->durationStr() . "\t" . $timing->diffStr($base) . "\n";
 
 echo "\n";
