@@ -113,7 +113,7 @@ export default class ToPHPCompiler implements Compiler {
         return compilerOptions
     }
 
-    public compileComponent (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
+    public compileProjectFile (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
         if (!sourceFile.tsSourceFile) return ''
         const runtimeNS = nsPrefix + 'runtime\\'
 
@@ -146,7 +146,7 @@ export default class ToPHPCompiler implements Compiler {
     public compileProjectFiles (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
         for (const [path, sourceFile] of entryComp.projectFiles) {
             emitter.writeNamespace(nsPrefix + this.ns(path), () => {
-                this.compileComponent(sourceFile, emitter, nsPrefix, modules)
+                this.compileProjectFile(sourceFile, emitter, nsPrefix, modules)
             })
         }
         return emitter.fullText()
