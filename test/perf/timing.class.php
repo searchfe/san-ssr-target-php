@@ -5,7 +5,7 @@ class Timing {
     }
     function diffStr($base) {
         $diff = ($this->millisecond() - $base->millisecond()) / $base->millisecond();
-        return ($diff >= 0 ? "+" : "-") . number_format($diff * 100, 3) . '%';
+        return ($diff >= 0 ? "+" : "-") . number_format(abs($diff) * 100, 3) . '%';
     }
     function end() {
         $this->end = microtime(true);

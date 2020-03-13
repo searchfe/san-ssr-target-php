@@ -6,7 +6,7 @@ const { resolve, join, basename } = require('path')
 const { SanProject } = require('san-ssr')
 const ToPHPCompiler = require('../..').default
 
-const sourceFiles = ['todo-list.san.ts', 'simple-list.san.ts', 'simple-list-child-component.san.ts']
+const sourceFiles = readdirSync(__dirname).filter(x => x.match(/\.san\.ts$/))
 
 const sanProject = new SanProject({
     tsConfigFilePath: resolve(__dirname, '../tsconfig.json')
