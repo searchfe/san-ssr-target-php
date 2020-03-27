@@ -13,7 +13,7 @@ export function emitRuntime (emitter: PHPEmitter, ns: string) {
     emitter.beginNamespace(ns.slice(0, -1))
     for (const file of runtimeFiles) {
         const path = resolve(__dirname, `../../runtime/${file}`)
-        emitter.writeLines(readPHPSource(path).replace(/__NS__/g, ns))
+        emitter.writeLines(readPHPSource(path).replace(/__NS__/g, emitter.nsPrefix + ns))
     }
     emitter.endNamespace()
     return emitter.fullText()

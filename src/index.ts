@@ -53,15 +53,15 @@ export default class ToPHPCompiler implements Compiler {
         emitHeader = true,
         modules = {}
     }) {
-        const emitter = new PHPEmitter(emitHeader)
+        const emitter = new PHPEmitter(emitHeader, nsPrefix)
         if (emitContent & EmitContent.renderer) {
-            this.compileRenderer(emitter, funcName, nsPrefix, noTemplateOutput, sanApp)
+            this.compileRenderer(emitter, funcName, noTemplateOutput, sanApp)
         }
         if (emitContent & EmitContent.component) {
-            this.compileProjectFiles(sanApp, emitter, nsPrefix, modules)
+            this.compileProjectFiles(sanApp, emitter, modules)
         }
         if (emitContent & EmitContent.runtime) {
-            emitRuntime(emitter, nsPrefix + 'runtime\\')
+            emitRuntime(emitter, 'runtime\\')
         }
         return emitter.fullText()
     }
@@ -82,12 +82,12 @@ export default class ToPHPCompiler implements Compiler {
         })
     }
 
-    private compileRenderer (emitter: PHPEmitter, funcName: string, nsPrefix: string, noTemplateOutput: boolean, sanApp: SanApp) {
-        emitter.beginNamespace(nsPrefix + 'renderer')
-        emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
+    private compileRenderer (emitter: PHPEmitter, funcName: string, noTemplateOutput: boolean, sanApp: SanApp) {
+        emitter.beginNamespace('renderer')
+        emitter.writeLine(`use ${emitter.nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
 
-        const rc = new RendererCompiler(sanApp.componentTree, emitter, noTemplateOutput, nsPrefix)
+        const rc = new RendererCompiler(sanApp.componentTree, emitter, noTemplateOutput)
         for (const componentInfo of sanApp.componentTree.preOrder()) {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
@@ -112,9 +112,9 @@ export default class ToPHPCompiler implements Compiler {
         return compilerOptions
     }
 
-    public compileProjectFile (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
+    public compileProjectFile (sourceFile: SanSourceFile, emitter: PHPEmitter, modules: Modules) {
         if (!sourceFile.tsSourceFile) return ''
-        const runtimeNS = nsPrefix + 'runtime\\'
+        const runtimeNS = emitter.nsPrefix + 'runtime\\'
 
         transformAstToPHP(sourceFile)
         modules['san-ssr-target-php'] = {
@@ -126,7 +126,7 @@ export default class ToPHPCompiler implements Compiler {
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
             const literal = decl.getModuleSpecifierValue()
             const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
-            const ns = nsPrefix + this.ns(filepath)
+            const ns = emitter.nsPrefix + this.ns(filepath)
 
             modules[literal] = {
                 name: literal,
@@ -134,26 +134,26 @@ export default class ToPHPCompiler implements Compiler {
                 namespace: '\\' + ns + '\\'
             }
         }
-        this.registerComponents(sourceFile, emitter, nsPrefix, runtimeNS)
+        this.registerComponents(sourceFile, emitter, runtimeNS)
         emitter.writeLines(this.phpGenerator.compile(
             sourceFile.tsSourceFile,
             modules,
-            nsPrefix
+            emitter.nsPrefix
         ))
     }
 
-    public compileProjectFiles (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
+    public compileProjectFiles (entryComp: SanApp, emitter: PHPEmitter, modules: Modules) {
         for (const [path, sourceFile] of entryComp.projectFiles) {
-            emitter.writeNamespace(nsPrefix + this.ns(path), () => {
-                this.compileProjectFile(sourceFile, emitter, nsPrefix, modules)
+            emitter.writeNamespace(this.ns(path), () => {
+                this.compileProjectFile(sourceFile, emitter, modules)
             })
         }
         return emitter.fullText()
     }
 
-    private registerComponents (sourceFile: SanSourceFile, emitter: PHPEmitter, nsPrefix: string, runtimeNamespace: string) {
+    private registerComponents (sourceFile: SanSourceFile, emitter: PHPEmitter, runtimeNamespace: string) {
         for (const [cid, clazz] of sourceFile.componentClassDeclarations) {
-            const classReference = `\\${nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
+            const classReference = `\\${emitter.nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
             emitter.writeLine(`\\${runtimeNamespace}ComponentRegistry::$comps[${cid}] = '${classReference}';`)
         }
     }

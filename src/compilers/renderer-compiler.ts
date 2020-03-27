@@ -16,11 +16,10 @@ export class RendererCompiler {
     constructor (
         private componentTree: ComponentTree,
         private emitter: PHPEmitter,
-        noTemplateOutput: boolean,
-        nsPrefix: string
+        noTemplateOutput: boolean
     ) {
         this.noTemplateOutput = noTemplateOutput
-        this.stringifier = new Stringifier(nsPrefix)
+        this.stringifier = new Stringifier(emitter.nsPrefix)
     }
 
     /**
