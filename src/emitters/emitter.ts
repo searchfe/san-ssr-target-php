@@ -1,7 +1,9 @@
 import { Emitter } from 'san-ssr'
 import { dataAccess, stringLiteralize } from '../compilers/expr-compiler'
+import { Stringifier } from './stringifier'
 
 export class PHPEmitter extends Emitter {
+    private stringifier: Stringifier
     buffer: string = ''
 
     /**
@@ -11,6 +13,11 @@ export class PHPEmitter extends Emitter {
     constructor (emitHeader = false, public nsPrefix = '') {
         super()
         if (emitHeader) this.writeLine('<?php')
+        this.stringifier = new Stringifier(nsPrefix)
+    }
+
+    public stringify (val: any): string {
+        return this.stringifier.any(val)
     }
 
     public write (str: string) {

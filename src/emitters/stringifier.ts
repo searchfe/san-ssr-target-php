@@ -53,7 +53,7 @@ export class Stringifier {
         return `new \\${this.nsPrefix}runtime\\Ts2Php_Date(` + source.getTime() + ')'
     }
 
-    any (source: any) {
+    any (source: any): string {
         switch (typeof source) {
         case 'string':
             return this.str(source)
@@ -67,7 +67,7 @@ export class Stringifier {
 
         case 'object':
             if (!source) {
-                return null
+                return 'null'
             }
 
             if (source instanceof Array) {

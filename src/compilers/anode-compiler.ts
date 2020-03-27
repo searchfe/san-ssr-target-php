@@ -1,7 +1,6 @@
 import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
 import { ComponentTree, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
-import { Stringifier } from './stringifier'
 import { PHPEmitter } from '../emitters/emitter'
 import * as compileExprSource from '../compilers/expr-compiler'
 
@@ -21,8 +20,7 @@ export class ANodeCompiler {
         private owner: ComponentInfo,
         private root: ComponentTree,
         private emitter: PHPEmitter,
-        private elementCompiler: ElementCompiler,
-        private stringifier: Stringifier
+        private elementCompiler: ElementCompiler
     ) {}
 
     compile (aNode: ANode) {
@@ -257,7 +255,7 @@ export class ANodeCompiler {
 
         const renderId = 'sanssrRenderer' + componentInfo.cid
         emitter.nextLine(`$html .= `)
-        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', this.stringifier.str(aNode.tagName), '$sourceSlots'])
+        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', emitter.stringify(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
         emitter.writeLine('$sourceSlots = null;')
     }

@@ -1,5 +1,4 @@
 import { ANode, ExprType } from 'san'
-import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo, ComponentTree, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
 import * as compileExprSource from '../compilers/expr-compiler'
@@ -15,15 +14,13 @@ import { PHPEmitter } from '../emitters/emitter'
  */
 export class ElementCompiler {
     private aNodeCompiler: ANodeCompiler
-    // TODO 把 stringifier 并入 emitter
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,
         private emitter: PHPEmitter,
-        private stringifer: Stringifier,
         private noTemplateOutput = false
     ) {
-        this.aNodeCompiler = new ANodeCompiler(owner, root, emitter, this, this.stringifer)
+        this.aNodeCompiler = new ANodeCompiler(owner, root, emitter, this)
     }
     /**
      * 编译元素标签头

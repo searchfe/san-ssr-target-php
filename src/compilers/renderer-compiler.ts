@@ -5,12 +5,10 @@
 import { ComponentInfo, ComponentTree, CompiledComponent } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { expr } from '../compilers/expr-compiler'
-import { Stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 
 export class RendererCompiler {
     private namespacePrefix = ''
-    private stringifier: Stringifier
     private noTemplateOutput: boolean
 
     constructor (
@@ -19,7 +17,6 @@ export class RendererCompiler {
         noTemplateOutput: boolean
     ) {
         this.noTemplateOutput = noTemplateOutput
-        this.stringifier = new Stringifier(emitter.nsPrefix)
     }
 
     /**
@@ -40,7 +37,7 @@ export class RendererCompiler {
         // call initData()
         const defaultData = (component.initData && component.initData()) || {}
         for (const key of Object.keys(defaultData)) {
-            const val = this.stringifier.any(defaultData[key])
+            const val = emitter.stringify(defaultData[key])
             emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
         }
 
@@ -61,7 +58,7 @@ export class RendererCompiler {
         }
 
         // 以这个 componentInfo 为入口元素，编译它以及它的所有子元素
-        const elementCompiler = new ElementCompiler(componentInfo, this.componentTree, emitter, this.stringifier, this.noTemplateOutput)
+        const elementCompiler = new ElementCompiler(componentInfo, this.componentTree, emitter, this.noTemplateOutput)
         elementCompiler.tagStart(componentInfo.component.aNode, 'tagName')
         emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
         elementCompiler.inner(componentInfo.component.aNode)

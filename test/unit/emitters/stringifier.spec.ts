@@ -1,4 +1,4 @@
-import { Stringifier } from '../../../src/compilers/stringifier'
+import { Stringifier } from '../../../src/emitters/stringifier'
 
 describe('Stringifier', function () {
     let stringifier
@@ -28,7 +28,7 @@ describe('Stringifier', function () {
     })
 
     it('should return null', function () {
-        expect(stringifier.any(null)).toBeNull()
+        expect(stringifier.any(null)).toEqual('null')
     })
 
     it('should stringify object', function () {
