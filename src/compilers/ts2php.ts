@@ -15,7 +15,7 @@ type ModuleInfo = {
     namespace?: string
 }
 
-export class PHPCodeGenerator {
+export class PHPTranpiler {
     private ts2php: Ts2Php
 
     constructor (compilerOptions: CompilerOptions) {

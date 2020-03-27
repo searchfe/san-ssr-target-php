@@ -1,6 +1,6 @@
 import { SanProject, Compiler, SanSourceFile, SanApp, getInlineDeclarations } from 'san-ssr'
 import { isReserved } from './utils/lang'
-import { Modules, PHPCodeGenerator } from './compilers/ts2php'
+import { Modules, PHPTranpiler } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
 import { CompilerOptions } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
@@ -30,7 +30,7 @@ export default class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath?: string | null
     private project: SanProject
-    private phpGenerator: PHPCodeGenerator
+    private phpGenerator: PHPTranpiler
 
     constructor ({
         tsConfigFilePath,
@@ -42,7 +42,7 @@ export default class ToPHPCompiler implements Compiler {
 
         const compilerOptions = tsConfigFilePath ? require(tsConfigFilePath)['compilerOptions'] : {}
         const options = this.formatCompilerOptions(compilerOptions)
-        this.phpGenerator = new PHPCodeGenerator(options)
+        this.phpGenerator = new PHPTranpiler(options)
     }
 
     public compile (sanApp: SanApp, {
