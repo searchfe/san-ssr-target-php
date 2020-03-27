@@ -87,12 +87,12 @@ export default class ToPHPCompiler implements Compiler {
         emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
 
+        const rc = new RendererCompiler(sanApp.componentTree, emitter, noTemplateOutput, nsPrefix)
         for (const componentInfo of sanApp.componentTree.preOrder()) {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
             emitter.writeFunction(funcName, ['$data = []', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-                const rc = new RendererCompiler(componentInfo, sanApp.componentTree, noTemplateOutput, nsPrefix)
-                rc.compile(componentInfo, emitter)
+                rc.compile(componentInfo)
             })
             emitter.carriageReturn()
         }

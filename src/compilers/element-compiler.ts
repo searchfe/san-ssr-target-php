@@ -1,4 +1,4 @@
-import { ExprType, ANode } from 'san'
+import { ANode, ExprType } from 'san'
 import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo, ComponentTree, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
@@ -6,31 +6,39 @@ import * as compileExprSource from '../compilers/expr-compiler'
 import { PHPEmitter } from '../emitters/emitter'
 
 /**
-* element 的编译方法集合对象
-*/
+ * 把 ANode 作为元素来编译。这个 aNode 类型是普通 DOM 元素，可能是组件根 DOM 元素，
+ * 也可能是由其他 aNode 语法编译时递归到的子 DOM 元素
+ *
+ * @param owner 所述的组件
+ * @param root 组件树
+ * @param emitter 输出器
+ */
 export class ElementCompiler {
     private aNodeCompiler: ANodeCompiler
-
+    // TODO 把 stringifier 并入 emitter
     constructor (
-        private componentInfo: ComponentInfo,
-        private componentTree: ComponentTree,
-        stringifer: Stringifier
+        private owner: ComponentInfo,
+        private root: ComponentTree,
+        private emitter: PHPEmitter,
+        private stringifer: Stringifier,
+        private noTemplateOutput = false
     ) {
-        this.aNodeCompiler = new ANodeCompiler(componentInfo, componentTree, this, stringifer)
+        this.aNodeCompiler = new ANodeCompiler(owner, root, emitter, this, this.stringifer)
     }
     /**
      * 编译元素标签头
      *
      * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (emitter: PHPEmitter, aNode: ANode, tagNameVariable?: string, noTemplateOutput = false) {
+    tagStart (aNode: ANode, tagNameVariable?: string) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
+        const { emitter } = this
 
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
-        } else if (noTemplateOutput) {
+        } else if (this.noTemplateOutput) {
             return
         } else if (tagNameVariable) {
             emitter.bufferHTMLLiteral('<')
@@ -164,12 +172,8 @@ export class ElementCompiler {
         emitter.bufferHTMLLiteral('>')
     }
 
-    /**
-     * 编译元素闭合
-     *
-     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
-     */
-    tagEnd (emitter: PHPEmitter, aNode: ANode, tagNameVariable?: string, noTemplateOutput = false) {
+    tagEnd (aNode: ANode, tagNameVariable?: string) {
+        const { emitter } = this
         const tagName = aNode.tagName
 
         if (tagName) {
@@ -184,7 +188,7 @@ export class ElementCompiler {
             if (tagName === 'option') {
                 emitter.writeLine('$optionValue = null;')
             }
-        } else if (noTemplateOutput) {
+        } else if (this.noTemplateOutput) {
             // nope
         } else {
             emitter.bufferHTMLLiteral('</')
@@ -194,11 +198,11 @@ export class ElementCompiler {
     }
 
     // 编译元素内容
-    inner (emitter: PHPEmitter, aNode: ANode) {
+    inner (aNode: ANode) {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
-                emitter.writeHTML(
+                this.emitter.writeHTML(
                     '_::escapeHTML(' +
                     compileExprSource.expr(valueProp.expr) +
                     ')'
@@ -209,10 +213,10 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
+            this.emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
         } else {
             for (const aNodeChild of aNode.children!) {
-                this.aNodeCompiler.compile(aNodeChild, emitter)
+                this.aNodeCompiler.compile(aNodeChild)
             }
         }
     }

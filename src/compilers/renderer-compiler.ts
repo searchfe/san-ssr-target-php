@@ -12,24 +12,23 @@ export class RendererCompiler {
     private namespacePrefix = ''
     private stringifier: Stringifier
     private noTemplateOutput: boolean
-    private elementCompiler: ElementCompiler
 
     constructor (
-        componentInfo: ComponentInfo,
-        componentTree: ComponentTree,
+        private componentTree: ComponentTree,
+        private emitter: PHPEmitter,
         noTemplateOutput: boolean,
         nsPrefix: string
     ) {
         this.noTemplateOutput = noTemplateOutput
         this.stringifier = new Stringifier(nsPrefix)
-        this.elementCompiler = new ElementCompiler(componentInfo, componentTree, this.stringifier)
     }
 
     /**
     * 生成组件渲染的函数体
     */
-    compile (info: ComponentInfo, emitter: PHPEmitter) {
-        const component = info.component
+    compile (componentInfo: ComponentInfo) {
+        const component = componentInfo.component
+        const { emitter } = this
 
         // 兼容 san-ssr-target-php@<=1.4.3
         emitter.writeIf('is_object($data)', () => {
@@ -37,7 +36,7 @@ export class RendererCompiler {
         })
         emitter.writeLine('$html = "";')
 
-        this.genComponentContextCode(info, component, emitter)
+        this.genComponentContextCode(componentInfo, component)
 
         // call initData()
         const defaultData = (component.initData && component.initData()) || {}
@@ -47,7 +46,7 @@ export class RendererCompiler {
         }
 
         // call inited()
-        if (info.componentClass.prototype['inited']) {
+        if (componentInfo.componentClass.prototype['inited']) {
             emitter.writeLine('$ctx->instance->inited();')
         }
 
@@ -62,10 +61,12 @@ export class RendererCompiler {
             emitter.indent()
         }
 
-        this.elementCompiler.tagStart(emitter, component.aNode, 'tagName', this.noTemplateOutput)
+        // 以这个 componentInfo 为入口元素，编译它以及它的所有子元素
+        const elementCompiler = new ElementCompiler(componentInfo, this.componentTree, emitter, this.stringifier, this.noTemplateOutput)
+        elementCompiler.tagStart(componentInfo.component.aNode, 'tagName')
         emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
-        this.elementCompiler.inner(emitter, component.aNode)
-        this.elementCompiler.tagEnd(emitter, component.aNode, 'tagName', this.noTemplateOutput)
+        elementCompiler.inner(componentInfo.component.aNode)
+        elementCompiler.tagEnd(componentInfo.component.aNode, 'tagName')
 
         if (ifDirective) {
             emitter.unindent()
@@ -78,7 +79,8 @@ export class RendererCompiler {
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    genComponentContextCode (info: ComponentInfo, component: CompiledComponent<{}>, emitter: PHPEmitter) {
+    genComponentContextCode (info: ComponentInfo, component: CompiledComponent<{}>) {
+        const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
         const computedNames = Object.keys(component['computed']).map(x => `"${x}"`)
         emitter.writeLine(`$ctx->computedNames = [${computedNames.join(', ')}];`)
