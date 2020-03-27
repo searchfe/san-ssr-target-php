@@ -2,35 +2,34 @@
  * 将组件树编译成 render 函数之间的递归调用
  * 提供 generateRenderModule 方法
  */
-import { ANode } from 'san'
 import { ComponentInfo, ComponentTree, CompiledComponent } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { expr } from '../compilers/expr-compiler'
 import { Stringifier } from './stringifier'
-import { ANodeCompiler } from './anode-compiler'
 import { ElementCompiler } from './element-compiler'
 
 export class RendererCompiler {
     private namespacePrefix = ''
     private stringifier: Stringifier
     private noTemplateOutput: boolean
-    private tree: ComponentTree
+    private elementCompiler: ElementCompiler
 
-    constructor (tree: ComponentTree, noTemplateOutput: boolean, nsPrefix: string) {
-        this.tree = tree
+    constructor (
+        componentInfo: ComponentInfo,
+        componentTree: ComponentTree,
+        noTemplateOutput: boolean,
+        nsPrefix: string
+    ) {
         this.noTemplateOutput = noTemplateOutput
         this.stringifier = new Stringifier(nsPrefix)
+        this.elementCompiler = new ElementCompiler(componentInfo, componentTree, this.stringifier)
     }
 
     /**
     * 生成组件渲染的函数体
     */
     compile (info: ComponentInfo, emitter: PHPEmitter) {
-        const elementCompiler = new ElementCompiler(
-            (aNodeChild: ANode, emitter: PHPEmitter) => aNodeCompiler.compile(aNodeChild, emitter)
-        )
-        const component = info.createComponentInstance()
-        const aNodeCompiler: ANodeCompiler = new ANodeCompiler(component, elementCompiler, this.stringifier, cls => this.tree.addComponentClass(cls))
+        const component = info.component
 
         // 兼容 san-ssr-target-php@<=1.4.3
         emitter.writeIf('is_object($data)', () => {
@@ -63,10 +62,10 @@ export class RendererCompiler {
             emitter.indent()
         }
 
-        elementCompiler.tagStart(emitter, component.aNode, 'tagName', this.noTemplateOutput)
+        this.elementCompiler.tagStart(emitter, component.aNode, 'tagName', this.noTemplateOutput)
         emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
-        elementCompiler.inner(emitter, component.aNode)
-        elementCompiler.tagEnd(emitter, component.aNode, 'tagName', this.noTemplateOutput)
+        this.elementCompiler.inner(emitter, component.aNode)
+        this.elementCompiler.tagEnd(emitter, component.aNode, 'tagName', this.noTemplateOutput)
 
         if (ifDirective) {
             emitter.unindent()

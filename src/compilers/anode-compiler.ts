@@ -1,5 +1,5 @@
 import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
-import { CompiledComponent, isComponentLoader, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
+import { ComponentTree, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import { Stringifier } from './stringifier'
 import { PHPEmitter } from '../emitters/emitter'
@@ -14,15 +14,16 @@ export class ANodeCompiler {
     private id = 0
     private elementCompiler: ElementCompiler
     private stringifier: Stringifier
-    private component: CompiledComponent<{}>
-    private getComponentInfoByClass: ComponentInfoGetter
 
     // TODO replace CompiledComponent with componentInfo
-    constructor (component: CompiledComponent<{}>, elementCompiler: ElementCompiler, stringifier: Stringifier, getComponentInfoByClass: ComponentInfoGetter) {
-        this.component = component
+    constructor (
+        private componentInfo: ComponentInfo,
+        private componentTree: ComponentTree,
+        elementCompiler: ElementCompiler,
+        stringifier: Stringifier
+    ) {
         this.elementCompiler = elementCompiler
         this.stringifier = stringifier
-        this.getComponentInfoByClass = getComponentInfoByClass
     }
 
     compile (aNode: ANode, emitter: PHPEmitter) {
@@ -32,16 +33,12 @@ export class ANodeCompiler {
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode, emitter)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode, emitter)
 
-        let ComponentClass = this.component.getComponentType
-            ? this.component.getComponentType(aNode)
-            : this.component.components[aNode.tagName]
+        const ComponentClass = this.componentInfo.getChildComponentClass(aNode)
         if (ComponentClass) {
-            if (isComponentLoader(ComponentClass)) {
-                ComponentClass = ComponentClass.placeholder
-                if (!ComponentClass) return
-            }
-            return this.compileComponent(aNode, emitter, this.getComponentInfoByClass(ComponentClass))
+            const info = this.componentTree.addComponentClass(ComponentClass)
+            return info ? this.compileComponent(aNode, emitter, info) : undefined
         }
+
         this.compileElement(aNode, emitter)
     }
 

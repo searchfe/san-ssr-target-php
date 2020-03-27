@@ -1,5 +1,7 @@
 import { ExprType, ANode } from 'san'
-import { TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
+import { Stringifier } from './stringifier'
+import { ANodeCompiler } from './anode-compiler'
+import { ComponentInfo, ComponentTree, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
 import * as compileExprSource from '../compilers/expr-compiler'
 import { PHPEmitter } from '../emitters/emitter'
 
@@ -7,10 +9,14 @@ import { PHPEmitter } from '../emitters/emitter'
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
-    private compileANode: (aNode: ANode, emitter: PHPEmitter) => void
+    private aNodeCompiler: ANodeCompiler
 
-    constructor (compileANode: (aNode: ANode, emitter: PHPEmitter) => void) {
-        this.compileANode = compileANode
+    constructor (
+        private componentInfo: ComponentInfo,
+        private componentTree: ComponentTree,
+        stringifer: Stringifier
+    ) {
+        this.aNodeCompiler = new ANodeCompiler(componentInfo, componentTree, this, stringifer)
     }
     /**
      * 编译元素标签头
@@ -206,7 +212,7 @@ export class ElementCompiler {
             emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
         } else {
             for (const aNodeChild of aNode.children!) {
-                this.compileANode(aNodeChild, emitter)
+                this.aNodeCompiler.compile(aNodeChild, emitter)
             }
         }
     }

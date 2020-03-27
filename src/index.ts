@@ -26,7 +26,6 @@ export type ToPHPCompilerOptions = {
     project: SanProject
 }
 
-// TODO 确定 ToPHPCompiler 是否一次性使用，把 compile 参数挪到 constructor 参数
 export default class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath?: string | null
@@ -92,7 +91,7 @@ export default class ToPHPCompiler implements Compiler {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
             emitter.writeFunction(funcName, ['$data = []', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-                const rc = new RendererCompiler(sanApp.componentTree, noTemplateOutput, nsPrefix)
+                const rc = new RendererCompiler(componentInfo, sanApp.componentTree, noTemplateOutput, nsPrefix)
                 rc.compile(componentInfo, emitter)
             })
             emitter.carriageReturn()
