@@ -1,6 +1,5 @@
 import camelCase from 'camelcase'
-import { startMeasure } from './timing'
-import { readdirSync, writeFileSync, existsSync } from 'fs'
+import { writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from 'san-ssr'
 import debugFactory from 'debug'
@@ -9,7 +8,6 @@ import ToPHPCompiler from '../index'
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
-const cases = readdirSync(caseRoot)
 const sanProject = new SanProject({
     tsConfigFilePath,
     modules: {
@@ -36,13 +34,4 @@ export function compile (caseName: string) {
     )
 
     writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)
-}
-
-export function compileAll () {
-    const timing = startMeasure()
-    for (const caseName of cases) {
-        console.log(`compiling ${caseName} to php`)
-        compile(caseName)
-    }
-    console.log('compiled in', timing.duration())
 }
