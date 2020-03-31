@@ -14,9 +14,8 @@ describe('Stringifier', function () {
     })
 
     it('should stringify number', function () {
-        const num = stringifier.any(12)
-
-        expect(typeof num).toEqual('string')
+        expect(stringifier.any(12)).toEqual('12')
+        expect(stringifier.any(NaN)).toEqual('null')
     })
 
     it('should stringify boolean', function () {

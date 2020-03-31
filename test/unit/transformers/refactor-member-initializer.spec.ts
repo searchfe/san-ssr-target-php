@@ -52,7 +52,7 @@ describe('refactorMemberInitializer()', function () {
         expect(text).not.toContain(`constructor()`)
     })
 
-    it('should refactor string literal initializer', function () {
+    it('should refactor string assignment initializer', function () {
         const sourceFile = project.createSourceFile('/tmp/str-var', `
         const str = "foo"
         class Foo {
@@ -69,5 +69,31 @@ describe('refactorMemberInitializer()', function () {
         expect(text).toContain(`constructor() {`)
         expect(text).toContain(`super()`)
         expect(text).toContain(`this.literalStr = str`)
+    })
+
+    it('should append assignment into into existing constructor', function () {
+        const sourceFile = project.createSourceFile('/tmp/str-var', `
+        const str = "foo"
+        class Foo {
+            literalStr: string = str
+            constructor() {
+                console.log('foo')
+            }
+        }`, { overwrite: true })
+        const clazz = sourceFile.getClass('Foo')
+        for (const prop of clazz.getProperties()) {
+            refactorMemberInitializer(clazz, prop)
+        }
+        const text = sourceFile.getFullText()
+
+        expect(text).toEqual(`
+        const str = "foo"
+        class Foo {
+            literalStr: string
+            constructor() {
+                console.log('foo')
+                this.literalStr = str
+            }
+        }`)
     })
 })

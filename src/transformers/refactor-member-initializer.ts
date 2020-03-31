@@ -8,7 +8,7 @@ export function refactorMemberInitializer (clazz: ClassDeclaration, prop: Proper
         const statement = clazz.getName() + '.' + prop.getName() + ' = ' + initializer.getFullText()
         clazz.getSourceFile().addStatements(statement)
     } else {
-        let statement = 'this.' + prop.getName() + ' = ' + initializer.getFullText()
+        let statement = 'this.' + prop.getName() + ' =' + initializer.getFullText()
         if (!clazz.getConstructors().length) {
             clazz.addConstructor()
             statement = 'super()\n' + statement
