@@ -14,8 +14,6 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
     for (const clazz of sourceFile.componentClassDeclarations.values()) {
         clazz.setExtends(`SanSSRComponent`)
-        // clazz.addImplements(`CompiledComponent`)
-        // clazz.removeExtends()
 
         for (const useless of uselessComponentProps) {
             const comps = clazz.getStaticProperty(useless)
@@ -35,9 +33,6 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
     for (const clazz of sourceFile.getClassDeclarations()) {
         const name = clazz.getName()
         if (name && isReserved(name)) {
-            if (clazz.isExported()) {
-                throw new Error(`${name} is a reserved keyword in PHP`)
-            }
             clazz.rename(`SanSSRClass${name}`)
         }
     }
