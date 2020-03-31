@@ -10,8 +10,8 @@ export function refactorComputedProperty (computed: PropertyDeclaration) {
             body = prop
         }
         if (TypeGuards.isPropertyAssignment(prop)) {
-            const init = prop.getInitializer()
-            if (init && TypeGuards.isFunctionExpression(init)) body = init
+            const init = prop.getInitializer()!
+            if (TypeGuards.isFunctionExpression(init)) body = init
         }
         if (typeof body !== 'undefined') {
             body.insertParameter(0, {
