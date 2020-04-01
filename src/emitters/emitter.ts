@@ -16,6 +16,11 @@ export class PHPEmitter extends Emitter {
         this.stringifier = new Stringifier(nsPrefix)
     }
 
+    fullText () {
+        this.clearStringLiteralBuffer()
+        return super.fullText()
+    }
+
     public stringify (val: any): string {
         return this.stringifier.any(val)
     }
