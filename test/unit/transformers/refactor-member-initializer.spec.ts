@@ -2,7 +2,7 @@ import { refactorMemberInitializer } from '../../../src/transformers/refactor-me
 import { Project } from 'ts-morph'
 
 describe('refactorMemberInitializer()', function () {
-    const project = new Project()
+    const project = new Project({ addFilesFromTsConfig: false })
 
     it('should skip string literal static initializer', function () {
         const sourceFile = project.createSourceFile('/tmp/static-str-literal', `

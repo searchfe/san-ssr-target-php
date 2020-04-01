@@ -2,7 +2,7 @@ import { refactorFiltersProperty } from '../../../src/transformers/refactor-filt
 import { PropertyDeclaration, Project } from 'ts-morph'
 
 describe('refactor filters property', function () {
-    const proj = new Project()
+    const proj = new Project({ addFilesFromTsConfig: false })
 
     it('should skip if filters property does not have initializer', function () {
         const sourceFile = proj.createSourceFile(

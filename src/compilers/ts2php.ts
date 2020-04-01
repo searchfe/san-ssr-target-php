@@ -15,10 +15,10 @@ type ModuleInfo = {
     namespace?: string
 }
 
-export class PHPTranpiler {
+export class PHPTranspiler {
     private ts2php: Ts2Php
 
-    constructor (compilerOptions: CompilerOptions) {
+    constructor (compilerOptions: CompilerOptions = {}) {
         debug('compilerOptions:', compilerOptions)
         this.ts2php = new Ts2Php({ compilerOptions })
     }
@@ -37,7 +37,7 @@ export class PHPTranpiler {
         const { errors, phpCode } = this.ts2php.compile(sourceFile.getFilePath(), options)
         if (errors.length) {
             const error = errors[0]
-            throw new Error(error.msg || error['messageText'])
+            throw new Error(error['messageText'])
         }
         debug('target code:', phpCode)
         return phpCode

@@ -2,7 +2,7 @@ import { refactorComputedProperty } from '../../../src/transformers/refactor-com
 import { PropertyDeclaration, Project } from 'ts-morph'
 
 describe('refactor computed property', function () {
-    const proj = new Project()
+    const proj = new Project({ addFilesFromTsConfig: false })
 
     it('should skip if filters property does not have initializer', function () {
         const sourceFile = proj.createSourceFile(
