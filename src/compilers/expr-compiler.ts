@@ -164,7 +164,7 @@ function object (objExpr: ExprObjectNode) {
 function unary (e: ExprUnaryNode) {
     if (e.operator === 33) return '!' + expr(e.expr)
     if (e.operator === 45) return '-' + expr(e.expr)
-    return ''
+    throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
 
 function binary (e: ExprBinaryNode) {
@@ -198,5 +198,5 @@ function dispatch (e: ExprNode): string {
     if (TypeGuards.isExprObjectNode(e)) return object(e)
     if (TypeGuards.isExprCallNode(e)) return callExpr(e)
     if (TypeGuards.isExprNullNode(e)) return 'null'
-    throw new Error(`unexpected expression ${e}`)
+    throw new Error(`unexpected expression ${JSON.stringify(e.raw)}`)
 }

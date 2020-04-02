@@ -127,7 +127,7 @@ export class ANodeCompiler {
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    for (const aNodeChild of aNode.children || []) this.compile(aNodeChild)
+                    for (const aNodeChild of aNode.children) this.compile(aNodeChild)
                     emitter.writeLine('return $html;')
                 })
                 emitter.write(';')
@@ -160,12 +160,13 @@ export class ANodeCompiler {
 
                 if (aNode.vars || aNode.directives.bind) {
                     emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
+                }
+                if (aNode.directives.bind) {
+                    emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                }
 
-                    if (aNode.directives.bind) {
-                        emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
-                    }
-
-                    for (const varItem of aNode.vars || []) {
+                if (aNode.vars) {
+                    for (const varItem of aNode.vars) {
                         emitter.writeLine(
                             `$slotCtx->data["${varItem.name}"] = ` +
                             compileExprSource.expr(varItem.expr) + ';'
@@ -198,46 +199,44 @@ export class ANodeCompiler {
         let dataLiteral = '[]'
 
         emitter.writeLine('$sourceSlots = [];')
-        if (aNode.children) {
-            const defaultSourceSlots: ANode[] = []
-            const sourceSlotCodes = {}
+        const defaultSourceSlots: ANode[] = []
+        const sourceSlotCodes = {}
 
-            for (const child of aNode.children) {
-                const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
-                if (slotBind) {
-                    if (!sourceSlotCodes[slotBind.raw]) {
-                        sourceSlotCodes[slotBind.raw] = {
-                            children: [],
-                            prop: slotBind
-                        }
+        for (const child of aNode.children!) {
+            const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
+            if (slotBind) {
+                if (!sourceSlotCodes[slotBind.raw]) {
+                    sourceSlotCodes[slotBind.raw] = {
+                        children: [],
+                        prop: slotBind
                     }
-
-                    sourceSlotCodes[slotBind.raw].children.push(child)
-                } else {
-                    defaultSourceSlots.push(child)
                 }
-            }
 
-            if (defaultSourceSlots.length) {
-                emitter.nextLine('array_push($sourceSlots, [')
-                emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                    emitter.writeLine('$html = "";')
-                    defaultSourceSlots.forEach((child: ANode) => this.compile(child))
-                    emitter.writeLine('return $html;')
-                })
-                emitter.feedLine(']);')
+                sourceSlotCodes[slotBind.raw].children.push(child)
+            } else {
+                defaultSourceSlots.push(child)
             }
+        }
 
-            for (const key in sourceSlotCodes) {
-                const sourceSlotCode = sourceSlotCodes[key]
-                emitter.nextLine('array_push($sourceSlots, [')
-                emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                    emitter.writeLine('$html = "";')
-                    sourceSlotCode.children.forEach((child: ANode) => this.compile(child))
-                    emitter.writeLine('return $html;')
-                })
-                emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
-            }
+        if (defaultSourceSlots.length) {
+            emitter.nextLine('array_push($sourceSlots, [')
+            emitter.writeAnonymousFunction(['$ctx'], [], () => {
+                emitter.writeLine('$html = "";')
+                defaultSourceSlots.forEach((child: ANode) => this.compile(child))
+                emitter.writeLine('return $html;')
+            })
+            emitter.feedLine(']);')
+        }
+
+        for (const key in sourceSlotCodes) {
+            const sourceSlotCode = sourceSlotCodes[key]
+            emitter.nextLine('array_push($sourceSlots, [')
+            emitter.writeAnonymousFunction(['$ctx'], [], () => {
+                emitter.writeLine('$html = "";')
+                sourceSlotCode.children.forEach((child: ANode) => this.compile(child))
+                emitter.writeLine('return $html;')
+            })
+            emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
         }
 
         const givenData = []

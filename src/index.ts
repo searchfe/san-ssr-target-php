@@ -22,13 +22,13 @@ export enum EmitContent {
 }
 
 export type ToPHPCompilerOptions = {
-    tsConfigFilePath?: string | null,
+    tsConfigFilePath?: string,
     project: SanProject
 }
 
 export default class ToPHPCompiler implements Compiler {
     private root: string
-    private tsConfigFilePath?: string | null
+    private tsConfigFilePath: string | null
     private project: SanProject
     private phpGenerator: PHPTranspiler
 
@@ -37,10 +37,11 @@ export default class ToPHPCompiler implements Compiler {
         project
     }: ToPHPCompilerOptions) {
         this.project = project
-        this.root = tsConfigFilePath ? tsConfigFilePath.split(sep).slice(0, -1).join(sep) : __dirname
+        if (!tsConfigFilePath) throw new Error('tsconfig.json path is required')
+        this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
 
-        const compilerOptions = tsConfigFilePath ? require(tsConfigFilePath)['compilerOptions'] : {}
+        const compilerOptions = require(tsConfigFilePath)['compilerOptions']
         const options = this.formatCompilerOptions(compilerOptions)
         this.phpGenerator = new PHPTranspiler(options)
     }
@@ -78,7 +79,7 @@ export default class ToPHPCompiler implements Compiler {
     public static fromSanProject (sanProject: SanProject) {
         return new ToPHPCompiler({
             project: sanProject,
-            tsConfigFilePath: sanProject.tsConfigFilePath
+            tsConfigFilePath: sanProject.tsConfigFilePath!
         })
     }
 
@@ -103,7 +104,7 @@ export default class ToPHPCompiler implements Compiler {
         emitter.endNamespace()
     }
 
-    private formatCompilerOptions (compilerOptions: CompilerOptions = { baseUrl: '' }) {
+    private formatCompilerOptions (compilerOptions: CompilerOptions) {
         let baseUrl = compilerOptions.baseUrl
         if (baseUrl && !isAbsolute(baseUrl) && this.root) {
             baseUrl = resolve(this.root, baseUrl)

@@ -74,10 +74,24 @@ describe('ToPHPCompiler', function () {
     })
 
     it('should support emit runtime only', function () {
+        const result = compileComponent('stub/c.comp.ts', {
+            emitContent: EmitContent.runtime
+        })
+
+        expect(result).toContain('namespace san\\runtime')
+        expect(result).toContain('class Ts2Php_Date')
+        expect(result).toContain('class SanSSRData')
+    })
+
+    it('should support emit runtime without component', function () {
         const result = ToPHPCompiler.emitRuntime()
 
         expect(result).toContain('namespace san\\runtime')
         expect(result).toContain('class Ts2Php_Date')
         expect(result).toContain('class SanSSRData')
+    })
+
+    it('should throw if tsconfig not specified', function () {
+        expect(() => new ToPHPCompiler({} as any)).toThrow('tsconfig.json path is required')
     })
 })

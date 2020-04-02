@@ -1,4 +1,4 @@
-import { ExprNode } from 'san'
+import { parseExpr, ExprNode } from 'san'
 import { dataAccess, stringLiteralize, expr } from '../../../src/compilers/expr-compiler'
 
 describe('compileExprSource', function () {
@@ -180,14 +180,8 @@ describe('compileExprSource', function () {
             'operator': 45,
             'expr': { 'type': 2, 'value': 10 }
         }
-        const expr3 = {
-            'type': 9,
-            'operator': 145,
-            'expr': { 'type': 2, 'value': 10 }
-        }
         expect(expr(expr1 as any)).toEqual('!10')
         expect(expr(expr2 as any)).toEqual('-10')
-        expect(expr(expr3 as any)).toEqual('')
     })
     it('expression type = 10 should return ternary expression', function () {
         const expr1 = {
@@ -238,5 +232,15 @@ describe('compileExprSource', function () {
     })
     it('data access with default arguments', function () {
         expect(dataAccess()).toEqual('$ctx->data')
+    })
+    it('should throw for unexpected expression type', () => {
+        const e = parseExpr('!b')
+        e.type = 222
+        expect(() => expr(e)).toThrow('unexpected expression "!b"')
+    })
+    it('should throw for unexpected unary operator', () => {
+        const e = parseExpr('!b')
+        e['operator'] = '~'.charCodeAt(0)
+        expect(() => expr(e)).toThrow('unexpected unary operator "~"')
     })
 })
