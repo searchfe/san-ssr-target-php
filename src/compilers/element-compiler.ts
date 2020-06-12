@@ -25,19 +25,19 @@ export class ElementCompiler {
         const { emitter } = this
 
         if (tagName) {
-            emitter.bufferHTMLLiteral('<' + tagName)
+            emitter.writeHTMLLiteral('<' + tagName)
         } else if (customTagName) {
-            emitter.bufferHTMLLiteral('<')
-            emitter.writeHTML('$tagName')
+            emitter.writeHTMLLiteral('<')
+            emitter.writeHTMLExpression('$tagName')
         } else {
-            emitter.bufferHTMLLiteral('<div')
+            emitter.writeHTMLLiteral('<div')
         }
 
         const propsIndex:any = {}
         for (const prop of props) propsIndex[prop.name] = prop
         for (const prop of props) this.compileProperty(tagName, prop, propsIndex)
         if (bindDirective) this.compileBindProperties(tagName, bindDirective)
-        emitter.bufferHTMLLiteral('>')
+        emitter.writeHTMLLiteral('>')
     }
 
     /**
@@ -49,7 +49,7 @@ export class ElementCompiler {
 
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {
-                emitter.bufferHTMLLiteral('</' + tagName + '>')
+                emitter.writeHTMLLiteral('</' + tagName + '>')
             }
             if (tagName === 'select') {
                 emitter.writeLine('$selectValue = null;')
@@ -58,11 +58,11 @@ export class ElementCompiler {
                 emitter.writeLine('$optionValue = null;')
             }
         } else if (customTagName) {
-            emitter.bufferHTMLLiteral('</')
-            emitter.writeHTML('$tagName')
-            emitter.bufferHTMLLiteral('>')
+            emitter.writeHTMLLiteral('</')
+            emitter.writeHTMLExpression('$tagName')
+            emitter.writeHTMLLiteral('>')
         } else {
-            emitter.bufferHTMLLiteral('</div>')
+            emitter.writeHTMLLiteral('</div>')
         }
     }
 
@@ -70,12 +70,12 @@ export class ElementCompiler {
     inner (aNode: ANode) {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) this.emitter.writeHTML(`_::escapeHTML(${expr(valueProp.expr)})`)
+            if (valueProp) this.emitter.writeHTMLExpression(`_::escapeHTML(${expr(valueProp.expr)})`)
             return
         }
 
         const htmlDirective = aNode.directives.html
-        if (htmlDirective) this.emitter.writeHTML(expr(htmlDirective.value))
+        if (htmlDirective) this.emitter.writeHTMLExpression(expr(htmlDirective.value))
         else for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
     }
 
@@ -83,15 +83,15 @@ export class ElementCompiler {
         const { emitter } = this
         if (prop.name === 'slot') return
         if (TypeGuards.isExprBoolNode(prop.expr)) {
-            emitter.bufferHTMLLiteral(` ${prop.name}`)
+            emitter.writeHTMLLiteral(` ${prop.name}`)
             return
         }
         if (TypeGuards.isExprStringNode(prop.expr)) {
-            emitter.bufferHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
+            emitter.writeHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
             return
         }
         if (prop.expr.value != null) {
-            emitter.bufferHTMLLiteral(` ${prop.name}="${expr(prop.expr)}"`)
+            emitter.writeHTMLLiteral(` ${prop.name}="${expr(prop.expr)}"`)
             return
         }
 
@@ -106,17 +106,17 @@ export class ElementCompiler {
                 emitter.writeLine(`$optionValue = ${expr(prop.expr)};`)
                 // value
                 emitter.writeIf('isset($optionValue)', () => {
-                    emitter.writeHTML('" value=\\"" . $optionValue . "\\""')
+                    emitter.writeHTMLExpression('" value=\\"" . $optionValue . "\\""')
                 })
                 // selected
                 emitter.writeIf('$optionValue == $selectValue', () => {
-                    emitter.bufferHTMLLiteral(' selected')
+                    emitter.writeHTMLLiteral(' selected')
                 })
                 return
             }
         }
         if (prop.name === 'readonly' || prop.name === 'disabled' || prop.name === 'multiple') {
-            emitter.writeHTML(`_::boolAttrFilter('${prop.name}', ${expr(prop.expr)})`)
+            emitter.writeHTMLExpression(`_::boolAttrFilter('${prop.name}', ${expr(prop.expr)})`)
             return
         }
 
@@ -126,19 +126,19 @@ export class ElementCompiler {
             if (typeNode.raw === 'checkbox') {
                 emitter.writeIf(
                     `_::contains(${expr(prop.expr)}, ${expr(valueProp.expr)})`,
-                    () => emitter.bufferHTMLLiteral(' checked'))
+                    () => emitter.writeHTMLLiteral(' checked'))
                 return
             }
             if (typeNode.raw === 'radio') {
                 emitter.writeIf(`${expr(prop.expr)} === ${expr(valueProp.expr)}`, () => {
-                    emitter.bufferHTMLLiteral(' checked')
+                    emitter.writeHTMLLiteral(' checked')
                 })
                 return
             }
         }
         const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
         const needEscape = prop.x || onlyOneAccessor
-        emitter.writeHTML(`_::attrFilter("${prop.name}", ${expr(prop.expr)}, ${needEscape})`)
+        emitter.writeHTMLExpression(`_::attrFilter("${prop.name}", ${expr(prop.expr)}, ${needEscape})`)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {

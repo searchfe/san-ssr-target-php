@@ -53,20 +53,20 @@ export class ANodeCompiler {
         const { emitter } = this
         if (aNode.textExpr.original) {
             emitter.writeIf('!$noDataOutput', () => {
-                emitter.bufferHTMLLiteral('<!--s-text-->')
+                emitter.writeHTMLLiteral('<!--s-text-->')
                 emitter.clearStringLiteralBuffer()
             })
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal!)
+            emitter.writeHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal!)
         } else {
-            emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
+            emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
         }
 
         if (aNode.textExpr.original) {
             emitter.writeIf('!$noDataOutput', () => {
-                emitter.bufferHTMLLiteral('<!--/s-text-->')
+                emitter.writeHTMLLiteral('<!--/s-text-->')
                 emitter.clearStringLiteralBuffer()
             })
         }
@@ -78,11 +78,11 @@ export class ANodeCompiler {
 
     compileFragment (aNode: AFragmentNode) {
         if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly) {
-            this.emitter.bufferHTMLLiteral('<!--s-frag-->')
+            this.emitter.writeHTMLLiteral('<!--s-frag-->')
         }
         this.elementCompiler.inner(aNode)
         if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly) {
-            this.emitter.bufferHTMLLiteral('<!--/s-frag-->')
+            this.emitter.writeHTMLLiteral('<!--/s-frag-->')
         }
     }
 
@@ -199,7 +199,7 @@ export class ANodeCompiler {
                 }
 
                 emitter.writeForeach('$mySourceSlots as $renderIndex => $slot', () => {
-                    emitter.writeHTML('$slot($slotCtx);')
+                    emitter.writeHTMLExpression('$slot($slotCtx);')
                 })
             })
             emitter.write(';')

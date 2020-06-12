@@ -51,24 +51,23 @@ export class PHPEmitter extends Emitter {
         this.endNamespace()
     }
 
-    // TODO
-    public bufferHTMLLiteral (str: string) {
+    public writeHTMLLiteral (str: string) {
         this.buffer += str
     }
 
-    public writeHTML (code: string) {
+    public writeHTMLExpression (code: string) {
         this.writeLine(`$html .= ${code};`)
     }
 
     public writeDataComment () {
-        this.writeHTML(`"<!--s-data:" . _::json_encode(${dataAccess()}) . "-->"`)
+        this.writeHTMLExpression(`"<!--s-data:" . _::json_encode(${dataAccess()}) . "-->"`)
     }
 
     public clearStringLiteralBuffer () {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTML(stringLiteralize(buffer))
+        this.writeHTMLExpression(stringLiteralize(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {
