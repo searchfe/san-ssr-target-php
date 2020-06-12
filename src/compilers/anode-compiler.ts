@@ -16,13 +16,15 @@ type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => Comp
 export class ANodeCompiler {
     private id = 0
     private ssrOnly = false
+    private elementCompiler: ElementCompiler
 
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,
-        private emitter: PHPEmitter,
-        private elementCompiler: ElementCompiler
-    ) {}
+        private emitter: PHPEmitter
+    ) {
+        this.elementCompiler = new ElementCompiler(this, emitter)
+    }
 
     /**
      * @param aNode 要被编译的 aNode 节点

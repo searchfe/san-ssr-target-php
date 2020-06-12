@@ -1,26 +1,18 @@
 import { Directive, ANodeProperty, ANode, ExprType } from 'san'
 import { ANodeCompiler } from './anode-compiler'
-import { ComponentInfo, ComponentTree, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
+import { TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
 import { expr } from '../compilers/expr-compiler'
 import { PHPEmitter } from '../emitters/emitter'
 
 /**
  * 把 ANode 作为元素来编译。这个 aNode 类型是普通 DOM 元素，可能是组件根 DOM 元素，
  * 也可能是由其他 aNode 语法编译时递归到的子 DOM 元素
- *
- * @param owner 所述的组件
- * @param root 组件树
- * @param emitter 输出器
  */
 export class ElementCompiler {
-    public aNodeCompiler: ANodeCompiler
     constructor (
-        private owner: ComponentInfo,
-        private root: ComponentTree,
+        private aNodeCompiler: ANodeCompiler,
         private emitter: PHPEmitter = new PHPEmitter()
-    ) {
-        this.aNodeCompiler = new ANodeCompiler(owner, root, emitter, this)
-    }
+    ) {}
     /**
      * 编译元素标签头
      *

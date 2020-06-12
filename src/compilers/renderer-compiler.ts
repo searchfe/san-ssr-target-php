@@ -1,6 +1,6 @@
 import { ComponentInfo, ComponentTree } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
-import { ElementCompiler } from './element-compiler'
+import { ANodeCompiler } from './anode-compiler'
 
 export class RendererCompiler {
     private namespacePrefix = ''
@@ -41,9 +41,8 @@ export class RendererCompiler {
             emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
-        // TODO
-        const elementCompiler = new ElementCompiler(info, this.componentTree, emitter)
-        elementCompiler.aNodeCompiler.compile(rootANode, true)
+        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, emitter)
+        aNodeCompiler.compile(rootANode, true)
         emitter.writeLine('return $html;')
     }
 
