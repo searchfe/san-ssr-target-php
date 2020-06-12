@@ -270,6 +270,12 @@ declare namespace San {
 
     interface ATemplateNode extends ANode {
         tagName: 'template';
+        children: ANode[];
+    }
+
+    interface AFragmentNode extends ANode {
+        tagName: 'fragment';
+        children: ANode[];
     }
 
     interface AForNode extends ANode {
@@ -287,8 +293,8 @@ declare namespace San {
     }
 
     interface ASlotNode extends ANode {
-        tagName: 'slot';
         children: ANode[];
+        tagName: 'slot';
     }
 
     interface ParseTemplateOption {

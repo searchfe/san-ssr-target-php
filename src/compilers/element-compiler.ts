@@ -13,7 +13,7 @@ import { PHPEmitter } from '../emitters/emitter'
  * @param emitter 输出器
  */
 export class ElementCompiler {
-    private aNodeCompiler: ANodeCompiler
+    public aNodeCompiler: ANodeCompiler
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,

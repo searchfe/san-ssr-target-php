@@ -2,7 +2,7 @@
  * 将组件树编译成 render 函数之间的递归调用
  * 提供 generateRenderModule 方法
  */
-import { ComponentInfo, ComponentTree, CompiledComponent } from 'san-ssr'
+import { ComponentInfo, ComponentTree, TypeGuards } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { expr } from '../compilers/expr-compiler'
 import { ElementCompiler } from './element-compiler'
@@ -22,8 +22,8 @@ export class RendererCompiler {
     /**
     * 生成组件渲染的函数体
     */
-    compile (componentInfo: ComponentInfo) {
-        const component = componentInfo.component
+    compile (info: ComponentInfo) {
+        const { componentClass, rootANode, proto } = info
         const { emitter } = this
 
         // 兼容 san-ssr-target-php@<=1.4.3
@@ -32,17 +32,17 @@ export class RendererCompiler {
         })
         emitter.writeLine('$html = "";')
 
-        this.genComponentContextCode(componentInfo, component)
+        this.genComponentContextCode(info)
 
         // call initData()
-        const defaultData = (component.initData && component.initData()) || {}
+        const defaultData = (proto.initData && proto.initData()) || {}
         for (const key of Object.keys(defaultData)) {
             const val = emitter.stringify(defaultData[key])
             emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
         }
 
         // call inited()
-        if (componentInfo.componentClass.prototype['inited']) {
+        if (componentClass.prototype['inited']) {
             emitter.writeLine('$ctx->instance->inited();')
         }
 
@@ -51,22 +51,26 @@ export class RendererCompiler {
             emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
-        const ifDirective = component.aNode.directives['if']
-        if (ifDirective) {
-            emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
-            emitter.indent()
-        }
+        const elementCompiler = new ElementCompiler(info, this.componentTree, emitter, this.noTemplateOutput)
 
-        // 以这个 componentInfo 为入口元素，编译它以及它的所有子元素
-        const elementCompiler = new ElementCompiler(componentInfo, this.componentTree, emitter, this.noTemplateOutput)
-        elementCompiler.tagStart(componentInfo.component.aNode, 'tagName')
-        emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
-        elementCompiler.inner(componentInfo.component.aNode)
-        elementCompiler.tagEnd(componentInfo.component.aNode, 'tagName')
+        if (TypeGuards.isATextNode(rootANode)) {
+            elementCompiler.aNodeCompiler.compile(rootANode)
+        } else {
+            const ifDirective = rootANode.directives['if']
+            if (ifDirective) {
+                emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
+                emitter.indent()
+            }
 
-        if (ifDirective) {
-            emitter.unindent()
-            emitter.writeLine('}')
+            elementCompiler.tagStart(rootANode, 'tagName')
+            emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
+            elementCompiler.inner(rootANode)
+            elementCompiler.tagEnd(rootANode, 'tagName')
+
+            if (ifDirective) {
+                emitter.unindent()
+                emitter.writeLine('}')
+            }
         }
 
         emitter.writeLine('return $html;')
@@ -75,10 +79,10 @@ export class RendererCompiler {
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    genComponentContextCode (info: ComponentInfo, component: CompiledComponent<{}>) {
+    genComponentContextCode (info: ComponentInfo) {
         const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
-        const computedNames = Object.keys(component['computed']).map(x => `"${x}"`)
+        const computedNames = Object.keys(info.proto.computed).map(x => `"${x}"`)
         emitter.writeLine(`$ctx->computedNames = [${computedNames.join(', ')}];`)
         emitter.writeLine(`$ctx->sanssrCid = ${info.cid || 0};`)
         emitter.writeLine('$ctx->sourceSlots = $sourceSlots;')

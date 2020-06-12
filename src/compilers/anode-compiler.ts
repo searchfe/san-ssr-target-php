@@ -70,9 +70,13 @@ export class ANodeCompiler {
         const { emitter } = this
         // output if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
-            this.compile(aNode.ifRinsed)
-        })
+
+        const aNodeWithoutIf = Object.assign({}, aNode)
+        delete aNodeWithoutIf.directives['if']
+        emitter.writeIf(
+            compileExprSource.expr(ifDirective.value),
+            () => this.compile(aNodeWithoutIf)
+        )
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
