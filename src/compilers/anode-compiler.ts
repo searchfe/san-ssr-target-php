@@ -209,10 +209,10 @@ export class ANodeCompiler {
     }
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
-        this.elementCompiler.tagStart(aNode, isRootElement)
+        this.elementCompiler.tagStart(aNode)
         if (isRootElement) this.outputData()
         this.elementCompiler.inner(aNode)
-        this.elementCompiler.tagEnd(aNode, isRootElement)
+        this.elementCompiler.tagEnd(aNode)
     }
 
     /**

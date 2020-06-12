@@ -8,7 +8,7 @@ describe('target-js/compilers/element-compiler', () => {
     })
 
     it('should compile a simple <div>', () => {
-        const aNode = parseTemplate('<div></div>')
+        const aNode = parseTemplate('<div></div>').children[0]
         compiler.tagStart(aNode)
         compiler.tagEnd(aNode)
         expect(compiler.emitter.fullText()).toEqual(`$html .= "<div></div>";

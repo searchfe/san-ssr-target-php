@@ -18,7 +18,7 @@ export class ElementCompiler {
      *
      * @param customTagName 是否自定义标签名
      */
-    tagStart (aNode: ANode, customTagName: boolean) {
+    tagStart (aNode: ANode) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
@@ -26,11 +26,9 @@ export class ElementCompiler {
 
         if (tagName) {
             emitter.writeHTMLLiteral('<' + tagName)
-        } else if (customTagName) {
+        } else {
             emitter.writeHTMLLiteral('<')
             emitter.writeHTMLExpression('$tagName')
-        } else {
-            emitter.writeHTMLLiteral('<div')
         }
 
         const propsIndex:any = {}
@@ -43,7 +41,7 @@ export class ElementCompiler {
     /**
      * @param customTagName 是否自定义标签名
      */
-    tagEnd (aNode: ANode, customTagName: boolean) {
+    tagEnd (aNode: ANode) {
         const { emitter } = this
         const tagName = aNode.tagName
 
@@ -57,12 +55,10 @@ export class ElementCompiler {
             if (tagName === 'option') {
                 emitter.writeLine('$optionValue = null;')
             }
-        } else if (customTagName) {
+        } else {
             emitter.writeHTMLLiteral('</')
             emitter.writeHTMLExpression('$tagName')
             emitter.writeHTMLLiteral('>')
-        } else {
-            emitter.writeHTMLLiteral('</div>')
         }
     }
 
