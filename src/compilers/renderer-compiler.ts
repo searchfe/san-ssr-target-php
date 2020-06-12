@@ -1,23 +1,14 @@
-/**
- * 将组件树编译成 render 函数之间的递归调用
- * 提供 generateRenderModule 方法
- */
-import { ComponentInfo, ComponentTree, TypeGuards } from 'san-ssr'
+import { ComponentInfo, ComponentTree } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
-import { expr } from '../compilers/expr-compiler'
 import { ElementCompiler } from './element-compiler'
 
 export class RendererCompiler {
     private namespacePrefix = ''
-    private noTemplateOutput: boolean
 
     constructor (
         private componentTree: ComponentTree,
-        private emitter: PHPEmitter,
-        noTemplateOutput: boolean
-    ) {
-        this.noTemplateOutput = noTemplateOutput
-    }
+        private emitter: PHPEmitter
+    ) {}
 
     /**
     * 生成组件渲染的函数体
@@ -26,7 +17,6 @@ export class RendererCompiler {
         const { componentClass, rootANode, proto } = info
         const { emitter } = this
 
-        // 兼容 san-ssr-target-php@<=1.4.3
         emitter.writeIf('is_object($data)', () => {
             emitter.writeLine('$data = (array)$data;')
         })
@@ -51,28 +41,9 @@ export class RendererCompiler {
             emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
-        const elementCompiler = new ElementCompiler(info, this.componentTree, emitter, this.noTemplateOutput)
-
-        if (TypeGuards.isATextNode(rootANode)) {
-            elementCompiler.aNodeCompiler.compile(rootANode)
-        } else {
-            const ifDirective = rootANode.directives['if']
-            if (ifDirective) {
-                emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
-                emitter.indent()
-            }
-
-            elementCompiler.tagStart(rootANode, 'tagName')
-            emitter.writeIf('!$noDataOutput', () => emitter.writeDataComment())
-            elementCompiler.inner(rootANode)
-            elementCompiler.tagEnd(rootANode, 'tagName')
-
-            if (ifDirective) {
-                emitter.unindent()
-                emitter.writeLine('}')
-            }
-        }
-
+        // TODO
+        const elementCompiler = new ElementCompiler(info, this.componentTree, emitter)
+        elementCompiler.aNodeCompiler.compile(rootANode, true)
         emitter.writeLine('return $html;')
     }
 

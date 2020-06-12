@@ -168,8 +168,13 @@ function unary (e: ExprUnaryNode) {
 }
 
 function binary (e: ExprBinaryNode) {
-    const [lhs, rhs] = e.segs
-    return expr(lhs) + binaryOp[e.operator] + expr(rhs)
+    const lhs = expr(e.segs[0])
+    const rhs = expr(e.segs[1])
+    const op = binaryOp[e.operator]
+    if (op === '||') {
+        return `(${lhs} ? ${lhs} : ${rhs})`
+    }
+    return `${lhs} ${op} ${rhs}`
 }
 
 function tertiary (e: ExprTertiaryNode) {

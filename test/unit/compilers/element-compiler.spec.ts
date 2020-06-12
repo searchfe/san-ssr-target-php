@@ -16,12 +16,12 @@ describe('target-js/compilers/element-compiler', () => {
     })
     it('should compile a simple <div> with customized tagName', () => {
         const aNode = parseTemplate('<div></div>')
-        compiler.tagStart(aNode, 'tagName')
-        compiler.tagEnd(aNode, 'tagName')
+        compiler.tagStart(aNode, true)
+        compiler.tagEnd(aNode, true)
         expect(compiler.emitter.fullText()).toEqual(`$html .= "<";
-$html .= $tagName ? $tagName : "div";
+$html .= $tagName;
 $html .= "></";
-$html .= $tagName ? $tagName : "div";
+$html .= $tagName;
 $html .= ">";
 `)
     })

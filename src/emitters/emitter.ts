@@ -51,6 +51,7 @@ export class PHPEmitter extends Emitter {
         this.endNamespace()
     }
 
+    // TODO
     public bufferHTMLLiteral (str: string) {
         this.buffer += str
     }

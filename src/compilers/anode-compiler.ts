@@ -1,4 +1,4 @@
-import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode } from 'san'
+import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode, AFragmentNode } from 'san'
 import { ComponentTree, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import { PHPEmitter } from '../emitters/emitter'
@@ -15,6 +15,7 @@ type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => Comp
 */
 export class ANodeCompiler {
     private id = 0
+    private ssrOnly = false
 
     constructor (
         private owner: ComponentInfo,
@@ -23,20 +24,27 @@ export class ANodeCompiler {
         private elementCompiler: ElementCompiler
     ) {}
 
-    compile (aNode: ANode) {
+    /**
+     * @param aNode 要被编译的 aNode 节点
+     * @param needOutputData 是否需要输出数据。
+     *  1. compile 入口 aNode 时设为 true
+     *  2. 根节点是组件时继续待到子组件的根 aNode
+     */
+    compile (aNode: ANode, needOutputData: boolean) {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
+        if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
         const ComponentClass = this.owner.getChildComponentClass(aNode)
         if (ComponentClass) {
             const info = this.root.addComponentClass(ComponentClass)
-            return info ? this.compileComponent(aNode, info) : undefined
+            return info ? this.compileComponent(aNode, info, needOutputData) : undefined
         }
 
-        this.compileElement(aNode)
+        this.compileElement(aNode, needOutputData)
     }
 
     compileText (aNode: ATextNode) {
@@ -66,6 +74,16 @@ export class ANodeCompiler {
         this.elementCompiler.inner(aNode)
     }
 
+    compileFragment (aNode: AFragmentNode) {
+        if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly) {
+            this.emitter.bufferHTMLLiteral('<!--s-frag-->')
+        }
+        this.elementCompiler.inner(aNode)
+        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly) {
+            this.emitter.bufferHTMLLiteral('<!--/s-frag-->')
+        }
+    }
+
     compileIf (aNode: AIfNode) {
         const { emitter } = this
         // output if
@@ -75,7 +93,7 @@ export class ANodeCompiler {
         delete aNodeWithoutIf.directives['if']
         emitter.writeIf(
             compileExprSource.expr(ifDirective.value),
-            () => this.compile(aNodeWithoutIf)
+            () => this.compile(aNodeWithoutIf, false)
         )
 
         // output elif and else
@@ -87,7 +105,7 @@ export class ANodeCompiler {
                 emitter.beginElse()
             }
 
-            this.compile(elseANode)
+            this.compile(elseANode, false)
             emitter.endBlock()
         }
     }
@@ -113,7 +131,7 @@ export class ANodeCompiler {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
                 emitter.writeLine(`$ctx->data["${indexName}"] = $${indexName};`)
                 emitter.writeLine(`$ctx->data["${itemName}"] = $value;`)
-                this.compile(forElementANode)
+                this.compile(forElementANode, false)
             })
         })
     }
@@ -131,7 +149,7 @@ export class ANodeCompiler {
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    for (const aNodeChild of aNode.children) this.compile(aNodeChild)
+                    for (const aNodeChild of aNode.children) this.compile(aNodeChild, false)
                     emitter.writeLine('return $html;')
                 })
                 emitter.write(';')
@@ -188,17 +206,19 @@ export class ANodeCompiler {
         emitter.writeLine(`call_user_func($ctx->slotRenderers["${rendererId}"]);`)
     }
 
-    compileElement (aNode: ANode) {
-        this.elementCompiler.tagStart(aNode)
+    private compileElement (aNode: ANode, isRootElement: boolean) {
+        this.elementCompiler.tagStart(aNode, isRootElement)
+        if (isRootElement) this.outputData()
         this.elementCompiler.inner(aNode)
-        this.elementCompiler.tagEnd(aNode)
+        this.elementCompiler.tagEnd(aNode, isRootElement)
     }
 
     /**
      * @param aNode 要被编译的 aNode
      * @param componentInfo 这个 aNode 关联的组件（与 aNode 所属的 owner 组件不同）
+     * @param isRootElement 是否需要输出数据，如果该组件是根组件，它为 true
      */
-    compileComponent (aNode: ANode, componentInfo: ComponentInfo) {
+    compileComponent (aNode: ANode, componentInfo: ComponentInfo, isRootElement: boolean) {
         const { emitter } = this
         let dataLiteral = '[]'
 
@@ -226,7 +246,7 @@ export class ANodeCompiler {
             emitter.nextLine('array_push($sourceSlots, [')
             emitter.writeAnonymousFunction(['$ctx'], [], () => {
                 emitter.writeLine('$html = "";')
-                defaultSourceSlots.forEach((child: ANode) => this.compile(child))
+                defaultSourceSlots.forEach((child: ANode) => this.compile(child, false))
                 emitter.writeLine('return $html;')
             })
             emitter.feedLine(']);')
@@ -237,7 +257,7 @@ export class ANodeCompiler {
             emitter.nextLine('array_push($sourceSlots, [')
             emitter.writeAnonymousFunction(['$ctx'], [], () => {
                 emitter.writeLine('$html = "";')
-                sourceSlotCode.children.forEach((child: ANode) => this.compile(child))
+                sourceSlotCode.children.forEach((child: ANode) => this.compile(child, false))
                 emitter.writeLine('return $html;')
             })
             emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
@@ -257,10 +277,15 @@ export class ANodeCompiler {
         }
 
         const renderId = 'sanssrRenderer' + componentInfo.cid
+        const ndo = isRootElement ? '$noDataOutput' : 'true'
         emitter.nextLine(`$html .= `)
-        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', emitter.stringify(aNode.tagName), '$sourceSlots'])
+        emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$ctx', emitter.stringify(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
         emitter.writeLine('$sourceSlots = null;')
+    }
+
+    private outputData () {
+        this.emitter.writeIf('!$noDataOutput', () => this.emitter.writeDataComment())
     }
 
     private nextID () {

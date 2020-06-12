@@ -22,7 +22,7 @@ describe('compileExprSource', function () {
             value: 'value'
         }
         expect(expr(expr1 as any)).toEqual('"literal"')
-        expect(expr(expr2)).toEqual('"value"')
+        expect(expr(expr2 as any)).toEqual('"value"')
     })
     it('expression type = 2 should return number', function () {
         const e = {
@@ -30,7 +30,7 @@ describe('compileExprSource', function () {
             value: 1
         }
 
-        expect(expr(e)).toEqual('1')
+        expect(expr(e as any)).toEqual('1')
     })
     it('expression type = 3 should return boolean string', function () {
         const expr1 = {
@@ -42,8 +42,8 @@ describe('compileExprSource', function () {
             value: false
         }
 
-        expect(expr(expr1)).toEqual('true')
-        expect(expr(expr2)).toEqual('false')
+        expect(expr(expr1 as any)).toEqual('true')
+        expect(expr(expr2 as any)).toEqual('false')
     })
     it('expression type = 4 should return data access', function () {
         const e = {
@@ -51,22 +51,19 @@ describe('compileExprSource', function () {
             paths: [{
                 type: 1,
                 value: 'ext'
-            },
-            {
+            }, {
                 type: 2,
                 value: 1
-            },
-            {
+            }, {
                 type: 3,
                 value: true
-            },
-            {
+            }, {
                 type: 4,
                 paths: [{ type: 2, value: 10 }]
             }]
         }
 
-        expect(expr(e)).toEqual('$ctx->data["ext"][1][$ctx->data[10]]')
+        expect(expr(e as any)).toEqual('$ctx->data["ext"][1][$ctx->data[10]]')
     })
     it('expression type = 5 should return interp expression', function () {
         const expr1 = {
@@ -141,7 +138,7 @@ describe('compileExprSource', function () {
             },
             'args': [{ 'type': 1, 'value': 'num1' }, { 'type': 1, 'value': 'num2' }]
         }
-        expect(expr(e)).toContain('$ctx->instance->op.op[2][true]("num1","num2")')
+        expect(expr(e as any)).toContain('$ctx->instance->op.op[2][true]("num1","num2")')
     })
     it('expression type = 7 should return text', function () {
         const expr1 = {
@@ -155,8 +152,8 @@ describe('compileExprSource', function () {
             'type': 7,
             'segs': []
         }
-        expect(expr(expr1)).toContain('("1 + 2") . ("2 * 4")')
-        expect(expr(expr2)).toContain('""')
+        expect(expr(expr1 as any)).toContain('("1 + 2") . ("2 * 4")')
+        expect(expr(expr2 as any)).toContain('""')
     })
     it('expression type = 8 should return binary operater', function () {
         const e = {
@@ -167,7 +164,7 @@ describe('compileExprSource', function () {
                 { 'type': 2, 'value': 12 }
             ]
         }
-        expect(expr(e)).toEqual('10!==12')
+        expect(expr(e as any)).toEqual('10 !== 12')
     })
     it('expression type = 9 should return binary expression', function () {
         const expr1 = {
@@ -192,7 +189,7 @@ describe('compileExprSource', function () {
                 { 'type': 2, 'value': 12 }
             ]
         }
-        expect(expr(expr1)).toEqual('true?10:12')
+        expect(expr(expr1 as any)).toEqual('true?10:12')
     })
     it('expression type = 11 should return object', function () {
         const expr1 = {
@@ -228,7 +225,7 @@ describe('compileExprSource', function () {
             'value': 'bar',
             'parenthesized': true
         }
-        expect(expr(expr1)).toEqual('("bar")')
+        expect(expr(expr1 as any)).toEqual('("bar")')
     })
     it('data access with default arguments', function () {
         expect(dataAccess()).toEqual('$ctx->data')

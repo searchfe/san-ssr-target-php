@@ -17,17 +17,16 @@ export class ElementCompiler {
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,
-        private emitter: PHPEmitter = new PHPEmitter(),
-        private noTemplateOutput = false
+        private emitter: PHPEmitter = new PHPEmitter()
     ) {
         this.aNodeCompiler = new ANodeCompiler(owner, root, emitter, this)
     }
     /**
      * 编译元素标签头
      *
-     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
+     * @param customTagName 是否自定义标签名
      */
-    tagStart (aNode: ANode, tagNameVariable?: string) {
+    tagStart (aNode: ANode, customTagName: boolean) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
@@ -35,11 +34,9 @@ export class ElementCompiler {
 
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
-        } else if (this.noTemplateOutput) {
-            return
-        } else if (tagNameVariable) {
+        } else if (customTagName) {
             emitter.bufferHTMLLiteral('<')
-            emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.writeHTML('$tagName')
         } else {
             emitter.bufferHTMLLiteral('<div')
         }
@@ -51,7 +48,10 @@ export class ElementCompiler {
         emitter.bufferHTMLLiteral('>')
     }
 
-    tagEnd (aNode: ANode, tagNameVariable?: string) {
+    /**
+     * @param customTagName 是否自定义标签名
+     */
+    tagEnd (aNode: ANode, customTagName: boolean) {
         const { emitter } = this
         const tagName = aNode.tagName
 
@@ -59,19 +59,15 @@ export class ElementCompiler {
             if (!autoCloseTags.has(tagName)) {
                 emitter.bufferHTMLLiteral('</' + tagName + '>')
             }
-
             if (tagName === 'select') {
                 emitter.writeLine('$selectValue = null;')
             }
-
             if (tagName === 'option') {
                 emitter.writeLine('$optionValue = null;')
             }
-        } else if (this.noTemplateOutput) {
-            // nope
-        } else if (tagNameVariable) {
+        } else if (customTagName) {
             emitter.bufferHTMLLiteral('</')
-            emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.writeHTML('$tagName')
             emitter.bufferHTMLLiteral('>')
         } else {
             emitter.bufferHTMLLiteral('</div>')
@@ -88,7 +84,7 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) this.emitter.writeHTML(expr(htmlDirective.value))
-        else for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild)
+        else for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
     }
 
     private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {

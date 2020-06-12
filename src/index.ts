@@ -48,7 +48,6 @@ export default class ToPHPCompiler implements Compiler {
 
     public compile (sanApp: SanApp, {
         funcName = 'render',
-        noTemplateOutput = false,
         nsPrefix = 'san\\',
         emitContent = EmitContent.all,
         emitHeader = true,
@@ -56,7 +55,7 @@ export default class ToPHPCompiler implements Compiler {
     }) {
         const emitter = new PHPEmitter(emitHeader, nsPrefix)
         if (emitContent & EmitContent.renderer) {
-            this.compileRenderer(emitter, funcName, noTemplateOutput, sanApp)
+            this.compileRenderer(emitter, funcName, sanApp)
         }
         if (emitContent & EmitContent.component) {
             this.compileProjectFiles(sanApp, emitter, modules)
@@ -83,16 +82,16 @@ export default class ToPHPCompiler implements Compiler {
         })
     }
 
-    private compileRenderer (emitter: PHPEmitter, funcName: string, noTemplateOutput: boolean, sanApp: SanApp) {
+    private compileRenderer (emitter: PHPEmitter, funcName: string, sanApp: SanApp) {
         emitter.beginNamespace('renderer')
         emitter.writeLine(`use ${emitter.nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
 
-        const rc = new RendererCompiler(sanApp.componentTree, emitter, noTemplateOutput)
+        const rc = new RendererCompiler(sanApp.componentTree, emitter)
         for (const componentInfo of sanApp.componentTree.preOrder()) {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
-            emitter.writeFunction(funcName, ['$data = []', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
+            emitter.writeFunction(funcName, ['$data = []', '$noDataOutput = false', '$parentCtx = []', '$tagName = "div"', '$sourceSlots = []'], [], () => {
                 rc.compile(componentInfo)
             })
             emitter.carriageReturn()
