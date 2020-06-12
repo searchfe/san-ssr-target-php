@@ -18,11 +18,13 @@ const sanProject = new SanProject({
 export function compile (caseName: string) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
+    const ssrOnly = /-so/.test(caseName)
     const targetCode = sanProject.compile(
         existsSync(ts) ? ts : js,
         ToPHPCompiler,
         {
             nsPrefix: `san\\${camelCase(caseName)}\\`,
+            ssrOnly,
             modules: {
                 './php': {
                     required: true

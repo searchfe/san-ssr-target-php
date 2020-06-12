@@ -5,13 +5,21 @@ import { ANodeCompiler } from './anode-compiler'
 export class RendererCompiler {
     private namespacePrefix = ''
 
+    /**
+     * @param componentTree 组件树，用来从中注册、解析新的动态组件
+     * @param ssrOnly 产出 HTML 是否只用于 SSR（无法浏览器端反解）
+     * @param emitter 代码产出的收集器
+     */
     constructor (
         private componentTree: ComponentTree,
+        private ssrOnly: boolean,
         private emitter: PHPEmitter
     ) {}
 
     /**
-    * 生成组件渲染的函数体
+    * 生成组件渲染的函数体。把组件编译为 `render(data): string` 函数。
+    *
+    * @param info 要被编译的组件信息
     */
     compile (info: ComponentInfo) {
         const { componentClass, rootANode, proto } = info
@@ -41,7 +49,7 @@ export class RendererCompiler {
             emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
         })
 
-        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, emitter)
+        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, this.ssrOnly, emitter)
         aNodeCompiler.compile(rootANode, true)
         emitter.writeLine('return $html;')
     }

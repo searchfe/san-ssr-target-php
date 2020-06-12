@@ -7,20 +7,23 @@ import * as compileExprSource from '../compilers/expr-compiler'
 type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
 /**
- * ANode 语义的表达，其中普通 DOM 元素类型的 ANode 实现在 ElementCompiler 中
- *
- * @param owner 所述的组件
- * @param root 组件树
- * @param emitter 输出器
+ * ANode 语义的表达
 */
 export class ANodeCompiler {
+    // 唯一 ID，用来产生临时变量名、函数名
     private id = 0
-    private ssrOnly = false
+    // 用来编译普通 DOM 节点类型的 ANode
     private elementCompiler: ElementCompiler
 
+    /**
+     * @param owner 所述的组件
+     * @param root 组件树
+     * @param emitter 输出器
+     */
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,
+        private ssrOnly: boolean,
         private emitter: PHPEmitter
     ) {
         this.elementCompiler = new ElementCompiler(this, emitter)
@@ -28,11 +31,11 @@ export class ANodeCompiler {
 
     /**
      * @param aNode 要被编译的 aNode 节点
-     * @param needOutputData 是否需要输出数据。
+     * @param isRootElement 当前 aNode 是否是根元素，此时需要输出数据。
      *  1. compile 入口 aNode 时设为 true
      *  2. 根节点是组件时继续待到子组件的根 aNode
      */
-    compile (aNode: ANode, needOutputData: boolean) {
+    compile (aNode: ANode, isRootElement: boolean) {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
@@ -43,19 +46,17 @@ export class ANodeCompiler {
         const ComponentClass = this.owner.getChildComponentClass(aNode)
         if (ComponentClass) {
             const info = this.root.addComponentClass(ComponentClass)
-            return info ? this.compileComponent(aNode, info, needOutputData) : undefined
+            return info ? this.compileComponent(aNode, info, isRootElement) : undefined
         }
 
-        this.compileElement(aNode, needOutputData)
+        this.compileElement(aNode, isRootElement)
     }
 
     compileText (aNode: ATextNode) {
         const { emitter } = this
-        if (aNode.textExpr.original) {
-            emitter.writeIf('!$noDataOutput', () => {
-                emitter.writeHTMLLiteral('<!--s-text-->')
-                emitter.clearStringLiteralBuffer()
-            })
+        if (aNode.textExpr.original && !this.ssrOnly) {
+            emitter.writeHTMLLiteral('<!--s-text-->')
+            emitter.clearStringLiteralBuffer()
         }
 
         if (aNode.textExpr.value != null) {
@@ -64,11 +65,9 @@ export class ANodeCompiler {
             emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
         }
 
-        if (aNode.textExpr.original) {
-            emitter.writeIf('!$noDataOutput', () => {
-                emitter.writeHTMLLiteral('<!--/s-text-->')
-                emitter.clearStringLiteralBuffer()
-            })
+        if (aNode.textExpr.original && !this.ssrOnly) {
+            emitter.writeHTMLLiteral('<!--/s-text-->')
+            emitter.clearStringLiteralBuffer()
         }
     }
 
@@ -88,17 +87,15 @@ export class ANodeCompiler {
 
     compileIf (aNode: AIfNode) {
         const { emitter } = this
-        // output if
-        const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-
+        const ifDirective = aNode.directives['if']
         const aNodeWithoutIf = Object.assign({}, aNode)
         delete aNodeWithoutIf.directives['if']
+
         emitter.writeIf(
             compileExprSource.expr(ifDirective.value),
             () => this.compile(aNodeWithoutIf, false)
         )
 
-        // output elif and else
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
@@ -210,7 +207,7 @@ export class ANodeCompiler {
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
         this.elementCompiler.tagStart(aNode)
-        if (isRootElement) this.outputData()
+        if (isRootElement && !this.ssrOnly) this.outputData()
         this.elementCompiler.inner(aNode)
         this.elementCompiler.tagEnd(aNode)
     }

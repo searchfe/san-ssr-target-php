@@ -50,12 +50,13 @@ export default class ToPHPCompiler implements Compiler {
         funcName = 'render',
         nsPrefix = 'san\\',
         emitContent = EmitContent.all,
+        ssrOnly = false,
         emitHeader = true,
         modules = {}
     }) {
         const emitter = new PHPEmitter(emitHeader, nsPrefix)
         if (emitContent & EmitContent.renderer) {
-            this.compileRenderer(emitter, funcName, sanApp)
+            this.compileRenderer(emitter, funcName, sanApp, ssrOnly)
         }
         if (emitContent & EmitContent.component) {
             this.compileProjectFiles(sanApp, emitter, modules)
@@ -82,12 +83,12 @@ export default class ToPHPCompiler implements Compiler {
         })
     }
 
-    private compileRenderer (emitter: PHPEmitter, funcName: string, sanApp: SanApp) {
+    private compileRenderer (emitter: PHPEmitter, funcName: string, sanApp: SanApp, ssrOnly: boolean) {
         emitter.beginNamespace('renderer')
         emitter.writeLine(`use ${emitter.nsPrefix}runtime\\_;`)
         emitter.carriageReturn()
 
-        const rc = new RendererCompiler(sanApp.componentTree, emitter)
+        const rc = new RendererCompiler(sanApp.componentTree, ssrOnly, emitter)
         for (const componentInfo of sanApp.componentTree.preOrder()) {
             const { cid } = componentInfo
             const funcName = 'sanssrRenderer' + cid
