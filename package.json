@@ -72,7 +72,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.9.0",
     "san": "^3.8.0",
-    "san-ssr": "^1.13.0",
+    "san-ssr": "^1.13.1",
     "semantic-release": "^15.13.27",
     "typedoc": "^0.15.0",
     "wdio-sauce-service": "^0.4.14",
@@ -91,7 +91,7 @@
   },
   "peerDependencies": {
     "san": "~3.8.0",
-    "san-ssr": "~1.9.6"
+    "san-ssr": "~1.13.1"
   },
   "release": {
     "branch": "master",
