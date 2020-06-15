@@ -1,3 +1,12 @@
+# [1.8.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.7.0...v1.8.0) (2020-06-15)
+
+
+### Features
+
+* <fragment> support, [#14](https://github.com/searchfe/san-ssr-target-php/issues/14) ([0b57074](https://github.com/searchfe/san-ssr-target-php/commit/0b57074382f96120fc72f74bb7567981d1bff3fa))
+* component as root element, [#13](https://github.com/searchfe/san-ssr-target-php/issues/13) ([f36fb47](https://github.com/searchfe/san-ssr-target-php/commit/f36fb47fa879dae24199c8ac531ca26ac2e41801))
+* ssrOnly, [#12](https://github.com/searchfe/san-ssr-target-php/issues/12) ([e073cf8](https://github.com/searchfe/san-ssr-target-php/commit/e073cf817e3f4199d9a077fb0b899170bbb9d770))
+
 # [1.7.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.6.0...v1.7.0) (2020-03-11)
 
 
