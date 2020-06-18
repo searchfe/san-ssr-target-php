@@ -1,5 +1,5 @@
 import camelCase from 'camelcase'
-import { writeFileSync, existsSync } from 'fs'
+import { existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from 'san-ssr'
 import debugFactory from 'debug'
@@ -15,11 +15,11 @@ const sanProject = new SanProject({
     }
 })
 
-export function compile (caseName: string) {
+export function compile (caseName: string): string {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
     const ssrOnly = /-so/.test(caseName)
-    const targetCode = sanProject.compile(
+    return sanProject.compile(
         existsSync(ts) ? ts : js,
         ToPHPCompiler,
         {
@@ -32,6 +32,4 @@ export function compile (caseName: string) {
             }
         }
     )
-
-    writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)
 }

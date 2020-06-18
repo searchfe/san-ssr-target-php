@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+const { compile } = require('../dist/utils/case')
+
+const caseName = process.argv[2]
+if (!caseName) throw new Error('echo specify a test case name')
+
+const targetCode = compile(caseName)
+console.log(targetCode)
