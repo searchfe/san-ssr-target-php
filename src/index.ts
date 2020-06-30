@@ -1,110 +1,136 @@
-import { SanProject, Compiler, SanSourceFile, SanApp, getInlineDeclarations } from 'san-ssr'
-import { isReserved } from './utils/lang'
-import { Modules, PHPTranspiler } from './compilers/ts2php'
-import { transformAstToPHP } from './transformers/index'
+import { ComponentReference, isTypedSanSourceFile, SanProject, Compiler, SanSourceFile } from 'san-ssr'
+import { isReservedInPHP, getRefactoredName } from './transformers/refactor-reserved-names'
+import { PHPTranspiler } from './compilers/ts2php'
+import { transformToFavorPHP } from './transformers/index'
 import { CompilerOptions } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
 import { PHPEmitter } from './emitters/emitter'
 import camelCase from 'camelcase'
-import { sep, extname, isAbsolute, resolve } from 'path'
+import { relative, sep, isAbsolute, resolve, dirname } from 'path'
 import debugFactory from 'debug'
-import { emitRuntime } from './emitters/runtime'
+import { emitHelpers } from './emitters/helpers'
+import { defaultHelpersNS, normalizeCompileOptions, CompileOptions, NormalizedCompileOptions } from './compile-options'
 
 const debug = debugFactory('san-ssr:target-php')
 
-export enum EmitContent {
-    renderer = 1,
-    component = 2,
-    runtime = 4,
-
-    rendererAndComponent = 3,
-    all = 7
-}
-
-export type ToPHPCompilerOptions = {
-    tsConfigFilePath?: string,
-    project: SanProject
-}
-
 export default class ToPHPCompiler implements Compiler {
     private root: string
-    private tsConfigFilePath: string | null
-    private project: SanProject
-    private phpGenerator: PHPTranspiler
+    private phpTranspiler: PHPTranspiler
 
-    constructor ({
-        tsConfigFilePath,
-        project
-    }: ToPHPCompilerOptions) {
-        this.project = project
+    constructor (private project: SanProject) {
+        const tsConfigFilePath = project.tsConfigFilePath
         if (!tsConfigFilePath) throw new Error('tsconfig.json path is required')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
-        this.tsConfigFilePath = tsConfigFilePath
 
         const compilerOptions = require(tsConfigFilePath)['compilerOptions']
-        const options = this.formatCompilerOptions(compilerOptions)
-        this.phpGenerator = new PHPTranspiler(options)
+        const options = this.normalizeCompilerOptions(compilerOptions)
+        this.phpTranspiler = new PHPTranspiler(options)
     }
 
-    public compile (sanApp: SanApp, {
-        funcName = 'render',
-        nsPrefix = 'san\\',
-        emitContent = EmitContent.all,
-        ssrOnly = false,
-        emitHeader = true,
-        modules = {}
-    }) {
-        const emitter = new PHPEmitter(emitHeader, nsPrefix)
-        if (emitContent & EmitContent.renderer) {
-            this.compileRenderer(emitter, funcName, sanApp, ssrOnly)
+    public compileToSource (sourceFile: SanSourceFile, options: CompileOptions) {
+        const opts = normalizeCompileOptions(options)
+        const emitter = new PHPEmitter(opts.emitHeader, opts.importHelpers)
+        transformToFavorPHP(sourceFile)
+
+        if (opts.importHelpers) {
+            emitter.writeNamespace(this.getNameSpace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()))
+            this.emitRenderer(sourceFile, opts, emitter)
+            this.emitComponent(sourceFile, opts, emitter)
+        } else {
+            emitter.writeNamespace(this.getNameSpace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()), () => {
+                this.emitRenderer(sourceFile, opts, emitter)
+                this.emitComponent(sourceFile, opts, emitter)
+            })
+            emitter.writeNamespace(defaultHelpersNS, () => emitHelpers(emitter))
         }
-        if (emitContent & EmitContent.component) {
-            this.compileProjectFiles(sanApp, emitter, modules)
-        }
-        if (emitContent & EmitContent.runtime) {
-            emitRuntime(emitter, 'runtime\\')
-        }
+
         return emitter.fullText()
     }
 
-    public static emitRuntime ({
+    /**
+     * 产出一份 runtime 代码
+     * 配合 compileToSource importHelpers 参数来避免每份组件都包含一份 helpers
+     *
+     * @param emitHeader 是否输出 `<?php` 头
+     * @param namespace 产出 helper 的命名空间，默认值是 "san\\runtime"
+     */
+    public static emitHelpers ({
         emitHeader = true,
-        namespace = 'san\\runtime\\'
+        namespace = defaultHelpersNS
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
-        emitRuntime(emitter, namespace)
+        namespace && emitter.writeNamespace(namespace)
+        emitHelpers(emitter)
         return emitter.fullText()
     }
 
     public static fromSanProject (sanProject: SanProject) {
-        return new ToPHPCompiler({
-            project: sanProject,
-            tsConfigFilePath: sanProject.tsConfigFilePath!
-        })
+        return new ToPHPCompiler(sanProject)
     }
 
-    private compileRenderer (emitter: PHPEmitter, funcName: string, sanApp: SanApp, ssrOnly: boolean) {
-        emitter.beginNamespace('renderer')
-        emitter.writeLine(`use ${emitter.nsPrefix}runtime\\_;`)
-        emitter.carriageReturn()
+    /**
+     * 为 sourceFile 包含的所有组件生成 renderer 函数，并为入口组件生成入口 render()。
+     */
+    private emitRenderer (sourceFile: SanSourceFile, options: NormalizedCompileOptions, emitter: PHPEmitter) {
+        if (!sourceFile.componentInfos.length) return
 
-        const rc = new RendererCompiler(sanApp.componentTree, ssrOnly, emitter)
-        for (const componentInfo of sanApp.componentTree.preOrder()) {
-            const { cid } = componentInfo
-            const funcName = 'sanssrRenderer' + cid
-            emitter.writeFunction(funcName, ['$data = []', '$noDataOutput = false', '$parentCtx = []', '$tagName = "div"', '$sourceSlots = []'], [], () => {
-                rc.compile(componentInfo)
-            })
-            emitter.carriageReturn()
+        // 引入 renderer 的各种依赖
+        const helpersNS = options.importHelpers || defaultHelpersNS
+        emitter.writeLine(`use ${helpersNS}\\_;`)
+        emitter.writeLine(`use ${helpersNS}\\SanSSRData;`)
+        emitter.writeLine(`use ${helpersNS}\\SanSSRComponent;`)
+
+        const rc = new RendererCompiler(
+            sourceFile,
+            options.ssrOnly,
+            (ref: ComponentReference) => {
+                const filePath = resolve(dirname(sourceFile.getFilePath()), ref.relativeFilePath)
+                return this.getNameSpace(options.nsPrefix, options.nsRootDir, filePath)
+            },
+            emitter
+        )
+        for (const info of sourceFile.componentInfos) rc.compile(info)
+    }
+
+    /**
+     * 产出组件代码，比如组件类的 PHP 代码，供 render 使用
+     */
+    private emitComponent (sourceFile: SanSourceFile, options: NormalizedCompileOptions, emitter: PHPEmitter) {
+        if (!isTypedSanSourceFile(sourceFile)) return ''
+
+        const helpersNS = options.importHelpers || defaultHelpersNS
+        const modules = {
+            'san-ssr-target-php': {
+                name: 'san-ssr-target-php',
+                namespace: helpersNS + '\\',
+                used: true,
+                required: true
+            }
         }
-        emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
-            const funcName = 'sanssrRenderer' + sanApp.componentTree.root.cid
-            emitter.writeLine(`return ${funcName}($data, $noDataOutput, []);`)
-        })
-        emitter.endNamespace()
+
+        // for (const decl of getRuntimeDependencyDeclarations(sourceFile.tsSourceFile)) {
+        for (const decl of sourceFile.tsSourceFile.getImportDeclarations()) {
+            const literal = decl.getModuleSpecifierValue()
+            const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
+            if (literal[0] !== '.') continue
+            modules[literal] = {
+                name: literal,
+                required: false,
+                namespace: '\\' + this.getNameSpace(options.nsPrefix, options.nsRootDir, filepath) + '\\'
+            }
+        }
+        emitter.writeLines(this.phpTranspiler.compile(
+            sourceFile.tsSourceFile,
+            { ...modules, ...options.modules },
+            helpersNS
+        ))
     }
 
-    private formatCompilerOptions (compilerOptions: CompilerOptions) {
+    /**
+     * 归一化 tsconfig 里的 compilerOptions
+     * 比如，把相对路径的 baseUrl 改绝对，否则传递下去工作路径的信息就丢失了。
+     */
+    private normalizeCompilerOptions (compilerOptions: CompilerOptions) {
         let baseUrl = compilerOptions.baseUrl
         if (baseUrl && !isAbsolute(baseUrl) && this.root) {
             baseUrl = resolve(this.root, baseUrl)
@@ -113,62 +139,16 @@ export default class ToPHPCompiler implements Compiler {
         return compilerOptions
     }
 
-    public compileProjectFile (sourceFile: SanSourceFile, emitter: PHPEmitter, modules: Modules) {
-        if (!sourceFile.tsSourceFile) return ''
-        const runtimeNS = emitter.nsPrefix + 'runtime\\'
-
-        transformAstToPHP(sourceFile)
-        modules['san-ssr-target-php'] = {
-            name: 'san-ssr-target-php',
-            namespace: runtimeNS,
-            required: true
-        }
-
-        for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
-            const literal = decl.getModuleSpecifierValue()
-            const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
-            const ns = emitter.nsPrefix + this.ns(filepath)
-
-            modules[literal] = {
-                name: literal,
-                required: true,
-                namespace: '\\' + ns + '\\'
-            }
-        }
-        this.registerComponents(sourceFile, emitter, runtimeNS)
-        emitter.writeLines(this.phpGenerator.compile(
-            sourceFile.tsSourceFile,
-            modules,
-            emitter.nsPrefix
-        ))
-    }
-
-    public compileProjectFiles (entryComp: SanApp, emitter: PHPEmitter, modules: Modules) {
-        for (const [path, sourceFile] of entryComp.projectFiles) {
-            emitter.writeNamespace(this.ns(path), () => {
-                this.compileProjectFile(sourceFile, emitter, modules)
-            })
-        }
-        return emitter.fullText()
-    }
-
-    private registerComponents (sourceFile: SanSourceFile, emitter: PHPEmitter, runtimeNamespace: string) {
-        for (const [cid, clazz] of sourceFile.componentClassDeclarations) {
-            const classReference = `\\${emitter.nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
-            emitter.writeLine(`\\${runtimeNamespace}ComponentRegistry::$comps[${cid}] = '${classReference}';`)
-        }
-    }
-
-    private ns (file: string) {
-        return file.slice(this.root.length, -extname(file).length)
-            .split(sep)
-            .map(x => this.normalizeNamespaceName(x))
+    private getNameSpace (prefix: string, root: string, filename: string) {
+        return prefix + relative(root, filename.replace(/\.(ts|js)$/, ''))
+            .replace(/\//g, '\\')
+            .split('\\')
+            .map(x => this.normalizeNamespaceSlug(x))
             .join('\\')
-            .replace(/^\\/, '')
     }
 
-    private normalizeNamespaceName (pathname: string) {
-        const name = camelCase(pathname)
-        return isReserved(name) ? 'sanssrNS' + name : name
+    private normalizeNamespaceSlug (slug: string) {
+        const name = camelCase(slug)
+        return isReservedInPHP(name) ? getRefactoredName(name) : name
     }
 }

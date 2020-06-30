@@ -14,11 +14,15 @@ const htmlPath = resolve(__dirname, '../test/cases', caseName, 'expected.html')
 const expected = fs.readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
-const targetCode = compile(caseName)
-const ssrPath = resolve(__dirname, '../test/cases', caseName, 'ssr.php')
-fs.writeFileSync(ssrPath, targetCode)
+compile(caseName)
 
-const got = execFileSync(resolve(__dirname, `./render.php`), [caseName]).toString()
+let got
+try {
+    got = execFileSync(resolve(__dirname, `./render.php`), [caseName]).toString()
+} catch (err) {
+    console.error(err.output[1].toString())
+    process.exit(1)
+}
 const diff = compareSanHTML(got, expected)
 console.log(chalk[diff ? 'red' : 'green'](`[SSR  PHP] ${caseName}`), got)
 

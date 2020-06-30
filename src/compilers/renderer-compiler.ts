@@ -1,72 +1,142 @@
-import { ComponentInfo, ComponentTree } from 'san-ssr'
+import { SanSourceFile, DynamicComponentInfo, ComponentReference, ComponentInfo, isTypedComponentInfo } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
 
 export class RendererCompiler {
     private namespacePrefix = ''
 
-    /**
-     * @param componentTree 组件树，用来从中注册、解析新的动态组件
-     * @param ssrOnly 产出 HTML 是否只用于 SSR（无法浏览器端反解）
-     * @param emitter 代码产出的收集器
-     */
     constructor (
-        private componentTree: ComponentTree,
+        /**
+         * 当前编译的源文件
+         */
+        private sourceFile: SanSourceFile,
+        /**
+         * 产出 HTML 是否只用于 SSR（无法浏览器端反解）
+         */
         private ssrOnly: boolean,
-        private emitter: PHPEmitter
+        /**
+         * 根据组件引用（通常是外部组件）得到被引用组件的命名空间
+         */
+        private getNamespace: (ref: ComponentReference) => string,
+        /**
+         * 代码产出的收集器
+         */
+        private emitter: PHPEmitter = new PHPEmitter()
     ) {}
 
     /**
-    * 生成组件渲染的函数体。把组件编译为 `render(data): string` 函数。
+    * 生成组件渲染的函数。
     *
     * @param info 要被编译的组件信息
     */
     compile (info: ComponentInfo) {
-        const { componentClass, rootANode, proto } = info
+        const rendererName = this.sourceFile.entryComponentInfo === info
+            ? `render`
+            : `render${info.id}`
+        const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = "div"', '$sourceSlots = []']
+        this.emitter.carriageReturn()
+        this.emitter.writeFunction(rendererName, argumentList, [], () => this.emitRendererBody(info))
+    }
+
+    /**
+     * 生成 renderer 函数体
+     */
+    emitRendererBody (info: ComponentInfo) {
         const { emitter } = this
+        /**
+         * 没有 ANode 的组件直接返回空，比如 load-success 样例。
+         *
+         * Note: 这类组件仍然需要产生 render() 函数，是因为它可能会被
+         * 其他文件的组件引用，而其他文件里的组件并不知道该组件是否是空组件。
+         */
+        if (!info.root) {
+            emitter.writeLine('return "";')
+            return emitter.fullText()
+        }
 
-        emitter.writeIf('is_object($data)', () => {
-            emitter.writeLine('$data = (array)$data;')
-        })
         emitter.writeLine('$html = "";')
+        this.emitComponentContext(info)
+        if (info.hasMethod('initData')) this.emitInitData(info)
+        if (info.hasMethod('inited')) this.emitInited()
+        this.emitComputed()
 
-        this.genComponentContextCode(info)
-
-        // call initData()
-        const defaultData = (proto.initData && proto.initData()) || {}
-        for (const key of Object.keys(defaultData)) {
-            const val = emitter.stringify(defaultData[key])
-            emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
-        }
-
-        // call inited()
-        if (componentClass.prototype['inited']) {
-            emitter.writeLine('$ctx->instance->inited();')
-        }
-
-        // populate computed data
-        emitter.writeForeach('$ctx->computedNames as $computedName', () => {
-            emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, $computedName);')
-        })
-
-        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, this.ssrOnly, emitter)
-        aNodeCompiler.compile(rootANode, true)
+        const aNodeCompiler = new ANodeCompiler(
+            info,
+            this.getNamespace,
+            this.ssrOnly,
+            emitter
+        )
+        aNodeCompiler.compile(info.root, true)
         emitter.writeLine('return $html;')
+    }
+
+    /**
+     * 调用组件的 inited() 生命周期
+     */
+    emitInited () {
+        this.emitter.writeLine('$ctx->instance->inited();')
+    }
+
+    /**
+     * 预先计算所有 computed
+     */
+    emitComputed () {
+        this.emitter.writeForeach('$ctx->computedNames as $computedName', () => {
+            this.emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, "$computedName");')
+        })
+    }
+
+    /**
+     * 产生组件 initData() 的代码
+     */
+    emitInitData (info: ComponentInfo) {
+        if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
+        else this.emitInitDataInCompileTime(info)
+    }
+
+    /**
+     * 动态组件（输入是 JavaScript、ComponentClass）是可以在编译期拿到数据的
+     */
+    emitInitDataInCompileTime (info: DynamicComponentInfo) {
+        const defaultData = info.proto['initData']() || {}
+        for (const key of Object.keys(defaultData)) {
+            const val = this.emitter.stringify(defaultData[key])
+            this.emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
+        }
+    }
+
+    /**
+     * 静态分析的组件，必须在运行时去执行 initData() 并合并数据
+     */
+    emitInitDataInRuntime () {
+        const { emitter } = this
+        emitter.writeLine('$sanSSRInitData = $ctx->instance->initData();')
+        emitter.writeIf('$sanSSRInitData', () => {
+            emitter.writeForeach('$sanSSRInitData as $key => $val', () => {
+                emitter.writeLine('$ctx->data[$key] = isset($ctx->data[$key]) ? isset($ctx->data[$key]) : $val;')
+            })
+        })
+    }
+
+    getFullText () {
+        return this.emitter.fullText()
     }
 
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    genComponentContextCode (info: ComponentInfo) {
+    private emitComponentContext (info: ComponentInfo) {
         const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
-        const computedNames = Object.keys(info.proto.computed).map(x => `"${x}"`)
+        const computedNames = info.getComputedNames().map(x => `"${x}"`)
         emitter.writeLine(`$ctx->computedNames = [${computedNames.join(', ')}];`)
-        emitter.writeLine(`$ctx->sanssrCid = ${info.cid || 0};`)
         emitter.writeLine('$ctx->sourceSlots = $sourceSlots;')
         emitter.writeLine('$ctx->owner = $parentCtx;')
         emitter.writeLine('$ctx->slotRenderers = [];')
         emitter.writeLine('$ctx->data = &$data;')
-        emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
+
+        const className = isTypedComponentInfo(info) ? info.classDeclaration.getName() : 'SanSSRComponent'
+        emitter.writeLine(`$ctx->instance = new ${className}();`)
+        emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx);`)
     }
 }

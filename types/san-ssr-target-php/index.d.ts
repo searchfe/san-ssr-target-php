@@ -19,7 +19,7 @@ export abstract class SanSSRComponent {
  * 编译过程中，业务代码使用的组件数据声明。
  */
 export abstract class SanSSRData {
-    get (path: string): any
+    get<T = any> (path: string): T
     set (path: string, value: any): void
     removeAt (path: string, index: number): void
 }

@@ -8,12 +8,12 @@ export class PHPEmitter extends Emitter {
 
     /**
      * @param emitHeader 输出 PHP 头 `<?php`
-     * @param nsPrefix 命名空间前缀，用于 writeNamespa 等操作
+     * @param helpersNamespace helpers 所在的命名空间
      */
-    constructor (emitHeader = false, public nsPrefix = '') {
+    constructor (emitHeader = false, public helpersNamespace = '') {
         super()
         if (emitHeader) this.writeLine('<?php')
-        this.stringifier = new Stringifier(nsPrefix)
+        this.stringifier = new Stringifier(helpersNamespace)
     }
 
     fullText () {
@@ -31,7 +31,6 @@ export class PHPEmitter extends Emitter {
     }
 
     public beginNamespace (ns: string = '') {
-        ns = this.nsPrefix + ns
         const code = ns === ''
             ? 'namespace {'
             : `namespace ${ns} {`
@@ -45,10 +44,14 @@ export class PHPEmitter extends Emitter {
         this.writeLine(`}`)
     }
 
-    public writeNamespace (ns: string, cb: Function) {
-        this.beginNamespace(ns)
-        cb()
-        this.endNamespace()
+    public writeNamespace (ns: string, cb?: Function) {
+        if (cb) {
+            this.beginNamespace(ns)
+            cb()
+            this.endNamespace()
+        } else {
+            this.writeLine(`namespace ${ns};`)
+        }
     }
 
     public writeHTMLLiteral (str: string) {

@@ -2,8 +2,8 @@ import { Component } from 'san'
 
 export default class MyComponent extends Component {
     static computed = {
-        realTitle: function () {
-            return 'real' + this.data.get('title')
+        realTitle: function (this: MyComponent) {
+            return 'real' + this.data.get<string>('title')
         }
     }
 

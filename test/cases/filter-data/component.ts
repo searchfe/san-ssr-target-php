@@ -2,8 +2,8 @@ import { Component } from 'san'
 
 export default class MyComponent extends Component {
     static filters = {
-        real: function (str: string) {
-            return this.data.get('real') + str
+        real: function (this: MyComponent, str: string) {
+            return this.data.get<string>('real') + str
         }
     }
 

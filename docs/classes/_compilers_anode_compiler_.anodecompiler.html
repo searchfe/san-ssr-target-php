@@ -99,9 +99,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#elementcompiler" class="tsd-kind-icon">element<wbr>Compiler</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#emitter" class="tsd-kind-icon">emitter</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#owner" class="tsd-kind-icon">owner</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#root" class="tsd-kind-icon">root</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#info" class="tsd-kind-icon">info</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_anode_compiler_.anodecompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a></li>
 							</ul>
 						</section>
@@ -130,13 +130,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new ANode<wbr>Compiler<span class="tsd-signature-symbol">(</span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span>, root<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentTree</span>, ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_compilers_anode_compiler_.anodecompiler.html" class="tsd-signature-type">ANodeCompiler</a></li>
+						<li class="tsd-signature tsd-kind-icon">new ANode<wbr>Compiler<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span>, getNamespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_compilers_anode_compiler_.anodecompiler.html" class="tsd-signature-type">ANodeCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L16">compilers/anode-compiler.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L16">compilers/anode-compiler.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -144,7 +144,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>owner: <span class="tsd-signature-type">ComponentInfo</span></h5>
+									<h5>info: <span class="tsd-signature-type">ComponentInfo</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
 											<p>所述的组件</p>
@@ -152,15 +152,33 @@
 									</div>
 								</li>
 								<li>
-									<h5>root: <span class="tsd-signature-type">ComponentTree</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>组件树</p>
-										</div>
-									</div>
+									<h5>getNamespace: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
 								</li>
 								<li>
 									<h5>ssrOnly: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>是否只在服务端渲染，可以减少输出大小，但不支持反解</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>emitter: <a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a></h5>
@@ -184,7 +202,7 @@
 					<div class="tsd-signature tsd-kind-icon">element<wbr>Compiler<span class="tsd-signature-symbol">:</span> <a href="_compilers_element_compiler_.elementcompiler.html" class="tsd-signature-type">ElementCompiler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L16">compilers/anode-compiler.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L16">compilers/anode-compiler.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +212,7 @@
 					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L27">compilers/anode-compiler.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L27">compilers/anode-compiler.ts:27</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,22 +222,53 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="getnamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Namespace</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>Namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L25">compilers/anode-compiler.ts:25</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-class tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="id" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id</h3>
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L14">compilers/anode-compiler.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L14">compilers/anode-compiler.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="owner" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> owner</h3>
-					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentInfo</span></div>
+					<a name="info" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> info</h3>
+					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentInfo</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L24">compilers/anode-compiler.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L24">compilers/anode-compiler.ts:24</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -229,29 +278,19 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="root" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> root</h3>
-					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentTree</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L25">compilers/anode-compiler.ts:25</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>组件树</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="ssronly" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> ssr<wbr>Only</h3>
 					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L26">compilers/anode-compiler.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L26">compilers/anode-compiler.ts:26</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>是否只在服务端渲染，可以减少输出大小，但不支持反解</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -266,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L38">compilers/anode-compiler.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L38">compilers/anode-compiler.ts:38</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -298,13 +337,13 @@
 					<a name="compilecomponent" class="tsd-anchor"></a>
 					<h3>compile<wbr>Component</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, componentInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span>, isRootElement<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span>, isRootElement<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L220">compilers/anode-compiler.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L219">compilers/anode-compiler.ts:219</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -318,9 +357,9 @@
 									</div>
 								</li>
 								<li>
-									<h5>componentInfo: <span class="tsd-signature-type">ComponentInfo</span></h5>
+									<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>这个 aNode 关联的组件（与 aNode 所属的 owner 组件不同）</p>
+										<p>这个 aNode 引用的组件（一般是外部组件，不同于 aNode 所属组件）</p>
 									</div>
 								</li>
 								<li>
@@ -344,7 +383,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L208">compilers/anode-compiler.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L207">compilers/anode-compiler.ts:207</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -370,7 +409,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L112">compilers/anode-compiler.ts:112</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L111">compilers/anode-compiler.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -393,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L78">compilers/anode-compiler.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L77">compilers/anode-compiler.ts:77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -416,7 +455,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L88">compilers/anode-compiler.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L87">compilers/anode-compiler.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -439,7 +478,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L139">compilers/anode-compiler.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L138">compilers/anode-compiler.ts:138</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -462,7 +501,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L74">compilers/anode-compiler.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L73">compilers/anode-compiler.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -485,7 +524,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L55">compilers/anode-compiler.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L54">compilers/anode-compiler.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -508,7 +547,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L290">compilers/anode-compiler.ts:290</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L292">compilers/anode-compiler.ts:292</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -525,7 +564,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/anode-compiler.ts#L286">compilers/anode-compiler.ts:286</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/anode-compiler.ts#L288">compilers/anode-compiler.ts:288</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -539,6 +578,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_compile_options_.html">"compile-<wbr>options"</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="../modules/_compilers_anode_compiler_.html">"compilers/anode-<wbr>compiler"</a>
@@ -559,7 +601,7 @@
 						<a href="../modules/_emitters_emitter_.html">"emitters/emitter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_emitters_runtime_.html">"emitters/runtime"</a>
+						<a href="../modules/_emitters_helpers_.html">"emitters/helpers"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_emitters_stringifier_.html">"emitters/stringifier"</a>
@@ -571,13 +613,13 @@
 						<a href="../modules/_transformers_index_.html">"transformers/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_transformers_refactor_computed_property_.html">"transformers/refactor-<wbr>computed-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_transformers_refactor_filters_property_.html">"transformers/refactor-<wbr>filters-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="../modules/_transformers_refactor_member_initializer_.html">"transformers/refactor-<wbr>member-<wbr>initializer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_transformers_refactor_method_collection_.html">"transformers/refactor-<wbr>method-<wbr>collection"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_transformers_refactor_reserved_names_.html">"transformers/refactor-<wbr>reserved-<wbr>names"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_transformers_replace_san_module_.html">"transformers/replace-<wbr>san-<wbr>module"</a>
@@ -587,9 +629,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_fs_.html">"utils/fs"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_lang_.html">"utils/lang"</a>
 					</li>
 				</ul>
 			</nav>
@@ -610,13 +649,13 @@
 								<a href="_compilers_anode_compiler_.anodecompiler.html#emitter" class="tsd-kind-icon">emitter</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_anode_compiler_.anodecompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_anode_compiler_.anodecompiler.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_compilers_anode_compiler_.anodecompiler.html#owner" class="tsd-kind-icon">owner</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_compilers_anode_compiler_.anodecompiler.html#root" class="tsd-kind-icon">root</a>
+								<a href="_compilers_anode_compiler_.anodecompiler.html#info" class="tsd-kind-icon">info</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_anode_compiler_.anodecompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a>

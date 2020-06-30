@@ -2,7 +2,7 @@ import { Component } from 'san'
 
 export default class MyComponent extends Component {
     inited () {
-        const realTitle = 'real' + this.data.get('title')
+        const realTitle = 'real' + this.data.get<string>('title')
         this.data.set('_realTitle', realTitle)
     }
     static computed = {

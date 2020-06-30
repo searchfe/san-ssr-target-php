@@ -4,7 +4,7 @@ describe('Stringifier', function () {
     let stringifier
 
     beforeEach(function () {
-        stringifier = new Stringifier('san')
+        stringifier = new Stringifier('\\san')
     })
 
     it('should stringify string', function () {
@@ -61,7 +61,7 @@ describe('Stringifier', function () {
         const date = new Date()
         const ret = stringifier.any(date)
 
-        expect(ret).toContain('new \\sanruntime\\Ts2Php_Date')
+        expect(ret).toContain('new \\san\\Ts2Php_Date')
     })
 
     it('should throw error', function () {

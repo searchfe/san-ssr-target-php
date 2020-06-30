@@ -4,6 +4,7 @@ npm-debug.log
 coverage
 vendor/
 dist/
-test/cases/*/ssr.php
+test/cases/*/*.php
 test/perf/*.san.php
+test/stub/helpers.php
 templates_c/

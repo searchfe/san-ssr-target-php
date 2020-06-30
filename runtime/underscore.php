@@ -1,6 +1,5 @@
 <?php
-final class _
-{
+final class _ {
     public static $HTML_ENTITY;
     public static $BASE_PROPS;
   
@@ -180,38 +179,18 @@ final class _
         return isset($value) && $value ? ' ' . $name : '';
     }
 
-    public static function getClassByCtx($ctx) {
-        $cid = $ctx->sanssrCid;
-        if (\__NS__ComponentRegistry::has($cid)) {
-            return \__NS__ComponentRegistry::get($cid);
-        }
-        return null;
-    }
-
     public static function callFilter($ctx, $name, $args)
     {
-        $cls = _::getClassByCtx($ctx);
-        $func = $cls::$filters[$name];
+        $func = $ctx->instance::$filters[$name];
         if (is_callable($func)) {
             array_unshift($args, $ctx->instance);
             return call_user_func_array($func, $args);
         }
     }
 
-    public static function createComponent (&$ctx) {
-        $cls = _::getClassByCtx($ctx);
-        if (!class_exists($cls)) {
-            $cls = '\__NS__SanSSRComponent';
-        }
-        $obj = new $cls();
-        $obj->data = new SanSSRData($ctx);
-        return $obj;
-    }
-
     public static function callComputed($ctx, $name)
     {
-        $cls = _::getClassByCtx($ctx);
-        $func = $cls::$computed[$name];
+        $func = $ctx->instance::$computed[$name];
         if (is_callable($func)) {
             $result = call_user_func($func, $ctx->instance);
             return $result;

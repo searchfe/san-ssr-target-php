@@ -19,7 +19,7 @@ declare namespace San {
         setTypeChecker(checker: () => void): void;
 
         fire(change: SanDataChangeInfo): void;
-        get(expr?: string | ExprAccessorNode): any;
+        get<D = any>(expr?: string | ExprAccessorNode): D;
         set(expr: string | ExprAccessorNode, value: any, option?: SanDataChangeOption): void;
         merge(expr: string | ExprAccessorNode, source: {}, option?: SanDataChangeOption): void;
         apply(expr: string | ExprAccessorNode, changer: (oldval: {}) => {}, option?: SanDataChangeOption): void;

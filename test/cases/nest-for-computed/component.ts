@@ -1,11 +1,7 @@
 import { Component } from 'san'
 
 export default class MyComponent extends Component {
-    public static template = '<form>' +
-      '<fieldset s-for="cate in cates">' +
-        '<label s-for="item in forms[cate]">{{item}}</label>' +
-      '</fieldset>' +
-    '</form>'
+    public static template = '<form><fieldset s-for="cate in cates"><label s-for="item in forms[cate]">{{item}}</label></fieldset></form>'
 
     initData () {
         return {
@@ -14,9 +10,9 @@ export default class MyComponent extends Component {
     }
 
     static computed = {
-        forms () {
-            const cates = this.data.get('cates')
-            const formLen = this.data.get('formLen')
+        forms (this: MyComponent) {
+            const cates = this.data.get<string[]>('cates')
+            const formLen = this.data.get<number>('formLen')
 
             const result = {}
             let start = 1

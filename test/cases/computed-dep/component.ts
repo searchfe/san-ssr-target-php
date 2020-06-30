@@ -2,16 +2,16 @@ import { Component } from 'san'
 
 export default class MyComponent extends Component {
     static computed = {
-        less () {
-            return this.data.get('normal') - 1
+        less (this: MyComponent) {
+            return this.data.get<number>('normal') - 1
         },
 
-        normal () {
-            return this.data.get('num')
+        normal (this: MyComponent) {
+            return this.data.get<number>('num')
         },
 
-        more () {
-            return this.data.get('normal') + 1
+        more (this: MyComponent) {
+            return this.data.get<number>('normal') + 1
         }
     }
 

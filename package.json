@@ -13,20 +13,23 @@
     "*.json",
     "*.md"
   ],
+  "bin": {
+    "san-ssr-target-php-helpers": "./bin/helpers"
+  },
   "scripts": {
     "clean": "rm -rf ./dist test/cases/*/ssr.php",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
-    "docs": "typedoc --out docs src && touch docs/.nojekyll",
-    "build": "tsc",
+    "docs": "rm -rf node_modules/typedoc/node_modules/typescript && typedoc --out docs src && touch docs/.nojekyll",
+    "build": "tsc && ./bin/helpers > test/stub/helpers.php",
     "watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit test/unit",
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
     "integration": "jest test/integration.spec.ts",
-    "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
+    "coveralls": "npm run build && npm run coverage && cat coverage/lcov.info | coveralls",
     "coverage": "jest --coverage",
     "test": "npm run build && npm run unit && npm run integration",
-    "check": "npm run test && npm run lint",
+    "check": "rm -rf dist && npm run test && npm run lint",
     "render": "./bin/render.js",
     "version": "npm run build && npm run docs",
     "perf": "./test/perf/build.js && php ./test/perf/index.php",
@@ -72,7 +75,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.9.0",
     "san": "^3.8.0",
-    "san-ssr": "^1.13.1",
+    "san-ssr": "^2.0.1",
     "semantic-release": "^15.13.27",
     "typedoc": "^0.15.0",
     "wdio-sauce-service": "^0.4.14",
@@ -85,8 +88,8 @@
     "lodash": "^4.17.15",
     "snake-case": "^2.1.0",
     "ts-morph": "4.0.1",
-    "ts2php": "^0.19.8",
-    "typescript": "~3.4.0",
+    "ts2php": "^0.26.2",
+    "typescript": "^3.9.5",
     "yargs": "^14.2.0"
   },
   "peerDependencies": {

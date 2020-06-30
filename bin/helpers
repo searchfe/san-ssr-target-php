@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+const ToPHPCompiler = require('..').default
+let namespace = 'san\\helpers'
+
+if (process.argv[2] === '--help') {
+    showHelp()
+    process.exit(0)
+} else if (process.argv[2] === '-n' || process.argv[2] === '--namespace') {
+    if (!process.argv[3]) {
+        console.error(`invalid namespace "${process.argv[3] || ''}"`)
+        showHelp()
+        process.exit(1)
+    }
+    namespace = process.argv[3]
+}
+process.stdout.write(ToPHPCompiler.emitHelpers({ namespace }))
+
+function showHelp () {
+    console.log('san-ssr-target-php-helpers [-n <NAMESPACE>]')
+    console.log()
+    console.log('Options:')
+    console.log('  --namespace, -n    Specify the namespace of helpers')
+    console.log()
+    console.log('Example:')
+    console.log('$ san-ssr-target-php-helpers -n \'san\\helpers\'')
+    console.log('<?php')
+    console.log('namespace foo\bar {')
+    console.log('...')
+}

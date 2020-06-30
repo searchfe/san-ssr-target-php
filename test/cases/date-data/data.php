@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . '/../../../runtime/Ts2Php_Helper.php');
+require_once(__DIR__ . '/../../stub/helpers.php');
+use \san\helpers\Ts2Php_Date;
 
 function data() {
     return [

@@ -1,5 +1,5 @@
 import { SanProject } from 'san-ssr'
-import ToPHPCompiler, { EmitContent } from '../../src/index'
+import ToPHPCompiler from '../../src/index'
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
@@ -8,22 +8,22 @@ const fromTestDir = x => resolve(__dirname, '..', x)
 const tsConfigFilePath = fromTestDir('tsconfig.json')
 
 const compileComponent = (file: string, options = {}) => {
-    const proj = new SanProject({ tsConfigFilePath })
+    const proj = new SanProject(tsConfigFilePath)
     const cc = ToPHPCompiler.fromSanProject(proj)
 
     const filepath = fromTestDir(file)
-    const app = proj.parseSanApp(filepath)
+    const app = proj.parseSanSourceFile(filepath)
 
-    return cc.compile(app, { emitContent: EmitContent.component, ...options })
+    return cc.compileToSource(app, options)
 }
 
 describe('ToPHPCompiler', function () {
     it('should compile a component file', function () {
         const result = compileComponent('stub/a.comp.ts')
 
-        expect(result).toContain('namespace san\\stub\\aComp {')
+        expect(result).toContain('namespace san\\test\\stub\\aComp {')
         expect(result).toContain('class A extends SanSSRComponent {')
-        expect(result).toContain(`\\san\\runtime\\ComponentRegistry::$comps[0] = '\\san\\stub\\aComp\\A'`)
+        expect(result).toContain('namespace san\\runtime {')
     })
 
     it('should compile filters into static methods', function () {
@@ -64,31 +64,29 @@ describe('ToPHPCompiler', function () {
         expect(result2).not.toContain('require_once("lodash")')
     })
 
-    it('should bundle dependencies by default', function () {
-        const result = compileComponent('stub/c.comp.ts', {
-            emitContent: EmitContent.all
-        })
-        expect(result).toContain('function sum($a, $b)')
+    it('should not bundle dependency', function () {
+        const result = compileComponent('stub/c.comp.ts')
         expect(result).toContain('class C extends SanSSRComponent')
-        expect(result).toContain('function sanssrRenderer')
+        expect(result).toContain('function render ($data, $noDataOutput')
+        expect(result).not.toContain('function sum($a, $b)')
     })
 
     it('should support emit runtime only', function () {
-        const result = compileComponent('stub/c.comp.ts', {
-            emitContent: EmitContent.runtime
-        })
+        const result = ToPHPCompiler.emitHelpers()
 
-        expect(result).toContain('namespace san\\runtime')
+        expect(result).toContain('namespace san\\runtime;')
         expect(result).toContain('class Ts2Php_Date')
         expect(result).toContain('class SanSSRData')
     })
 
-    it('should support emit runtime without component', function () {
-        const result = ToPHPCompiler.emitRuntime()
+    it('should support emit runtime with specified namespace', function () {
+        const result = ToPHPCompiler.emitHelpers({ namespace: '\\foo' })
+        expect(result).toContain('namespace \\foo;')
+    })
 
-        expect(result).toContain('namespace san\\runtime')
-        expect(result).toContain('class Ts2Php_Date')
-        expect(result).toContain('class SanSSRData')
+    it('should support emit runtime without <?php header', function () {
+        const result = ToPHPCompiler.emitHelpers({ emitHeader: false })
+        expect(result).toMatch(/^namespace san\\runtime;/)
     })
 
     it('should throw if tsconfig not specified', function () {

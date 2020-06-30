@@ -1,92 +1,103 @@
-import { refactorFiltersProperty } from '../../../src/transformers/refactor-filters-property'
+import { refactorMethodCollection } from '../../../src/transformers/refactor-method-collection'
 import { PropertyDeclaration, Project } from 'ts-morph'
 
-describe('refactor filters property', function () {
+describe('refactor computed property', function () {
     const proj = new Project({ addFilesFromTsConfig: false })
 
     it('should skip if filters property does not have initializer', function () {
         const sourceFile = proj.createSourceFile(
             '/tmp/not-exist-file', `
             class Foo {
-                filters
+                computed
             } `,
             { overwrite: true }
         )
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-                filters`)
+                computed`)
     })
 
     it('should skip refactor if it is not object literal', function () {
         const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
         class Foo {
-            filters = false
+            computed = false
         }
         `, { overwrite: true })
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-            filters = false`)
+            computed = false`)
     })
-
-    it('should replace property initializer', function () {
+    it('should replace function property assignment initializer', function () {
         const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
         class Foo {
-            filters = {
+            computed = {
                 foo: function () {
                     return this.data.get('bar')
                 }
             }
         }
         `, { overwrite: true })
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-            filters = {
+            computed = {
                 foo: function (sanssrSelf: Foo) {
                     return sanssrSelf.data.get('bar')
                 }
             }`)
     })
 
-    it('should replace method declaration', function () {
+    it('should skip non-function property assignment initializer', function () {
         const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
         class Foo {
-            filters = {
-                foo () {
-                    return this.data.get('bar')
-                }
+            computed = {
+                foo: false
             }
         }
         `, { overwrite: true })
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-            filters = {
-                foo (sanssrSelf: Foo) {
-                    return sanssrSelf.data.get('bar')
-                }
+            computed = {
+                foo: false
             }`)
     })
 
     it('should replace method declaration', function () {
         const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
         class Foo {
-            filters = {
+            computed = {
                 foo () {
                     return this.data.get('bar')
                 }
             }
         }
         `, { overwrite: true })
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-            filters = {
+            computed = {
                 foo (sanssrSelf: Foo) {
                     return sanssrSelf.data.get('bar')
                 }
+            }`)
+    })
+
+    it('should skip non assigment/method initializer', function () {
+        const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
+        class Foo {
+            computed = {
+                foo
+            }
+        }
+        `, { overwrite: true })
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
+        expect(prop.getFullText()).toEqual(`
+            computed = {
+                foo
             }`)
     })
 
@@ -94,17 +105,17 @@ describe('refactor filters property', function () {
         const sourceFile = proj.createSourceFile('/tmp/not-exist-file', `
         class Foo {
             bar() { return 'bar' }
-            filters = {
+            computed = {
                 foo () {
                     return this.bar()
                 }
             }
         }
         `, { overwrite: true })
-        const prop = sourceFile.getClass('Foo').getProperty('filters')
-        refactorFiltersProperty(prop)
+        const prop = sourceFile.getClass('Foo').getProperty('computed')
+        refactorMethodCollection(prop)
         expect(prop.getFullText()).toEqual(`
-            filters = {
+            computed = {
                 foo (sanssrSelf: Foo) {
                     return sanssrSelf.bar()
                 }

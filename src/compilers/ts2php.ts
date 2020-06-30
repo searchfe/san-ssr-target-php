@@ -1,5 +1,5 @@
 import { Ts2Php } from 'ts2php'
-import { SourceFile, CompilerOptions } from 'ts-morph'
+import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:ts2php')
@@ -11,6 +11,7 @@ export interface Modules {
 type ModuleInfo = {
     name: string,
     required?: boolean,
+    used?: boolean,
     path?: string,
     namespace?: string
 }
@@ -18,26 +19,24 @@ type ModuleInfo = {
 export class PHPTranspiler {
     private ts2php: Ts2Php
 
-    constructor (compilerOptions: CompilerOptions = {}) {
+    constructor (compilerOptions = {}) {
         debug('compilerOptions:', compilerOptions)
         this.ts2php = new Ts2Php({ compilerOptions })
     }
 
-    compile (sourceFile: SourceFile, modules: Modules, nsPrefix: string) {
-        debug('compile', sourceFile.getFilePath(), 'options:', modules)
-        debug('source code:', sourceFile.getFullText())
-
+    compile (sourceFile: SourceFile, modules: Modules, helperNamespace: string) {
         const options = {
             source: sourceFile.getFullText(),
             emitHeader: false,
             plugins: [],
             modules,
-            helperNamespace: `\\${nsPrefix}runtime\\`
+            helperNamespace: `${helperNamespace}\\`
         }
+        debug('compile', sourceFile.getFilePath(), 'options:', options)
         const { errors, phpCode } = this.ts2php.compile(sourceFile.getFilePath(), options)
         if (errors.length) {
             const error = errors[0]
-            throw new Error(error['messageText'])
+            throw new Error(String(error.messageText))
         }
         debug('target code:', phpCode)
         return phpCode

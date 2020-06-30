@@ -4,12 +4,13 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 $caseName = $argv[1];
 $caseDir = "test/cases/" . $caseName;
-include($caseDir . '/ssr.php');
+include('test/stub/helpers.php');
+include($caseDir . '/component.php');
 
 $data = getData($caseDir);
 
 $noDataOutput = preg_match('/-ndo$/', $caseName);
-$renderFunc = '\\san\\' . dashesToCamelCase($caseName) . '\\renderer\\render';
+$renderFunc = '\\san\\' . dashesToCamelCase($caseName) . '\\component\\render';
 
 echo $renderFunc($data, $noDataOutput);
 

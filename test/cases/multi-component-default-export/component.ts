@@ -1,5 +1,5 @@
 import { Component } from 'san'
-import { XList } from './list'
+import XList from './list'
 
 export default class MyComponent extends Component {
     static components = {

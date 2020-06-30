@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;utils/lang&quot; | san-ssr-target-php</title>
+	<title>&quot;compile-options&quot; | san-ssr-target-php</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_utils_lang_.html">&quot;utils/lang&quot;</a>
+					<a href="_compile_options_.html">&quot;compile-options&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;utils/lang&quot;</h1>
+			<h1>External module &quot;compile-options&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -70,30 +70,37 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_compile_options_.compileoptions.html" class="tsd-kind-icon">Compile<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_compile_options_.normalizedcompileoptions.html" class="tsd-kind-icon">Normalized<wbr>Compile<wbr>Options</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_compile_options_.html#defaulthelpersns" class="tsd-kind-icon">default<wbr>HelpersNS</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_lang_.html#isreserved" class="tsd-kind-icon">is<wbr>Reserved</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_compile_options_.html#normalizecompileoptions" class="tsd-kind-icon">normalize<wbr>Compile<wbr>Options</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="reservednames" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> reserved<wbr>Names</h3>
-					<div class="tsd-signature tsd-kind-icon">reserved<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[/^list$/i]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="defaulthelpersns" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> default<wbr>HelpersNS</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>HelpersNS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"san\runtime"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;san\runtime&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/utils/lang.ts#L1">utils/lang.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compile-options.ts#L56">compile-options.ts:56</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -101,25 +108,48 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="isreserved" class="tsd-anchor"></a>
-					<h3>is<wbr>Reserved</h3>
+					<a name="normalizecompileoptions" class="tsd-anchor"></a>
+					<h3>normalize<wbr>Compile<wbr>Options</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Reserved<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">normalize<wbr>Compile<wbr>Options<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_compile_options_.normalizedcompileoptions.html" class="tsd-signature-type">NormalizedCompileOptions</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/utils/lang.ts#L3">utils/lang.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compile-options.ts#L58">compile-options.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>__namedParameters: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>emit<wbr>Header<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>import<wbr>Helpers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>modules<span class="tsd-signature-symbol">: </span><a href="../interfaces/_compilers_ts2php_.modules.html" class="tsd-signature-type">Modules</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>ns<wbr>Prefix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>ns<wbr>Root<wbr>Dir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>render<wbr>Function<wbr>Name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>ssr<wbr>Only<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_compile_options_.normalizedcompileoptions.html" class="tsd-signature-type">NormalizedCompileOptions</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -130,6 +160,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="_compile_options_.html">"compile-<wbr>options"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_compilers_anode_compiler_.html">"compilers/anode-<wbr>compiler"</a>
@@ -150,7 +183,7 @@
 						<a href="_emitters_emitter_.html">"emitters/emitter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_emitters_runtime_.html">"emitters/runtime"</a>
+						<a href="_emitters_helpers_.html">"emitters/helpers"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_emitters_stringifier_.html">"emitters/stringifier"</a>
@@ -162,13 +195,13 @@
 						<a href="_transformers_index_.html">"transformers/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_transformers_refactor_computed_property_.html">"transformers/refactor-<wbr>computed-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_transformers_refactor_filters_property_.html">"transformers/refactor-<wbr>filters-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="_transformers_refactor_member_initializer_.html">"transformers/refactor-<wbr>member-<wbr>initializer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_transformers_refactor_method_collection_.html">"transformers/refactor-<wbr>method-<wbr>collection"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_transformers_refactor_reserved_names_.html">"transformers/refactor-<wbr>reserved-<wbr>names"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_transformers_replace_san_module_.html">"transformers/replace-<wbr>san-<wbr>module"</a>
@@ -179,18 +212,21 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_utils_fs_.html">"utils/fs"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="_utils_lang_.html">"utils/lang"</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_compile_options_.compileoptions.html" class="tsd-kind-icon">Compile<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_compile_options_.normalizedcompileoptions.html" class="tsd-kind-icon">Normalized<wbr>Compile<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_compile_options_.html#defaulthelpersns" class="tsd-kind-icon">default<wbr>HelpersNS</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_utils_lang_.html#isreserved" class="tsd-kind-icon">is<wbr>Reserved</a>
+						<a href="_compile_options_.html#normalizecompileoptions" class="tsd-kind-icon">normalize<wbr>Compile<wbr>Options</a>
 					</li>
 				</ul>
 			</nav>

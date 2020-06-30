@@ -6,7 +6,7 @@ export default class MyComponent extends Component {
             prefix: 'real',
             getPrefix: () => foo.prefix
         }
-        return foo.getPrefix() + this.data.get('title')
+        return foo.getPrefix() + this.data.get<string>('title')
     }
 
     static template = '<div><b title="{{realTitle()}}">{{realTitle()}}</b></div>'

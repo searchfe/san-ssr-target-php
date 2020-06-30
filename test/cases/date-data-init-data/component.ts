@@ -11,7 +11,7 @@ export default class MyComponent extends Component {
 
     initData () {
         return {
-            date: new Date('1996-07-26T07:33:20.000Z')
+            date: new Date(838366400000)
         }
     }
 }

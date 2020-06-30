@@ -1,10 +1,10 @@
 import { stringLiteralize } from '../compilers/expr-compiler'
 
 export class Stringifier {
-    private nsPrefix = ''
+    private helpers = ''
 
-    constructor (nsPrefix: string) {
-        this.nsPrefix = nsPrefix
+    constructor (helpersNamespace: string) {
+        this.helpers = helpersNamespace
     }
 
     obj (source: object) {
@@ -50,7 +50,7 @@ export class Stringifier {
     }
 
     date (source: Date) {
-        return `new \\${this.nsPrefix}runtime\\Ts2Php_Date(` + source.getTime() + ')'
+        return `new ${this.helpers}\\Ts2Php_Date(` + source.getTime() + ')'
     }
 
     any (source: any): string {

@@ -1,20 +1,18 @@
-import { isReserved } from '../utils/lang'
 import { refactorMemberInitializer } from './refactor-member-initializer'
-import { SanSourceFile } from 'san-ssr'
-import { refactorFiltersProperty } from './refactor-filters-property'
-import { refactorComputedProperty } from './refactor-computed-property'
+import { isTypedSanSourceFile, SanSourceFile } from 'san-ssr'
+import { refactorMethodCollection } from './refactor-method-collection'
 import { replaceSanModule } from './replace-san-module'
+import { refactorReservedNames } from './refactor-reserved-names'
 
 const uselessComponentProps = ['components']
 
-export function transformAstToPHP (sourceFile: SanSourceFile) {
-    if (!sourceFile.tsSourceFile) return
+export function transformToFavorPHP (sourceFile: SanSourceFile) {
+    if (!isTypedSanSourceFile(sourceFile)) return
     replaceSanModule(sourceFile.tsSourceFile, 'san-ssr-target-php')
-    sourceFile.fakeProperties.forEach(prop => prop.remove())
+    refactorReservedNames(sourceFile)
 
-    for (const clazz of sourceFile.componentClassDeclarations.values()) {
+    for (const clazz of sourceFile.getComponentClassDeclarations()) {
         clazz.setExtends(`SanSSRComponent`)
-
         for (const useless of uselessComponentProps) {
             const comps = clazz.getStaticProperty(useless)
             if (comps) comps.remove()
@@ -22,18 +20,11 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
         for (const prop of clazz.getProperties()) {
             if (prop.getName() === 'computed') {
-                refactorComputedProperty(prop)
+                refactorMethodCollection(prop)
             } else if (prop.getName() === 'filters') {
-                refactorFiltersProperty(prop)
+                refactorMethodCollection(prop)
             }
             refactorMemberInitializer(clazz, prop)
-        }
-    }
-
-    for (const clazz of sourceFile.getClassDeclarations()) {
-        const name = clazz.getName()
-        if (name && isReserved(name)) {
-            clazz.rename(`SanSSRClass${name}`)
         }
     }
 }

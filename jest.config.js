@@ -6,6 +6,9 @@ module.exports = {
         '<rootDir>/test/unit/**/*.ts',
         '<rootDir>/test/integration.spec.ts'
     ],
+    collectCoverageFrom: [
+        'src/**/*.ts'
+    ],
     globals: {
         tsConfig: {
             skipLibCheck: true,

@@ -1,5 +1,5 @@
 import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode, AFragmentNode } from 'san'
-import { ComponentTree, TypeGuards, ComponentInfo, getANodePropByName, getANodeProps } from 'san-ssr'
+import { ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import { PHPEmitter } from '../emitters/emitter'
 import * as compileExprSource from '../compilers/expr-compiler'
@@ -16,13 +16,13 @@ export class ANodeCompiler {
     private elementCompiler: ElementCompiler
 
     /**
-     * @param owner 所述的组件
-     * @param root 组件树
+     * @param info 所述的组件
+     * @param ssrOnly 是否只在服务端渲染，可以减少输出大小，但不支持反解
      * @param emitter 输出器
      */
     constructor (
-        private owner: ComponentInfo,
-        private root: ComponentTree,
+        private info: ComponentInfo,
+        private getNamespace: (ref: ComponentReference) => string,
         private ssrOnly: boolean,
         private emitter: PHPEmitter
     ) {
@@ -43,10 +43,9 @@ export class ANodeCompiler {
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
-        const ComponentClass = this.owner.getChildComponentClass(aNode)
-        if (ComponentClass) {
-            const info = this.root.addComponentClass(ComponentClass)
-            return info ? this.compileComponent(aNode, info, isRootElement) : undefined
+        const ref = this.info.getChildComponentRenference(aNode)
+        if (ref) {
+            return this.compileComponent(aNode, ref, isRootElement)
         }
 
         this.compileElement(aNode, isRootElement)
@@ -214,10 +213,10 @@ export class ANodeCompiler {
 
     /**
      * @param aNode 要被编译的 aNode
-     * @param componentInfo 这个 aNode 关联的组件（与 aNode 所属的 owner 组件不同）
+     * @param ref 这个 aNode 引用的组件（一般是外部组件，不同于 aNode 所属组件）
      * @param isRootElement 是否需要输出数据，如果该组件是根组件，它为 true
      */
-    compileComponent (aNode: ANode, componentInfo: ComponentInfo, isRootElement: boolean) {
+    compileComponent (aNode: ANode, ref: ComponentReference, isRootElement: boolean) {
         const { emitter } = this
         let dataLiteral = '[]'
 
@@ -263,19 +262,22 @@ export class ANodeCompiler {
         }
 
         const givenData = []
-        for (const prop of getANodeProps(aNode)) {
+        for (const prop of aNode.props) {
             const key = compileExprSource.stringLiteralize(prop.name)
             const val = compileExprSource.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }
 
-        dataLiteral = '[' + givenData.join(',\n') + ']'
+        dataLiteral = '[' + givenData.join(', ') + ']'
         if (aNode.directives.bind) {
             const bindData = compileExprSource.expr(aNode.directives.bind.value)
             dataLiteral = `_::combine(${bindData}, ${dataLiteral})`
         }
 
-        const renderId = 'sanssrRenderer' + componentInfo.cid
+        const name = ref.isDefault ? 'render' : 'render' + ref.id
+        const renderId = ref.relativeFilePath === '.'
+            ? name
+            : '\\' + this.getNamespace(ref) + '\\' + name
         const ndo = isRootElement ? '$noDataOutput' : 'true'
         emitter.nextLine(`$html .= `)
         emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$ctx', emitter.stringify(aNode.tagName), '$sourceSlots'])

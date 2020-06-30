@@ -1,5 +1,4 @@
-import camelCase from 'camelcase'
-import { existsSync } from 'fs'
+import { writeFileSync, readdirSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from 'san-ssr'
 import debugFactory from 'debug'
@@ -8,22 +7,29 @@ import ToPHPCompiler from '../index'
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
-const sanProject = new SanProject({
-    tsConfigFilePath,
-    modules: {
-        './php': 'exports.htmlspecialchars = x => x' // case: depend-on-declaration
-    }
-})
+const sanProject = new SanProject(tsConfigFilePath)
+const nsPrefix = 'san\\'
 
-export function compile (caseName: string): string {
-    const ts = join(caseRoot, caseName, 'component.ts')
-    const js = resolve(caseRoot, caseName, 'component.js')
-    const ssrOnly = /-so/.test(caseName)
+export function compile (caseName: string) {
+    const dir = join(caseRoot, caseName)
+    const files = readdirSync(dir).filter(x => /\.(ts|js)$/.test(x))
+
+    for (const file of files) {
+        const src = join(dir, file)
+        const dst = join(dir, file.replace(/\.(ts|js)$/, '.php'))
+        writeFileSync(dst, compileComponentFile(src))
+    }
+}
+
+export function compileComponentFile (filepath: string): string {
+    const ssrOnly = /-so/.test(filepath)
     return sanProject.compile(
-        existsSync(ts) ? ts : js,
+        filepath,
         ToPHPCompiler,
         {
-            nsPrefix: `san\\${camelCase(caseName)}\\`,
+            nsPrefix,
+            nsRootDir: caseRoot,
+            importHelpers: '\\san\\helpers',
             ssrOnly,
             modules: {
                 './php': {

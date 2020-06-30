@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 
-const { compile } = require('../dist/utils/case')
+const { compileFile } = require('../dist/utils/case')
+const { resolve } = require('path')
+const { existsSync } = require('fs')
 
 const caseName = process.argv[2]
 if (!caseName) throw new Error('echo specify a test case name')
 
-const targetCode = compile(caseName)
+const ts = resolve(__dirname, '../test/cases', caseName, 'component.ts')
+const js = resolve(__dirname, '../test/cases', caseName, 'component.js')
+const componentPath = existsSync(ts) ? ts : js
+const targetCode = compileFile(componentPath)
 console.log(targetCode)

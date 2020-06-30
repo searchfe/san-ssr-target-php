@@ -90,9 +90,10 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitter" class="tsd-kind-icon">emitter</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#namespaceprefix" class="tsd-kind-icon">namespace<wbr>Prefix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#sourcefile" class="tsd-kind-icon">source<wbr>File</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a></li>
 							</ul>
 						</section>
@@ -100,7 +101,14 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#compile" class="tsd-kind-icon">compile</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#gencomponentcontextcode" class="tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitcomponentcontext" class="tsd-kind-icon">emit<wbr>Component<wbr>Context</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitcomputed" class="tsd-kind-icon">emit<wbr>Computed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdata" class="tsd-kind-icon">emit<wbr>Init<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitinited" class="tsd-kind-icon">emit<wbr>Inited</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#emitrendererbody" class="tsd-kind-icon">emit<wbr>Renderer<wbr>Body</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_compilers_renderer_compiler_.renderercompiler.html#getfulltext" class="tsd-kind-icon">get<wbr>Full<wbr>Text</a></li>
 							</ul>
 						</section>
 					</div>
@@ -112,42 +120,46 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Renderer<wbr>Compiler<span class="tsd-signature-symbol">(</span>componentTree<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentTree</span>, ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Renderer<wbr>Compiler<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SanSourceFile</span>, ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, getNamespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, emitter<span class="tsd-signature-symbol">?: </span><a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L6">compilers/renderer-compiler.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L6">compilers/renderer-compiler.ts:6</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>componentTree: <span class="tsd-signature-type">ComponentTree</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>组件树，用来从中注册、解析新的动态组件</p>
-										</div>
-									</div>
+									<h5>sourceFile: <span class="tsd-signature-type">SanSourceFile</span></h5>
 								</li>
 								<li>
 									<h5>ssrOnly: <span class="tsd-signature-type">boolean</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>产出 HTML 是否只用于 SSR（无法浏览器端反解）</p>
-										</div>
-									</div>
 								</li>
 								<li>
-									<h5>emitter: <a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>代码产出的收集器</p>
-										</div>
-									</div>
+									<h5>getNamespace: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> emitter: <a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a><span class="tsd-signature-symbol"> =&nbsp;new PHPEmitter()</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></h4>
@@ -158,27 +170,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="componenttree" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> component<wbr>Tree</h3>
-					<div class="tsd-signature tsd-kind-icon">component<wbr>Tree<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentTree</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L14">compilers/renderer-compiler.ts:14</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>组件树，用来从中注册、解析新的动态组件</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="emitter" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emitter</h3>
 					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <a href="_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L16">compilers/renderer-compiler.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L24">compilers/renderer-compiler.ts:24</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -188,14 +185,65 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="getnamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Namespace</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>Namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L20">compilers/renderer-compiler.ts:20</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>根据组件引用（通常是外部组件）得到被引用组件的命名空间</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-class tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="namespaceprefix" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> namespace<wbr>Prefix</h3>
 					<div class="tsd-signature tsd-kind-icon">namespace<wbr>Prefix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L6">compilers/renderer-compiler.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L6">compilers/renderer-compiler.ts:6</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="sourcefile" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> source<wbr>File</h3>
+					<div class="tsd-signature tsd-kind-icon">source<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SanSourceFile</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L12">compilers/renderer-compiler.ts:12</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>当前编译的源文件</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="ssronly" class="tsd-anchor"></a>
@@ -203,7 +251,7 @@
 					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L15">compilers/renderer-compiler.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L16">compilers/renderer-compiler.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -225,12 +273,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L24">compilers/renderer-compiler.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L32">compilers/renderer-compiler.ts:32</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>生成组件渲染的函数体。把组件编译为 <code>render(data): string</code> 函数。</p>
+									<p>生成组件渲染的函数。</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -246,17 +294,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="gencomponentcontextcode" class="tsd-anchor"></a>
-					<h3>gen<wbr>Component<wbr>Context<wbr>Code</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="emitcomponentcontext" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Component<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Component<wbr>Context<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/5fb1fa1/src/compilers/renderer-compiler.ts#L60">compilers/renderer-compiler.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L128">compilers/renderer-compiler.ts:128</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -274,6 +322,176 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitcomputed" class="tsd-anchor"></a>
+					<h3>emit<wbr>Computed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Computed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L83">compilers/renderer-compiler.ts:83</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>预先计算所有 computed</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitinitdata" class="tsd-anchor"></a>
+					<h3>emit<wbr>Init<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L92">compilers/renderer-compiler.ts:92</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>产生组件 initData() 的代码</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>info: <span class="tsd-signature-type">ComponentInfo</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitinitdataincompiletime" class="tsd-anchor"></a>
+					<h3>emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DynamicComponentInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L100">compilers/renderer-compiler.ts:100</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>动态组件（输入是 JavaScript、ComponentClass）是可以在编译期拿到数据的</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>info: <span class="tsd-signature-type">DynamicComponentInfo</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitinitdatainruntime" class="tsd-anchor"></a>
+					<h3>emit<wbr>Init<wbr>Data<wbr>InRuntime</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L111">compilers/renderer-compiler.ts:111</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>静态分析的组件，必须在运行时去执行 initData() 并合并数据</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitinited" class="tsd-anchor"></a>
+					<h3>emit<wbr>Inited</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Inited<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L76">compilers/renderer-compiler.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>调用组件的 inited() 生命周期</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="emitrendererbody" class="tsd-anchor"></a>
+					<h3>emit<wbr>Renderer<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Renderer<wbr>Body<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L44">compilers/renderer-compiler.ts:44</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>生成 renderer 函数体</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>info: <span class="tsd-signature-type">ComponentInfo</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">string</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getfulltext" class="tsd-anchor"></a>
+					<h3>get<wbr>Full<wbr>Text</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Full<wbr>Text<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/df22cff/src/compilers/renderer-compiler.ts#L121">compilers/renderer-compiler.ts:121</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -281,6 +499,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_compile_options_.html">"compile-<wbr>options"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_compilers_anode_compiler_.html">"compilers/anode-<wbr>compiler"</a>
@@ -301,7 +522,7 @@
 						<a href="../modules/_emitters_emitter_.html">"emitters/emitter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_emitters_runtime_.html">"emitters/runtime"</a>
+						<a href="../modules/_emitters_helpers_.html">"emitters/helpers"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_emitters_stringifier_.html">"emitters/stringifier"</a>
@@ -313,13 +534,13 @@
 						<a href="../modules/_transformers_index_.html">"transformers/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_transformers_refactor_computed_property_.html">"transformers/refactor-<wbr>computed-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_transformers_refactor_filters_property_.html">"transformers/refactor-<wbr>filters-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="../modules/_transformers_refactor_member_initializer_.html">"transformers/refactor-<wbr>member-<wbr>initializer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_transformers_refactor_method_collection_.html">"transformers/refactor-<wbr>method-<wbr>collection"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_transformers_refactor_reserved_names_.html">"transformers/refactor-<wbr>reserved-<wbr>names"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_transformers_replace_san_module_.html">"transformers/replace-<wbr>san-<wbr>module"</a>
@@ -329,9 +550,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_fs_.html">"utils/fs"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_lang_.html">"utils/lang"</a>
 					</li>
 				</ul>
 			</nav>
@@ -346,13 +564,16 @@
 								<a href="_compilers_renderer_compiler_.renderercompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_compilers_renderer_compiler_.renderercompiler.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitter" class="tsd-kind-icon">emitter</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_renderer_compiler_.renderercompiler.html#namespaceprefix" class="tsd-kind-icon">namespace<wbr>Prefix</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#sourcefile" class="tsd-kind-icon">source<wbr>File</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_renderer_compiler_.renderercompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a>
@@ -360,8 +581,29 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_compilers_renderer_compiler_.renderercompiler.html#compile" class="tsd-kind-icon">compile</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitcomponentcontext" class="tsd-kind-icon">emit<wbr>Component<wbr>Context</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_compilers_renderer_compiler_.renderercompiler.html#gencomponentcontextcode" class="tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code</a>
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitcomputed" class="tsd-kind-icon">emit<wbr>Computed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdata" class="tsd-kind-icon">emit<wbr>Init<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitinited" class="tsd-kind-icon">emit<wbr>Inited</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#emitrendererbody" class="tsd-kind-icon">emit<wbr>Renderer<wbr>Body</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_compilers_renderer_compiler_.renderercompiler.html#getfulltext" class="tsd-kind-icon">get<wbr>Full<wbr>Text</a>
 							</li>
 						</ul>
 					</li>
