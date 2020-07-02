@@ -21,14 +21,6 @@
 npm i san san-ssr san-ssr-target-php
 ```
 
-## CLI 使用
-
-使用 `san-ssr` 命令并指定 `--target php` 即可调用目标到 PHP 的 SSR 渲染。
-
-```bash
-san-ssr --target php --compile '{"nsPrefix":"demo\\"}' ./component.ts > ssr.php
-```
-
 ## 编程接口
 
 [SanProject#compile(filepath, target, options)][.compile()] 方法第二参传 `'php'`，第三参为 [ToPHPCompiler 的 compileToSource() 选项][compile-options]。
@@ -74,6 +66,27 @@ writeFileSync('dist/component.php', targetCode)
 // 单独产出一份 helpers，注意这里没有 "\\" 前缀
 const helpersCode = ToPHPCompiler.emitHelpers({ namespace: 'san\\my-helpers' })
 writeFileSync('dist/helpers.php', targetCode)
+```
+
+## 命令行接口
+
+使用 `san-ssr` 命令并指定 `--target php` 即可调用目标到 PHP 的 SSR 渲染。
+
+```bash
+san-ssr --target php --compile '{"nsPrefix":"demo\\"}' ./component.ts > ssr.php
+```
+
+全局安装 `san-ssr-target-php` 后，可以用命令来产出一份 helpers：
+
+```bash
+$ san-ssr-target-php-helpers --help
+san-ssr-target-php-helpers [-n <NAMESPACE>]
+
+Options:
+  --namespace, -n    Specify the namespace of helpers
+
+Example:
+$ san-ssr-target-php-helpers -n 'san\helpers'
 ```
 
 ## 已知问题
