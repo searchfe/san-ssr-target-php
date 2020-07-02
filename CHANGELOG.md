@@ -1,3 +1,16 @@
+# [2.0.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.8.0...v2.0.0) (2020-07-02)
+
+
+### Features
+
+* single source file compile ([a31cb0c](https://github.com/searchfe/san-ssr-target-php/commit/a31cb0c53aec53cf0f20e8a778b4acbea93229b1))
+
+
+### BREAKING CHANGES
+
+* - 输入源文件不再打包，不再寻找并编译它的依赖
+- emitContent 不再可用，如果不输出运行时需要使用 importHelpers
+
 # [1.8.0](https://github.com/searchfe/san-ssr-target-php/compare/v1.7.0...v1.8.0) (2020-06-15)
 
 
