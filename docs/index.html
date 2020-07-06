@@ -86,11 +86,6 @@
 					<li>PHP 5 &gt;= 5.3.0, PHP 7</li>
 				</ul>
 				<pre><code class="language-bash">npm i san san-ssr san-ssr-target-php</code></pre>
-				<a href="#cli-使用" id="cli-使用" style="color: inherit; text-decoration: none;">
-					<h2>CLI 使用</h2>
-				</a>
-				<p>使用 <code>san-ssr</code> 命令并指定 <code>--target php</code> 即可调用目标到 PHP 的 SSR 渲染。</p>
-				<pre><code class="language-bash">san-ssr --target php --compile <span class="hljs-string">'{"nsPrefix":"demo\\"}'</span> ./component.ts &gt; ssr.php</code></pre>
 				<a href="#编程接口" id="编程接口" style="color: inherit; text-decoration: none;">
 					<h2>编程接口</h2>
 				</a>
@@ -126,6 +121,20 @@ writeFileSync(<span class="hljs-string">'dist/component.php'</span>, targetCode)
 <span class="hljs-comment">// 单独产出一份 helpers，注意这里没有 "\\" 前缀</span>
 <span class="hljs-keyword">const</span> helpersCode = ToPHPCompiler.emitHelpers({ <span class="hljs-keyword">namespace</span>: <span class="hljs-string">'san\\my-helpers'</span> })
 writeFileSync(<span class="hljs-string">'dist/helpers.php'</span>, targetCode)</code></pre>
+				<a href="#命令行接口" id="命令行接口" style="color: inherit; text-decoration: none;">
+					<h2>命令行接口</h2>
+				</a>
+				<p>使用 <code>san-ssr</code> 命令并指定 <code>--target php</code> 即可调用目标到 PHP 的 SSR 渲染。</p>
+				<pre><code class="language-bash">san-ssr --target php --compile <span class="hljs-string">'{"nsPrefix":"demo\\"}'</span> ./component.ts &gt; ssr.php</code></pre>
+				<p>全局安装 <code>san-ssr-target-php</code> 后，可以用命令来产出一份 helpers：</p>
+				<pre><code class="language-bash">$ san-ssr-target-php-helpers --<span class="hljs-built_in">help</span>
+san-ssr-target-php-helpers [-n &lt;NAMESPACE&gt;]
+
+Options:
+  --namespace, -n    Specify the namespace of helpers
+
+Example:
+$ san-ssr-target-php-helpers -n <span class="hljs-string">'san\helpers'</span></code></pre>
 				<a href="#已知问题" id="已知问题" style="color: inherit; text-decoration: none;">
 					<h2>已知问题</h2>
 				</a>
