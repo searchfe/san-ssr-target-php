@@ -13,6 +13,16 @@ describe('Stringifier', function () {
         expect(str).toEqual('"\\"foo\\""')
     })
 
+    it('string escape', function () {
+        const str = 'bar\x5Cfoo\n\t\r"foo"'
+        const ret = stringifier.str(str)
+        expect(ret).toContain('\\\\')
+        expect(ret).toContain('\\"')
+        expect(ret).toContain('\\n')
+        expect(ret).toContain('\\t')
+        expect(ret).toContain('\\r')
+    })
+
     it('should stringify number', function () {
         expect(stringifier.any(12)).toEqual('12')
         expect(stringifier.any(NaN)).toEqual('null')

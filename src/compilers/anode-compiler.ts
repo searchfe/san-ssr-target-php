@@ -1,4 +1,4 @@
-import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, ExprStringNode, AFragmentNode } from 'san'
+import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
 import { ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import { PHPEmitter } from '../emitters/emitter'
@@ -53,21 +53,10 @@ export class ANodeCompiler {
 
     compileText (aNode: ATextNode) {
         const { emitter } = this
-        if (aNode.textExpr.original && !this.ssrOnly) {
-            emitter.writeHTMLLiteral('<!--s-text-->')
-            emitter.clearStringLiteralBuffer()
-        }
-
-        if (aNode.textExpr.value != null) {
-            emitter.writeHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal!)
-        } else {
-            emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
-        }
-
-        if (aNode.textExpr.original && !this.ssrOnly) {
-            emitter.writeHTMLLiteral('<!--/s-text-->')
-            emitter.clearStringLiteralBuffer()
-        }
+        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
+        if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
+        emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
+        if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
     compileTemplate (aNode: ANode) {
@@ -227,14 +216,12 @@ export class ANodeCompiler {
         for (const child of aNode.children!) {
             const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
             if (slotBind) {
-                if (!sourceSlotCodes[slotBind.raw]) {
-                    sourceSlotCodes[slotBind.raw] = {
-                        children: [],
-                        prop: slotBind
-                    }
+                const slotName = slotBind.expr.value
+                sourceSlotCodes[slotName] = sourceSlotCodes[slotName] || {
+                    children: [],
+                    prop: slotBind
                 }
-
-                sourceSlotCodes[slotBind.raw].children.push(child)
+                sourceSlotCodes[slotName].children.push(child)
             } else {
                 defaultSourceSlots.push(child)
             }
@@ -263,7 +250,7 @@ export class ANodeCompiler {
 
         const givenData = []
         for (const prop of aNode.props) {
-            const key = compileExprSource.stringLiteralize(prop.name)
+            const key = emitter.stringify(prop.name)
             const val = compileExprSource.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }

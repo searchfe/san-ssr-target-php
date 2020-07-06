@@ -1,5 +1,5 @@
 import { Emitter } from 'san-ssr'
-import { dataAccess, stringLiteralize } from '../compilers/expr-compiler'
+import { dataAccess } from '../compilers/expr-compiler'
 import { Stringifier } from './stringifier'
 
 export class PHPEmitter extends Emitter {
@@ -70,7 +70,7 @@ export class PHPEmitter extends Emitter {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTMLExpression(stringLiteralize(buffer))
+        this.writeHTMLExpression(this.stringify(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {

@@ -83,7 +83,7 @@ export class ElementCompiler {
             return
         }
         if (TypeGuards.isExprStringNode(prop.expr)) {
-            emitter.writeHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
+            emitter.writeHTMLLiteral(` ${prop.name}=${emitter.stringify(prop.expr.value)}`)
             return
         }
         if (prop.expr.value != null) {
@@ -119,13 +119,13 @@ export class ElementCompiler {
         const valueProp = propsIndex.value
         const typeNode = propsIndex.type
         if (prop.name === 'checked' && tagName === 'input' && valueProp && typeNode) {
-            if (typeNode.raw === 'checkbox') {
+            if (typeNode.expr.value === 'checkbox') {
                 emitter.writeIf(
                     `_::contains(${expr(prop.expr)}, ${expr(valueProp.expr)})`,
                     () => emitter.writeHTMLLiteral(' checked'))
                 return
             }
-            if (typeNode.raw === 'radio') {
+            if (typeNode.expr.value === 'radio') {
                 emitter.writeIf(`${expr(prop.expr)} === ${expr(valueProp.expr)}`, () => {
                     emitter.writeHTMLLiteral(' checked')
                 })

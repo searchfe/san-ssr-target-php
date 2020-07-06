@@ -1,28 +1,13 @@
 import { parseExpr, ExprNode } from 'san'
-import { dataAccess, stringLiteralize, expr } from '../../../src/compilers/expr-compiler'
+import { dataAccess, expr } from '../../../src/compilers/expr-compiler'
 
 describe('compileExprSource', function () {
-    it('string literalize', function () {
-        const str = 'bar\x5Cfoo\n\t\r"foo"'
-        const ret = stringLiteralize(str)
-        expect(ret).toContain('\\\\')
-        expect(ret).toContain('\\"')
-        expect(ret).toContain('\\n')
-        expect(ret).toContain('\\t')
-        expect(ret).toContain('\\r')
-    })
-
     it('expression type = 1 should return string', function () {
         const expr1 = {
             type: 1,
-            literal: 'literal'
-        }
-        const expr2 = {
-            type: 1,
             value: 'value'
         }
-        expect(expr(expr1 as any)).toEqual('"literal"')
-        expect(expr(expr2 as any)).toEqual('"value"')
+        expect(expr(expr1 as any)).toEqual('"value"')
     })
     it('expression type = 2 should return number', function () {
         const e = {
@@ -233,7 +218,7 @@ describe('compileExprSource', function () {
     it('should throw for unexpected expression type', () => {
         const e = parseExpr('!b')
         e.type = 222
-        expect(() => expr(e)).toThrow('unexpected expression "!b"')
+        expect(() => expr(e)).toThrow(/unexpected expression/)
     })
     it('should throw for unexpected unary operator', () => {
         const e = parseExpr('!b')

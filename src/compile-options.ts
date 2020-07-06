@@ -2,6 +2,10 @@ import { Modules } from './compilers/ts2php'
 
 export interface CompileOptions {
     /**
+     * 当传入文件名时，自定义文件内容
+     */
+    source?: string
+    /**
      * 自定义 render 的函数名。默认为 `render`
      */
     renderFunctionName?: string,

@@ -1,5 +1,3 @@
-import { stringLiteralize } from '../compilers/expr-compiler'
-
 export class Stringifier {
     private helpers = ''
 
@@ -21,7 +19,7 @@ export class Stringifier {
             }
             prefixComma = 1
 
-            const k = stringLiteralize(key)
+            const k = this.str(key)
             const v = this.any(source[key])
             result += `${k} => ${v}`
         }
@@ -46,7 +44,13 @@ export class Stringifier {
     }
 
     str (source: string) {
-        return stringLiteralize(source)
+        return '"' + source
+            .replace(/\x5C/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/(\\)?\$/g, '\\$$') // php 变量解析 fix, 方案同 ts2php
+            .replace(/\n/g, '\\n')
+            .replace(/\t/g, '\\t')
+            .replace(/\r/g, '\\r') + '"'
     }
 
     date (source: Date) {
