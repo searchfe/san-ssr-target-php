@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.0...v2.1.1) (2020-07-07)
+
+
+### Bug Fixes
+
+* renderFunctionName option ([c4faef9](https://github.com/searchfe/san-ssr-target-php/commit/c4faef91559f16e110dc17e6cd210e32e01f4ffc))
+
 # [2.1.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.0.1...v2.1.0) (2020-07-06)
 
 

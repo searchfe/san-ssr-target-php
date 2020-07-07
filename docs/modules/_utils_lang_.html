@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;transformers/refactor-reserved-names&quot; | san-ssr-target-php</title>
+	<title>&quot;utils/lang&quot; | san-ssr-target-php</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_transformers_refactor_reserved_names_.html">&quot;transformers/refactor-reserved-names&quot;</a>
+					<a href="_utils_lang_.html">&quot;utils/lang&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;transformers/refactor-reserved-names&quot;</h1>
+			<h1>External module &quot;utils/lang&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -70,34 +70,83 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a></li>
+							</ul>
+						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_transformers_refactor_reserved_names_.html#getrefactoredname" class="tsd-kind-icon">get<wbr>Refactored<wbr>Name</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_transformers_refactor_reserved_names_.html#refactorreservednames" class="tsd-kind-icon">refactor<wbr>Reserved<wbr>Names</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_lang_.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_lang_.html#isreservedinphp" class="tsd-kind-icon">is<wbr>Reserved<wbr>InPHP</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_lang_.html#normalizenamespaceslug" class="tsd-kind-icon">normalize<wbr>Namespace<wbr>Slug</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="reservednames" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> reserved<wbr>Names</h3>
+					<div class="tsd-signature tsd-kind-icon">reserved<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[/^list$/i]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/utils/lang.ts#L5">utils/lang.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getrefactoredname" class="tsd-anchor"></a>
-					<h3>get<wbr>Refactored<wbr>Name</h3>
+					<a name="getnamespace" class="tsd-anchor"></a>
+					<h3>get<wbr>Namespace</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Refactored<wbr>Name<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Namespace<span class="tsd-signature-symbol">(</span>prefix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, root<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, filename<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/transformers/refactor-reserved-names.ts#L7">transformers/refactor-reserved-names.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/utils/lang.ts#L7">utils/lang.ts:7</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>prefix: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>root: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>filename: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="isreservedinphp" class="tsd-anchor"></a>
+					<h3>is<wbr>Reserved<wbr>InPHP</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Reserved<wbr>InPHP<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/utils/lang.ts#L23">utils/lang.ts:23</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>映射后的名字</p>
+									<p>返回 <code>name</code> 是否是 PHP 中的保留字，比如 list、require。</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -106,35 +155,30 @@
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="refactorreservednames" class="tsd-anchor"></a>
-					<h3>refactor<wbr>Reserved<wbr>Names</h3>
+					<a name="normalizenamespaceslug" class="tsd-anchor"></a>
+					<h3>normalize<wbr>Namespace<wbr>Slug</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">refactor<wbr>Reserved<wbr>Names<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TypedSanSourceFile</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">normalize<wbr>Namespace<wbr>Slug<span class="tsd-signature-symbol">(</span>slug<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/transformers/refactor-reserved-names.ts#L14">transformers/refactor-reserved-names.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/utils/lang.ts#L15">utils/lang.ts:15</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>对 PHP 中不合法的类名进行 AST 重构</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sourceFile: <span class="tsd-signature-type">TypedSanSourceFile</span></h5>
+									<h5>slug: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -185,7 +229,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_transformers_refactor_method_collection_.html">"transformers/refactor-<wbr>method-<wbr>collection"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="_transformers_refactor_reserved_names_.html">"transformers/refactor-<wbr>reserved-<wbr>names"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -197,18 +241,24 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_utils_fs_.html">"utils/fs"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="_utils_lang_.html">"utils/lang"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_transformers_refactor_reserved_names_.html#getrefactoredname" class="tsd-kind-icon">get<wbr>Refactored<wbr>Name</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_transformers_refactor_reserved_names_.html#refactorreservednames" class="tsd-kind-icon">refactor<wbr>Reserved<wbr>Names</a>
+						<a href="_utils_lang_.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_utils_lang_.html#isreservedinphp" class="tsd-kind-icon">is<wbr>Reserved<wbr>InPHP</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_utils_lang_.html#normalizenamespaceslug" class="tsd-kind-icon">normalize<wbr>Namespace<wbr>Slug</a>
 					</li>
 				</ul>
 			</nav>

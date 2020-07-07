@@ -110,7 +110,7 @@
 					<div class="tsd-signature tsd-kind-icon">emit<wbr>Header<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L36">compile-options.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L43">compile-options.ts:43</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -126,7 +126,7 @@
 					<div class="tsd-signature tsd-kind-icon">import<wbr>Helpers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L30">compile-options.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L37">compile-options.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -142,7 +142,7 @@
 					<div class="tsd-signature tsd-kind-icon">modules<span class="tsd-signature-symbol">:</span> <a href="_compilers_ts2php_.modules.html" class="tsd-signature-type">Modules</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L45">compile-options.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L52">compile-options.ts:52</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -157,7 +157,7 @@
 					<div class="tsd-signature tsd-kind-icon">ns<wbr>Prefix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L16">compile-options.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L23">compile-options.ts:23</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -173,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">ns<wbr>Root<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L25">compile-options.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L32">compile-options.ts:32</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,13 +194,18 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Function<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L11">compile-options.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L18">compile-options.ts:18</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>自定义 render 的函数名。默认为 <code>render</code></p>
+							<p>自定义生成的入口 render 的函数名，默认为 <code>render</code>。用于自定义 render 函数。</p>
 						</div>
+						<p>比如设置 <code>renderFunctionName = &#39;originalRender&#39;</code> 并在文件尾追加：</p>
+						<p>function render($data) {
+							$data[&#39;foo&#39;] = &#39;bar&#39;;
+							return originalRender($data);
+						}</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -209,7 +214,7 @@
 					<div class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L7">compile-options.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L7">compile-options.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -224,7 +229,7 @@
 					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/48d5ef7/src/compile-options.ts#L41">compile-options.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/c4faef9/src/compile-options.ts#L48">compile-options.ts:48</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -292,6 +297,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_fs_.html">"utils/fs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_lang_.html">"utils/lang"</a>
 					</li>
 				</ul>
 			</nav>
