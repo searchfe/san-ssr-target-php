@@ -1,8 +1,11 @@
 import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
-import { ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
+import { SanSourceFile, ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import { PHPEmitter } from '../emitters/emitter'
 import * as compileExprSource from '../compilers/expr-compiler'
+import { NormalizedCompileOptions } from '../compile-options'
+import { dirname, resolve } from 'path'
+import { getNamespace } from '../utils/lang'
 
 type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
@@ -21,9 +24,9 @@ export class ANodeCompiler {
      * @param emitter 输出器
      */
     constructor (
+        private sourceFile: SanSourceFile,
         private info: ComponentInfo,
-        private getNamespace: (ref: ComponentReference) => string,
-        private ssrOnly: boolean,
+        private options: NormalizedCompileOptions,
         private emitter: PHPEmitter
     ) {
         this.elementCompiler = new ElementCompiler(this, emitter)
@@ -53,7 +56,7 @@ export class ANodeCompiler {
 
     compileText (aNode: ATextNode) {
         const { emitter } = this
-        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
+        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
         emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
@@ -64,11 +67,11 @@ export class ANodeCompiler {
     }
 
     compileFragment (aNode: AFragmentNode) {
-        if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[0]) && !this.options.ssrOnly) {
             this.emitter.writeHTMLLiteral('<!--s-frag-->')
         }
         this.elementCompiler.inner(aNode)
-        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.options.ssrOnly) {
             this.emitter.writeHTMLLiteral('<!--/s-frag-->')
         }
     }
@@ -195,7 +198,7 @@ export class ANodeCompiler {
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
         this.elementCompiler.tagStart(aNode)
-        if (isRootElement && !this.ssrOnly) this.outputData()
+        if (isRootElement && !this.options.ssrOnly) this.outputData()
         this.elementCompiler.inner(aNode)
         this.elementCompiler.tagEnd(aNode)
     }
@@ -278,5 +281,13 @@ export class ANodeCompiler {
 
     private nextID () {
         return 'sanssrId' + (this.id++)
+    }
+
+    /**
+     * 根据组件引用（通常是外部组件）得到被引用组件的命名空间
+     */
+    private getNamespace (ref: ComponentReference): string {
+        const filePath = resolve(dirname(this.sourceFile.getFilePath()), ref.relativeFilePath)
+        return getNamespace(this.options.nsPrefix, this.options.nsRootDir, filePath)
     }
 }

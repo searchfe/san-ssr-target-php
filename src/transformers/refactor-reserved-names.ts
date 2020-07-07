@@ -1,15 +1,5 @@
 import { TypedSanSourceFile } from 'san-ssr'
-const reservedNames = [/^list$/i]
-
-/**
- * 返回 `name` 是否是 PHP 中的保留字，比如 list、require。
- */
-export function isReservedInPHP (name: string) {
-    for (const reserved of reservedNames) {
-        if (reserved.test(name)) return true
-    }
-    return false
-}
+import { isReservedInPHP } from '../utils/lang'
 
 /**
  * 映射后的名字

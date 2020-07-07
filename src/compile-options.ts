@@ -6,7 +6,14 @@ export interface CompileOptions {
      */
     source?: string
     /**
-     * 自定义 render 的函数名。默认为 `render`
+     * 自定义生成的入口 render 的函数名，默认为 `render`。用于自定义 render 函数。
+     *
+     * 比如设置 `renderFunctionName = 'originalRender'` 并在文件尾追加：
+     *
+     * function render($data) {
+     *     $data['foo'] = 'bar';
+     *     return originalRender($data);
+     * }
      */
     renderFunctionName?: string,
     /**

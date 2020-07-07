@@ -12,7 +12,7 @@ describe('RendererCompiler', () => {
                     return { foo: 'bar' }
                 }
             }))
-            const cc = new RendererCompiler(file, false, (x: any) => 'foo')
+            const cc = new RendererCompiler(file, {} as any)
             cc.emitInitDataInCompileTime(file.componentInfos[0])
             expect(cc.getFullText()).toContain('$ctx->data["foo"] = isset($ctx->data["foo"]) ? $ctx->data["foo"] : "bar"')
         })
@@ -23,8 +23,21 @@ describe('RendererCompiler', () => {
                     return null
                 }
             }))
-            const cc = new RendererCompiler(file, false, (x: any) => 'foo')
+            const cc = new RendererCompiler(file, {} as any)
             expect(() => cc.emitInitDataInCompileTime(file.componentInfos[0])).not.toThrow()
+        })
+    })
+    describe('#compile()', () => {
+        it('should support custom renderFunctionName', () => {
+            const template = '<div></div>'
+            const file = proj.parseSanSourceFile(defineComponent({ template }))
+            const cc = new RendererCompiler(
+                file,
+                { renderFunctionName: 'customRender' } as any
+            )
+
+            cc.compile(file.componentInfos[0])
+            expect(cc.getFullText()).toContain('function customRender ($data, $noDataOutput = false, $parentCtx = [], $tagName = "div", $sourceSlots = []) {')
         })
     })
 })

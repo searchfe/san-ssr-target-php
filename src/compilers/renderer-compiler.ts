@@ -1,4 +1,5 @@
-import { SanSourceFile, DynamicComponentInfo, ComponentReference, ComponentInfo, isTypedComponentInfo } from 'san-ssr'
+import { SanSourceFile, DynamicComponentInfo, ComponentInfo, isTypedComponentInfo } from 'san-ssr'
+import { NormalizedCompileOptions } from '../compile-options'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
 
@@ -10,19 +11,14 @@ export class RendererCompiler {
          * 当前编译的源文件
          */
         private sourceFile: SanSourceFile,
-        /**
-         * 产出 HTML 是否只用于 SSR（无法浏览器端反解）
-         */
-        private ssrOnly: boolean,
-        /**
-         * 根据组件引用（通常是外部组件）得到被引用组件的命名空间
-         */
-        private getNamespace: (ref: ComponentReference) => string,
+        private options: NormalizedCompileOptions,
         /**
          * 代码产出的收集器
          */
         private emitter: PHPEmitter = new PHPEmitter()
-    ) {}
+    ) {
+
+    }
 
     /**
     * 生成组件渲染的函数。
@@ -31,7 +27,7 @@ export class RendererCompiler {
     */
     compile (info: ComponentInfo) {
         const rendererName = this.sourceFile.entryComponentInfo === info
-            ? `render`
+            ? this.options.renderFunctionName
             : `render${info.id}`
         const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = "div"', '$sourceSlots = []']
         this.emitter.carriageReturn()
@@ -61,9 +57,9 @@ export class RendererCompiler {
         this.emitComputed()
 
         const aNodeCompiler = new ANodeCompiler(
+            this.sourceFile,
             info,
-            this.getNamespace,
-            this.ssrOnly,
+            this.options,
             emitter
         )
         aNodeCompiler.compile(info.root, true)

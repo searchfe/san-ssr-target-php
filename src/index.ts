@@ -1,15 +1,14 @@
-import { ComponentReference, isTypedSanSourceFile, SanProject, Compiler, SanSourceFile } from 'san-ssr'
-import { isReservedInPHP, getRefactoredName } from './transformers/refactor-reserved-names'
+import { isTypedSanSourceFile, SanProject, Compiler, SanSourceFile } from 'san-ssr'
 import { PHPTranspiler } from './compilers/ts2php'
 import { transformToFavorPHP } from './transformers/index'
 import { CompilerOptions } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
 import { PHPEmitter } from './emitters/emitter'
-import camelCase from 'camelcase'
-import { relative, sep, isAbsolute, resolve, dirname } from 'path'
+import { sep, isAbsolute, resolve } from 'path'
 import debugFactory from 'debug'
 import { emitHelpers } from './emitters/helpers'
 import { defaultHelpersNS, normalizeCompileOptions, CompileOptions, NormalizedCompileOptions } from './compile-options'
+import { getNamespace } from './utils/lang'
 
 const debug = debugFactory('san-ssr:target-php')
 
@@ -33,11 +32,11 @@ export default class ToPHPCompiler implements Compiler {
         transformToFavorPHP(sourceFile)
 
         if (opts.importHelpers) {
-            emitter.writeNamespace(this.getNameSpace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()))
+            emitter.writeNamespace(getNamespace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()))
             this.emitRenderer(sourceFile, opts, emitter)
             this.emitComponent(sourceFile, opts, emitter)
         } else {
-            emitter.writeNamespace(this.getNameSpace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()), () => {
+            emitter.writeNamespace(getNamespace(opts.nsPrefix, opts.nsRootDir, sourceFile.getFilePath()), () => {
                 this.emitRenderer(sourceFile, opts, emitter)
                 this.emitComponent(sourceFile, opts, emitter)
             })
@@ -82,11 +81,7 @@ export default class ToPHPCompiler implements Compiler {
 
         const rc = new RendererCompiler(
             sourceFile,
-            options.ssrOnly,
-            (ref: ComponentReference) => {
-                const filePath = resolve(dirname(sourceFile.getFilePath()), ref.relativeFilePath)
-                return this.getNameSpace(options.nsPrefix, options.nsRootDir, filePath)
-            },
+            options,
             emitter
         )
         for (const info of sourceFile.componentInfos) rc.compile(info)
@@ -108,7 +103,6 @@ export default class ToPHPCompiler implements Compiler {
             }
         }
 
-        // for (const decl of getRuntimeDependencyDeclarations(sourceFile.tsSourceFile)) {
         for (const decl of sourceFile.tsSourceFile.getImportDeclarations()) {
             const literal = decl.getModuleSpecifierValue()
             const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
@@ -116,7 +110,7 @@ export default class ToPHPCompiler implements Compiler {
             modules[literal] = {
                 name: literal,
                 required: false,
-                namespace: '\\' + this.getNameSpace(options.nsPrefix, options.nsRootDir, filepath) + '\\'
+                namespace: '\\' + getNamespace(options.nsPrefix, options.nsRootDir, filepath) + '\\'
             }
         }
         emitter.writeLines(this.phpTranspiler.compile(
@@ -137,18 +131,5 @@ export default class ToPHPCompiler implements Compiler {
             compilerOptions.baseUrl = baseUrl
         }
         return compilerOptions
-    }
-
-    private getNameSpace (prefix: string, root: string, filename: string) {
-        return prefix + relative(root, filename.replace(/\.(ts|js)$/, ''))
-            .replace(/\//g, '\\')
-            .split('\\')
-            .map(x => this.normalizeNamespaceSlug(x))
-            .join('\\')
-    }
-
-    private normalizeNamespaceSlug (slug: string) {
-        const name = camelCase(slug)
-        return isReservedInPHP(name) ? getRefactoredName(name) : name
     }
 }
