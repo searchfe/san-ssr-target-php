@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.1...v2.1.2) (2020-07-08)
+
+
+### Bug Fixes
+
+* TypeScript 静态分析中，被引用文件不存在时仍然可以编译 ([bb9ae7e](https://github.com/searchfe/san-ssr-target-php/commit/bb9ae7e42ded91cdc7cf0c7ebb0aa5cdd18ee143))
+
 ## [2.1.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.0...v2.1.1) (2020-07-07)
 
 
