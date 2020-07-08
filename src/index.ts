@@ -8,7 +8,7 @@ import { sep, isAbsolute, resolve } from 'path'
 import debugFactory from 'debug'
 import { emitHelpers } from './emitters/helpers'
 import { defaultHelpersNS, normalizeCompileOptions, CompileOptions, NormalizedCompileOptions } from './compile-options'
-import { getNamespace } from './utils/lang'
+import { getNamespace, resolveFrom } from './utils/lang'
 
 const debug = debugFactory('san-ssr:target-php')
 
@@ -104,11 +104,11 @@ export default class ToPHPCompiler implements Compiler {
         }
 
         for (const decl of sourceFile.tsSourceFile.getImportDeclarations()) {
-            const literal = decl.getModuleSpecifierValue()
-            const filepath = decl.getModuleSpecifierSourceFileOrThrow().getFilePath()
-            if (literal[0] !== '.') continue
-            modules[literal] = {
-                name: literal,
+            const specifier = decl.getModuleSpecifierValue()
+            const filepath = resolveFrom(sourceFile.getFilePath(), specifier)
+            if (specifier[0] !== '.') continue
+            modules[specifier] = {
+                name: specifier,
                 required: false,
                 namespace: '\\' + getNamespace(options.nsPrefix, options.nsRootDir, filepath) + '\\'
             }

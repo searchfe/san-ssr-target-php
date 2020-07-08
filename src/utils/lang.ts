@@ -1,8 +1,12 @@
 import { getRefactoredName } from '../transformers/refactor-reserved-names'
-import { relative } from 'path'
+import { join, relative, dirname } from 'path'
 import camelCase from 'camelcase'
 
 const reservedNames = [/^list$/i]
+
+export function resolveFrom (current: string, relative: string) {
+    return join(dirname(current), relative)
+}
 
 export function getNamespace (prefix: string, root: string, filename: string) {
     return prefix + relative(root, filename.replace(/\.(ts|js)$/, ''))
