@@ -1,3 +1,12 @@
+## [2.1.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.2...v2.1.3) (2020-07-09)
+
+
+### Bug Fixes
+
+* PHP 低版本不支持从对象实例访问静态成员 ([cd8d5ce](https://github.com/searchfe/san-ssr-target-php/commit/cd8d5ce366e4cc8d69cd3c7d10c64e04145c5d25))
+* prefer data to initData ([1424fe8](https://github.com/searchfe/san-ssr-target-php/commit/1424fe83c2f2652b3bc02c2cf23b83dc1b0e8ab1))
+* 去除重构引起的 ts 错误，见 https://github.com/baidu/san-ssr/issues/15 ([171ccb1](https://github.com/searchfe/san-ssr-target-php/commit/171ccb1f51cbe61c78a1dc12adf10cad423645d9))
+
 ## [2.1.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.1...v2.1.2) (2020-07-08)
 
 
