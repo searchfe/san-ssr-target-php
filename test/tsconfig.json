@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "outDir": "dist",
     "skipLibCheck": true,
+    "noUnusedLocals": true,
     "noImplicitThis": false,
     "noImplicitAny": false,
     "esModuleInterop": true,

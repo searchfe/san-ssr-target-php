@@ -20,10 +20,9 @@ export default class ToPHPCompiler implements Compiler {
         const tsConfigFilePath = project.tsConfigFilePath
         if (!tsConfigFilePath) throw new Error('tsconfig.json path is required')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
-
-        const compilerOptions = require(tsConfigFilePath)['compilerOptions']
-        const options = this.normalizeCompilerOptions(compilerOptions)
-        this.phpTranspiler = new PHPTranspiler(options)
+        this.phpTranspiler = new PHPTranspiler(
+            this.normalizeCompilerOptions(require(tsConfigFilePath)['compilerOptions'])
+        )
     }
 
     public compileToSource (sourceFile: SanSourceFile, options: CompileOptions) {

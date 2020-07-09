@@ -21,6 +21,7 @@ export class PHPTranspiler {
 
     constructor (compilerOptions = {}) {
         debug('compilerOptions:', compilerOptions)
+        compilerOptions['noUnusedLocals'] = false
         this.ts2php = new Ts2Php({ compilerOptions })
     }
 
