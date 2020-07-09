@@ -3,11 +3,19 @@ class SanSSRData {
     private $ctx;
     private $data;
     private $computedNames;
+    private $computedList;
 
-    public function __construct(&$ctx) {
+    public function __construct(&$ctx, $computedList) {
         $this->ctx = &$ctx;
         $this->data = &$ctx->data;
-        $this->computedNames = array_flip($ctx->computedNames);
+        $this->computedList = $computedList;
+        $this->computedNames = array_flip($computedList);
+    }
+
+    public function populateComputed () {
+        foreach ($this->computedList as $computedName) {
+            $this->data[$computedName] = $this->get($computedName);
+        }
     }
 
     public function &get ($path) {

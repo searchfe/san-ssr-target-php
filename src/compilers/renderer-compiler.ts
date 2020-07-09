@@ -49,11 +49,10 @@ export class RendererCompiler {
             return emitter.fullText()
         }
 
-        emitter.writeLine('$html = "";')
         this.emitComponentContext(info)
         if (info.hasMethod('initData')) this.emitInitData(info)
         if (info.hasMethod('inited')) this.emitInited()
-        this.emitComputed()
+        emitter.writeLine('$ctx->instance->data->populateComputed();')
 
         const aNodeCompiler = new ANodeCompiler(
             this.sourceFile,
@@ -61,6 +60,7 @@ export class RendererCompiler {
             this.options,
             emitter
         )
+        emitter.writeLine('$html = "";')
         aNodeCompiler.compile(info.root, true)
         emitter.writeLine('return $html;')
     }
@@ -70,15 +70,6 @@ export class RendererCompiler {
      */
     emitInited () {
         this.emitter.writeLine('$ctx->instance->inited();')
-    }
-
-    /**
-     * 预先计算所有 computed
-     */
-    emitComputed () {
-        this.emitter.writeForeach('$ctx->computedNames as $computedName', () => {
-            this.emitter.writeLine('$data["$computedName"] = _::callComputed($ctx, "$computedName");')
-        })
     }
 
     /**
@@ -123,8 +114,6 @@ export class RendererCompiler {
     private emitComponentContext (info: ComponentInfo) {
         const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
-        const computedNames = info.getComputedNames().map(x => `"${x}"`)
-        emitter.writeLine(`$ctx->computedNames = [${computedNames.join(', ')}];`)
         emitter.writeLine('$ctx->sourceSlots = $sourceSlots;')
         emitter.writeLine('$ctx->owner = $parentCtx;')
         emitter.writeLine('$ctx->slotRenderers = [];')
@@ -140,6 +129,7 @@ export class RendererCompiler {
             emitter.writeLine(`$ctx->class = "${this.options.helpersNS}\\SanSSRComponent";`)
             emitter.writeLine(`$ctx->instance = new SanSSRComponent();`)
         }
-        emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx);`)
+        const computedList = info.getComputedNames().map(x => `"${x}"`)
+        emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx, [${computedList.join(', ')}]);`)
     }
 }
