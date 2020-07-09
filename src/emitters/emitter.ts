@@ -25,6 +25,10 @@ export class PHPEmitter extends Emitter {
         return this.stringifier.any(val)
     }
 
+    public literalize (val: any, quote: '"' | "'" = "'"): string {
+        return this.stringifier.str(val, quote)
+    }
+
     public write (str: string) {
         this.clearStringLiteralBuffer()
         return this.defaultWrite(str)
@@ -63,7 +67,7 @@ export class PHPEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeHTMLExpression(`"<!--s-data:" . _::json_encode(${dataAccess()}) . "-->"`)
+        this.writeHTMLExpression(`'<!--s-data:' . _::json_encode(${dataAccess()}) . '-->'`)
     }
 
     public clearStringLiteralBuffer () {

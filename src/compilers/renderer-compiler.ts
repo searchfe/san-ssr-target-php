@@ -28,7 +28,7 @@ export class RendererCompiler {
         const rendererName = this.sourceFile.entryComponentInfo === info
             ? this.options.renderFunctionName
             : `render${info.id}`
-        const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = "div"', '$sourceSlots = []']
+        const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', `$tagName = 'div'`, '$sourceSlots = []']
         this.emitter.carriageReturn()
         this.emitter.writeFunction(rendererName, argumentList, [], () => this.emitRendererBody(info))
     }
@@ -45,7 +45,7 @@ export class RendererCompiler {
          * 其他文件的组件引用，而其他文件里的组件并不知道该组件是否是空组件。
          */
         if (!info.root) {
-            emitter.writeLine('return "";')
+            emitter.writeLine(`return '';`)
             return emitter.fullText()
         }
 
@@ -60,7 +60,7 @@ export class RendererCompiler {
             this.options,
             emitter
         )
-        emitter.writeLine('$html = "";')
+        emitter.writeLine(`$html = '';`)
         aNodeCompiler.compile(info.root, true)
         emitter.writeLine('return $html;')
     }
@@ -87,7 +87,7 @@ export class RendererCompiler {
         const defaultData = info.proto['initData']() || {}
         for (const key of Object.keys(defaultData)) {
             const val = this.emitter.stringify(defaultData[key])
-            this.emitter.writeLine(`$ctx->data["${key}"] = isset($ctx->data["${key}"]) ? $ctx->data["${key}"] : ${val};`)
+            this.emitter.writeLine(`$ctx->data['${key}'] = isset($ctx->data['${key}']) ? $ctx->data['${key}'] : ${val};`)
         }
     }
 
@@ -123,13 +123,13 @@ export class RendererCompiler {
             const className = info.classDeclaration.getName()
             const ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, this.sourceFile.getFilePath())
             const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
-            emitter.writeLine(`$ctx->class = "${fullClassName}";`)
+            emitter.writeLine(`$ctx->class = '${fullClassName}';`)
             emitter.writeLine(`$ctx->instance = new ${className}();`)
         } else {
-            emitter.writeLine(`$ctx->class = "${this.options.helpersNS}\\SanSSRComponent";`)
+            emitter.writeLine(`$ctx->class = '${this.options.helpersNS}\\SanSSRComponent';`)
             emitter.writeLine(`$ctx->instance = new SanSSRComponent();`)
         }
-        const computedList = info.getComputedNames().map(x => `"${x}"`)
+        const computedList = info.getComputedNames().map(x => `'${x}'`)
         emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx, [${computedList.join(', ')}]);`)
     }
 }

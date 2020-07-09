@@ -119,8 +119,8 @@ export class ANodeCompiler {
         emitter.writeLine(`$${listName} = ${compileExprSource.expr(forDirective.value)};`)
         emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
-                emitter.writeLine(`$ctx->data["${indexName}"] = $${indexName};`)
-                emitter.writeLine(`$ctx->data["${itemName}"] = $value;`)
+                emitter.writeLine(`$ctx->data['${indexName}'] = $${indexName};`)
+                emitter.writeLine(`$ctx->data['${itemName}'] = $value;`)
                 this.compile(forElementANode, false)
             })
         })
@@ -131,14 +131,14 @@ export class ANodeCompiler {
         const rendererId = this.nextID()
         const { emitter } = this
 
-        emitter.writeIf(`!isset($ctx->slotRenderers["${rendererId}"])`, () => {
+        emitter.writeIf(`!isset($ctx->slotRenderers['${rendererId}'])`, () => {
             emitter.carriageReturn()
-            emitter.write(`$ctx->slotRenderers["${rendererId}"] = `)
+            emitter.write(`$ctx->slotRenderers['${rendererId}'] = `)
             emitter.writeAnonymousFunction([], ['&$ctx', '&$html'], () => {
                 emitter.carriageReturn()
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                    emitter.writeLine('$html = "";')
+                    emitter.writeLine(`$html = '';`)
                     for (const aNodeChild of aNode.children) this.compile(aNodeChild, false)
                     emitter.writeLine('return $html;')
                 })
@@ -171,7 +171,7 @@ export class ANodeCompiler {
                 emitter.writeLine('$slotCtx = $isInserted ? $ctx->owner : $ctx;')
 
                 if (aNode.vars || aNode.directives.bind) {
-                    emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "class" => $slotCtx->class, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
+                    emitter.writeLine(`$slotCtx = (object)['sanssrCid' => $slotCtx->sanssrCid, 'class' => $slotCtx->class, 'data' => $slotCtx->data, 'instance' => $slotCtx->instance, 'owner' => $slotCtx->owner];`)
                 }
                 if (aNode.directives.bind) {
                     emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
@@ -179,7 +179,7 @@ export class ANodeCompiler {
 
                 for (const varItem of aNode.vars || []) {
                     emitter.writeLine(
-                        `$slotCtx->data["${varItem.name}"] = ` +
+                        `$slotCtx->data['${varItem.name}'] = ` +
                         compileExprSource.expr(varItem.expr) + ';'
                     )
                 }
@@ -191,7 +191,7 @@ export class ANodeCompiler {
             emitter.write(';')
             emitter.writeNewLine()
         })
-        emitter.writeLine(`call_user_func($ctx->slotRenderers["${rendererId}"]);`)
+        emitter.writeLine(`call_user_func($ctx->slotRenderers['${rendererId}']);`)
     }
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
@@ -231,7 +231,7 @@ export class ANodeCompiler {
         if (defaultSourceSlots.length) {
             emitter.nextLine('array_push($sourceSlots, [')
             emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                emitter.writeLine('$html = "";')
+                emitter.writeLine(`$html = '';`)
                 defaultSourceSlots.forEach((child: ANode) => this.compile(child, false))
                 emitter.writeLine('return $html;')
             })
@@ -242,7 +242,7 @@ export class ANodeCompiler {
             const sourceSlotCode = sourceSlotCodes[key]
             emitter.nextLine('array_push($sourceSlots, [')
             emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                emitter.writeLine('$html = "";')
+                emitter.writeLine(`$html = '';`)
                 sourceSlotCode.children.forEach((child: ANode) => this.compile(child, false))
                 emitter.writeLine('return $html;')
             })

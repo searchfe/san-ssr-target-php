@@ -83,7 +83,7 @@ export class ElementCompiler {
             return
         }
         if (TypeGuards.isExprStringNode(prop.expr)) {
-            emitter.writeHTMLLiteral(` ${prop.name}=${emitter.stringify(prop.expr.value)}`)
+            emitter.writeHTMLLiteral(` ${prop.name}=${emitter.literalize(prop.expr.value, '"')}`)
             return
         }
         if (prop.expr.value != null) {
@@ -102,7 +102,7 @@ export class ElementCompiler {
                 emitter.writeLine(`$optionValue = ${expr(prop.expr)};`)
                 // value
                 emitter.writeIf('isset($optionValue)', () => {
-                    emitter.writeHTMLExpression('" value=\\"" . $optionValue . "\\""')
+                    emitter.writeHTMLExpression(`' value="' . $optionValue . '"'`)
                 })
                 // selected
                 emitter.writeIf('$optionValue == $selectValue', () => {
@@ -134,7 +134,7 @@ export class ElementCompiler {
         }
         const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
         const needEscape = prop.x || onlyOneAccessor
-        emitter.writeHTMLExpression(`_::attrFilter("${prop.name}", ${expr(prop.expr)}, ${needEscape})`)
+        emitter.writeHTMLExpression(`_::attrFilter('${prop.name}', ${expr(prop.expr)}, ${needEscape})`)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {

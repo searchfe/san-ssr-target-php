@@ -1,4 +1,4 @@
-import { parseExpr, ExprNode } from 'san'
+import { parseExpr } from 'san'
 import { dataAccess, expr } from '../../../src/compilers/expr-compiler'
 
 describe('compileExprSource', function () {
@@ -7,7 +7,7 @@ describe('compileExprSource', function () {
             type: 1,
             value: 'value'
         }
-        expect(expr(expr1 as any)).toEqual('"value"')
+        expect(expr(expr1 as any)).toEqual(`'value'`)
     })
     it('expression type = 2 should return number', function () {
         const e = {
@@ -48,7 +48,7 @@ describe('compileExprSource', function () {
             }]
         }
 
-        expect(expr(e as any)).toEqual('$ctx->data["ext"][1][$ctx->data[10]]')
+        expect(expr(e as any)).toEqual(`$ctx->data['ext'][1][$ctx->data[10]]`)
     })
     it('expression type = 5 should return interp expression', function () {
         const expr1 = {
@@ -101,12 +101,12 @@ describe('compileExprSource', function () {
                 { 'type': 6, 'name': { 'type': 4, 'paths': [{ 'type': 1, 'value': 'xx' }] }, 'args': [] }
             ]
         }
-        expect(expr(expr1 as any)).toContain('_::_classFilter("erik")')
-        expect(expr(expr2 as any)).toContain('_::_styleFilter("erik")')
-        expect(expr(expr4 as any)).toContain('_::_xstyleFilter("erik", "")')
-        expect(expr(expr3 as any)).toContain('_::_xclassFilter("erik", "")')
-        expect(expr(expr5 as any)).toContain('encodeURIComponent')
-        expect(expr(expr6 as any)).toContain('_::callFilter($ctx, "less", ["erik", "val"])')
+        expect(expr(expr1 as any)).toContain(`_::_classFilter('erik')`)
+        expect(expr(expr2 as any)).toContain(`_::_styleFilter('erik')`)
+        expect(expr(expr4 as any)).toContain(`_::_xstyleFilter('erik', '')`)
+        expect(expr(expr3 as any)).toContain(`_::_xclassFilter('erik', '')`)
+        expect(expr(expr5 as any)).toContain(`encodeURIComponent`)
+        expect(expr(expr6 as any)).toContain(`_::callFilter($ctx, 'less', ['erik', 'val'])`)
         expect(expr(expr7 as any)).not.toContain('_::escapeHTML')
     })
     it('expression type = 6 should return call expression', function () {
@@ -123,7 +123,7 @@ describe('compileExprSource', function () {
             },
             'args': [{ 'type': 1, 'value': 'num1' }, { 'type': 1, 'value': 'num2' }]
         }
-        expect(expr(e as any)).toContain('$ctx->instance->op.op[2][true]("num1","num2")')
+        expect(expr(e as any)).toContain(`$ctx->instance->op.op[2][true]('num1','num2')`)
     })
     it('expression type = 7 should return text', function () {
         const expr1 = {
@@ -137,8 +137,8 @@ describe('compileExprSource', function () {
             'type': 7,
             'segs': []
         }
-        expect(expr(expr1 as any)).toContain('("1 + 2") . ("2 * 4")')
-        expect(expr(expr2 as any)).toContain('""')
+        expect(expr(expr1 as any)).toContain(`('1 + 2') . ('2 * 4')`)
+        expect(expr(expr2 as any)).toContain(`''`)
     })
     it('expression type = 8 should return binary operater', function () {
         const e = {
@@ -185,7 +185,7 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1 as any)).toEqual('_::objSpread([["key", 1],"erik"], "01")')
+        expect(expr(expr1 as any)).toEqual(`_::objSpread([['key', 1],'erik'], '01')`)
     })
     it('expression type = 12 should return array', function () {
         const expr1 = {
@@ -196,7 +196,7 @@ describe('compileExprSource', function () {
             ]
         }
 
-        expect(expr(expr1 as any)).toEqual('_::spread([1, "erik"], "01")')
+        expect(expr(expr1 as any)).toEqual(`_::spread([1, 'erik'], '01')`)
     })
     it('expression type = 13 should return null', function () {
         const expr1 = {
@@ -210,7 +210,7 @@ describe('compileExprSource', function () {
             'value': 'bar',
             'parenthesized': true
         }
-        expect(expr(expr1 as any)).toEqual('("bar")')
+        expect(expr(expr1 as any)).toEqual(`('bar')`)
     })
     it('data access with default arguments', function () {
         expect(dataAccess()).toEqual('$ctx->data')

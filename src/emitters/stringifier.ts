@@ -43,14 +43,22 @@ export class Stringifier {
         return result + ']'
     }
 
-    str (source: string) {
-        return '"' + source
-            .replace(/\x5C/g, '\\\\')
-            .replace(/"/g, '\\"')
-            .replace(/(\\)?\$/g, '\\$$') // php 变量解析 fix, 方案同 ts2php
+    /**
+     * 字符串值转义成 PHP 字符串字面量
+     *
+     * @param quote 用单引号还是双引号？
+     */
+    str (source: string, quote: "'" | '"' = "'") {
+        const escaped = source
+            .replace(/\\/g, '\\\\')
             .replace(/\n/g, '\\n')
             .replace(/\t/g, '\\t')
-            .replace(/\r/g, '\\r') + '"'
+            .replace(/\r/g, '\\r')
+        if (quote === '"') {
+            return `"${escaped.replace(/"/g, `\\"`).replace(/\$/g, '\\$')}"`
+        } else {
+            return `'${escaped.replace(/'/g, `\\'`)}'`
+        }
     }
 
     date (source: Date) {

@@ -29,7 +29,7 @@ export function dataAccess (accessorExpr?: ExprAccessorNode): string {
         if (TypeGuards.isExprAccessorNode(path)) {
             code += `[${dataAccess(path)}]`
         } else if (typeof path.value === 'string') {
-            code += `["${path.value}"]`
+            code += `['${path.value}']`
         } else if (typeof path.value === 'number') {
             code += `[${path.value}]`
         }
@@ -91,7 +91,7 @@ function interp (interpExpr: ExprInterpNode) {
             break
 
         default:
-            code = `_::callFilter($ctx, "${filterName}", [${code}`
+            code = `_::callFilter($ctx, '${filterName}', [${code}`
             for (const arg of filter.args) {
                 code += ', ' + expr(arg)
             }
@@ -107,13 +107,13 @@ function interp (interpExpr: ExprInterpNode) {
 }
 
 function str (e: ExprStringNode): string {
-    return '"' + _.escapeHTML(e.value) + '"'
+    return `'${_.escapeHTML(e.value)}'`
 }
 
 // 生成文本片段代码
 function text (textExpr: ExprTextNode) {
     if (textExpr.segs.length === 0) {
-        return '""'
+        return `''`
     }
 
     return textExpr.segs
@@ -132,7 +132,7 @@ function array (arrayExpr: ExprArrayNode) {
         spread += item.spread ? 1 : 0
     }
 
-    return `_::spread([${items.join(', ')}], "${spread}")`
+    return `_::spread([${items.join(', ')}], '${spread}')`
 }
 
 // 生成对象字面量代码
@@ -151,7 +151,7 @@ function object (objExpr: ExprObjectNode) {
             items.push(`[${key}, ${val}]`)
         }
     }
-    return `_::objSpread([${items.join(',')}], "${spread}")`
+    return `_::objSpread([${items.join(',')}], '${spread}')`
 }
 
 function unary (e: ExprUnaryNode) {

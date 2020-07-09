@@ -16,14 +16,14 @@ describe('PHPEmitter', function () {
         it('should write buffer html literal', function () {
             emitter.writeHTMLLiteral('foo')
             emitter.write('bar')
-            expect(emitter.fullText()).toEqual('$html .= "foo";\nbar')
+            expect(emitter.fullText()).toEqual(`$html .= 'foo';\nbar`)
         })
     })
 
     it('should write data comment', function () {
         emitter.writeDataComment()
 
-        expect(emitter.fullText()).toEqual('$html .= "<!--s-data:" . _::json_encode($ctx->data) . "-->";\n')
+        expect(emitter.fullText()).toEqual(`$html .= '<!--s-data:' . _::json_encode($ctx->data) . '-->';\n`)
     })
 
     describe('write namespace', function () {
