@@ -1,3 +1,10 @@
+## [2.1.5](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.4...v2.1.5) (2020-07-09)
+
+
+### Bug Fixes
+
+* 统一使用 PHP 单引号，区分 PHP 单引号、双引号字面量 ([6ba1982](https://github.com/searchfe/san-ssr-target-php/commit/6ba1982d2ffb344fef16ebeea3fdf15c578b291c))
+
 ## [2.1.4](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.3...v2.1.4) (2020-07-09)
 
 
