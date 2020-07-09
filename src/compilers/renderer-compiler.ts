@@ -109,7 +109,7 @@ export class RendererCompiler {
         emitter.writeLine('$sanSSRInitData = $ctx->instance->initData();')
         emitter.writeIf('$sanSSRInitData', () => {
             emitter.writeForeach('$sanSSRInitData as $key => $val', () => {
-                emitter.writeLine('$ctx->data[$key] = isset($ctx->data[$key]) ? isset($ctx->data[$key]) : $val;')
+                emitter.writeLine('$ctx->data[$key] = isset($ctx->data[$key]) ? $ctx->data[$key] : $val;')
             })
         })
     }
