@@ -176,6 +176,12 @@ describe('PHPEmitter', function () {
         })
     })
 
+    describe('should literalize', function () {
+        it('should literalize single quoted string', () => {
+            expect(emitter.literalize("'foo'")).toEqual(`'\\'foo\\''`)
+        })
+    })
+
     it('should write block', function () {
         emitter.writeBlock('foo', function () {
             emitter.writeLine('bar')
