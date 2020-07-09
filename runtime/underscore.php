@@ -181,7 +181,8 @@ final class _ {
 
     public static function callFilter($ctx, $name, $args)
     {
-        $func = $ctx->class::$filters[$name];
+        $class = $ctx->class;
+        $func = $class::$filters[$name];
         if (is_callable($func)) {
             array_unshift($args, $ctx->instance);
             return call_user_func_array($func, $args);
@@ -190,7 +191,8 @@ final class _ {
 
     public static function callComputed($ctx, $name)
     {
-        $func = $ctx->class::$computed[$name];
+        $class = $ctx->class;
+        $func = $class::$computed[$name];
         if (is_callable($func)) {
             $result = call_user_func($func, $ctx->instance);
             return $result;
