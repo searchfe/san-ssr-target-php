@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.3...v2.1.4) (2020-07-09)
+
+
+### Bug Fixes
+
+* PHP 低版本不支持从属性值作为类使用 ([a7c5753](https://github.com/searchfe/san-ssr-target-php/commit/a7c5753bb716631e84b06c8e0293771a49ee46b8))
+
 ## [2.1.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.2...v2.1.3) (2020-07-09)
 
 
