@@ -60,11 +60,19 @@ export interface NormalizedCompileOptions extends CompileOptions {
     nsPrefix: string,
     nsRootDir: string,
     emitHeader: boolean,
+    helpersNS: string,
     ssrOnly: boolean,
     modules: Modules
 }
 
-export const defaultHelpersNS = 'san\\runtime'
+/**
+ * 默认（importHelpers 为 falsy）情况下产出的 helpers 命名空间：
+ *
+ * namespace san\\helpers {
+ *     class _ { }
+ * }
+ */
+export const defaultHelpersNS = 'san\\helpers'
 
 export function normalizeCompileOptions ({
     renderFunctionName = 'render',
@@ -75,5 +83,8 @@ export function normalizeCompileOptions ({
     ssrOnly = false,
     modules = {}
 }: CompileOptions): NormalizedCompileOptions {
-    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules }
+    // 定义如何引用 helpers，因此需要带 \ 前缀，比如
+    // \san\helpers\_::escapeHTML('');
+    const helpersNS = importHelpers || '\\' + defaultHelpersNS
+    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS }
 }

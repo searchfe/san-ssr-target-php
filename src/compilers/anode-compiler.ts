@@ -171,19 +171,17 @@ export class ANodeCompiler {
                 emitter.writeLine('$slotCtx = $isInserted ? $ctx->owner : $ctx;')
 
                 if (aNode.vars || aNode.directives.bind) {
-                    emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
+                    emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "class" => $slotCtx->class, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
                 }
                 if (aNode.directives.bind) {
                     emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
                 }
 
-                if (aNode.vars) {
-                    for (const varItem of aNode.vars) {
-                        emitter.writeLine(
-                            `$slotCtx->data["${varItem.name}"] = ` +
-                            compileExprSource.expr(varItem.expr) + ';'
-                        )
-                    }
+                for (const varItem of aNode.vars || []) {
+                    emitter.writeLine(
+                        `$slotCtx->data["${varItem.name}"] = ` +
+                        compileExprSource.expr(varItem.expr) + ';'
+                    )
                 }
 
                 emitter.writeForeach('$mySourceSlots as $renderIndex => $slot', () => {

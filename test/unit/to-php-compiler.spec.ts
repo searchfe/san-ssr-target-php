@@ -23,7 +23,7 @@ describe('ToPHPCompiler', function () {
 
         expect(result).toContain('namespace san\\test\\stub\\aComp {')
         expect(result).toContain('class A extends SanSSRComponent {')
-        expect(result).toContain('namespace san\\runtime {')
+        expect(result).toContain('namespace san\\helpers {')
     })
 
     it('should compile filters into static methods', function () {
@@ -71,22 +71,22 @@ describe('ToPHPCompiler', function () {
         expect(result).not.toContain('function sum($a, $b)')
     })
 
-    it('should support emit runtime only', function () {
+    it('should support emit helpers only', function () {
         const result = ToPHPCompiler.emitHelpers()
 
-        expect(result).toContain('namespace san\\runtime;')
+        expect(result).toContain('namespace san\\helpers;')
         expect(result).toContain('class Ts2Php_Date')
         expect(result).toContain('class SanSSRData')
     })
 
-    it('should support emit runtime with specified namespace', function () {
+    it('should support emit helpers with specified namespace', function () {
         const result = ToPHPCompiler.emitHelpers({ namespace: '\\foo' })
         expect(result).toContain('namespace \\foo;')
     })
 
-    it('should support emit runtime without <?php header', function () {
+    it('should support emit helpers without <?php header', function () {
         const result = ToPHPCompiler.emitHelpers({ emitHeader: false })
-        expect(result).toMatch(/^namespace san\\runtime;/)
+        expect(result).toMatch(/^namespace san\\helpers;/)
     })
 
     it('should throw if tsconfig not specified', function () {

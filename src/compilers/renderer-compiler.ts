@@ -2,10 +2,9 @@ import { SanSourceFile, DynamicComponentInfo, ComponentInfo, isTypedComponentInf
 import { NormalizedCompileOptions } from '../compile-options'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
+import { getNamespace } from '../utils/lang'
 
 export class RendererCompiler {
-    private namespacePrefix = ''
-
     constructor (
         /**
          * 当前编译的源文件
@@ -131,8 +130,16 @@ export class RendererCompiler {
         emitter.writeLine('$ctx->slotRenderers = [];')
         emitter.writeLine('$ctx->data = &$data;')
 
-        const className = isTypedComponentInfo(info) ? info.classDeclaration.getName() : 'SanSSRComponent'
-        emitter.writeLine(`$ctx->instance = new ${className}();`)
+        if (isTypedComponentInfo(info)) {
+            const className = info.classDeclaration.getName()
+            const ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, this.sourceFile.getFilePath())
+            const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
+            emitter.writeLine(`$ctx->class = "${fullClassName}";`)
+            emitter.writeLine(`$ctx->instance = new ${className}();`)
+        } else {
+            emitter.writeLine(`$ctx->class = "${this.options.helpersNS}\\SanSSRComponent";`)
+            emitter.writeLine(`$ctx->instance = new SanSSRComponent();`)
+        }
         emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx);`)
     }
 }

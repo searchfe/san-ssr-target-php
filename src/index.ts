@@ -73,10 +73,9 @@ export default class ToPHPCompiler implements Compiler {
         if (!sourceFile.componentInfos.length) return
 
         // 引入 renderer 的各种依赖
-        const helpersNS = options.importHelpers || defaultHelpersNS
-        emitter.writeLine(`use ${helpersNS}\\_;`)
-        emitter.writeLine(`use ${helpersNS}\\SanSSRData;`)
-        emitter.writeLine(`use ${helpersNS}\\SanSSRComponent;`)
+        emitter.writeLine(`use ${options.helpersNS}\\_;`)
+        emitter.writeLine(`use ${options.helpersNS}\\SanSSRData;`)
+        emitter.writeLine(`use ${options.helpersNS}\\SanSSRComponent;`)
 
         const rc = new RendererCompiler(
             sourceFile,
