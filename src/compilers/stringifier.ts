@@ -6,41 +6,18 @@ export class Stringifier {
     }
 
     obj (source: object) {
-        let prefixComma
-        let result = '['
-
-        for (const key in source) {
-            if (!source.hasOwnProperty(key) || typeof source[key] === 'undefined') {
-                continue
-            }
-
-            if (prefixComma) {
-                result += ','
-            }
-            prefixComma = 1
-
-            const k = this.str(key)
-            const v = this.any(source[key])
-            result += `${k} => ${v}`
-        }
-
-        return result + ']'
+        const pairs = Object.keys(source)
+            .filter(key => source[key] !== undefined)
+            .map(key => {
+                const k = this.str(key)
+                const v = this.any(source[key])
+                return `${k} => ${v}`
+            })
+        return '[' + pairs.join(', ') + ']'
     }
 
     arr (source: any[]) {
-        let prefixComma
-        let result = '['
-
-        for (const value of source) {
-            if (prefixComma) {
-                result += ','
-            }
-            prefixComma = 1
-
-            result += this.any(value)
-        }
-
-        return result + ']'
+        return '[' + source.map(x => this.any(x)).join(', ') + ']'
     }
 
     /**
@@ -48,17 +25,15 @@ export class Stringifier {
      *
      * @param quote 用单引号还是双引号？
      */
-    str (source: string, quote: "'" | '"' = '"') {
+    str (source: string) {
         const escaped = source
             .replace(/\\/g, '\\\\')
             .replace(/\n/g, '\\n')
             .replace(/\t/g, '\\t')
             .replace(/\r/g, '\\r')
-        if (quote === '"') {
-            return `"${escaped.replace(/"/g, `\\"`).replace(/\$/g, '\\$')}"`
-        } else {
-            return `'${escaped.replace(/'/g, `\\'`)}'`
-        }
+            .replace(/"/g, `\\"`)
+            .replace(/\$/g, '\\$')
+        return `"${escaped}"`
     }
 
     date (source: Date) {

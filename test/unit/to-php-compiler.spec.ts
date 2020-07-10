@@ -21,7 +21,7 @@ describe('ToPHPCompiler', function () {
     it('should compile a component file', function () {
         const result = compileComponent('stub/a.comp.ts')
 
-        expect(result).toContain('namespace san\\test\\stub\\aComp {')
+        expect(result).toContain('namespace san\\test\\stub\\a_comp {')
         expect(result).toContain('class A extends SanSSRComponent {')
         expect(result).toContain('namespace san\\helpers {')
     })

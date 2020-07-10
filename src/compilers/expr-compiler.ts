@@ -34,10 +34,8 @@ export class ExprCompiler {
         for (const path of (accessorExpr ? accessorExpr.paths : [])) {
             if (TypeGuards.isExprAccessorNode(path)) {
                 code += `[${this.dataAccess(path)}]`
-            } else if (typeof path.value === 'string') {
-                code += `['${path.value}']`
-            } else if (typeof path.value === 'number') {
-                code += `[${path.value}]`
+            } else {
+                code += `[${this.stringifier.any(path.value)}]`
             }
         }
         return code
@@ -68,7 +66,7 @@ export class ExprCompiler {
         code += '('
         code += callExpr.args
             .map(arg => this.compile(arg))
-            .join(',')
+            .join(', ')
         code += ')'
 
         return code
@@ -97,7 +95,7 @@ export class ExprCompiler {
                 break
 
             default:
-                code = `_::callFilter($ctx, '${filterName}', [${code}`
+                code = `_::callFilter($ctx, "${filterName}", [${code}`
                 for (const arg of filter.args) {
                     code += ', ' + this.compile(arg)
                 }
@@ -161,7 +159,7 @@ export class ExprCompiler {
                 items.push(`[${key}, ${val}]`)
             }
         }
-        return `_::objSpread([${items.join(',')}], '${spread}')`
+        return `_::objSpread([${items.join(', ')}], '${spread}')`
     }
 
     unary (e: ExprUnaryNode) {

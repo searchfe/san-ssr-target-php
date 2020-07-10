@@ -10,16 +10,12 @@ include($caseDir . '/component.php');
 $data = getData($caseDir);
 
 $noDataOutput = preg_match('/-ndo$/', $caseName);
-$renderFunc = '\\san\\' . dashesToCamelCase($caseName) . '\\component\\render';
+$renderFunc = '\\san\\' . sanitize($caseName) . '\\component\\render';
 
 echo $renderFunc($data, $noDataOutput);
 
-function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
-    $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
-    if (!$capitalizeFirstCharacter) {
-        $str[0] = strtolower($str[0]);
-    }
-    return $str;
+function sanitize($string) {
+    return str_replace('-', '_', $string);
 }
 
 function getData($caseDir) {

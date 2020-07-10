@@ -29,7 +29,7 @@ export class ANodeCompiler {
         public options: NormalizedCompileOptions,
         private emitter: PHPEmitter
     ) {
-        this.elementCompiler = new ElementCompiler(this, emitter)
+        this.elementCompiler = new ElementCompiler(this, this.options.exprCompiler, emitter)
     }
 
     /**

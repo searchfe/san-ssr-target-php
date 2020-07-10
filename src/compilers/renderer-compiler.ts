@@ -87,7 +87,8 @@ export class RendererCompiler {
         const defaultData = info.proto['initData']() || {}
         for (const key of Object.keys(defaultData)) {
             const val = this.emitter.stringify(defaultData[key])
-            this.emitter.writeLine(`$ctx->data['${key}'] = isset($ctx->data['${key}']) ? $ctx->data['${key}'] : ${val};`)
+            const keyStr = this.options.stringifier.str(key)
+            this.emitter.writeLine(`$ctx->data[${keyStr}] = isset($ctx->data[${keyStr}]) ? $ctx->data[${keyStr}] : ${val};`)
         }
     }
 

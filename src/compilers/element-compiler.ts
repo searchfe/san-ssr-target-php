@@ -9,13 +9,11 @@ import { ExprCompiler } from './expr-compiler'
  * 也可能是由其他 aNode 语法编译时递归到的子 DOM 元素
  */
 export class ElementCompiler {
-    private expr: ExprCompiler
     constructor (
         private aNodeCompiler: ANodeCompiler,
+        private expr: ExprCompiler,
         private emitter: PHPEmitter = new PHPEmitter()
-    ) {
-        this.expr = this.aNodeCompiler.options.exprCompiler
-    }
+    ) {}
     /**
      * 编译元素标签头
      *
