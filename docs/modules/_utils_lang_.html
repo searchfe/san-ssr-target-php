@@ -73,7 +73,9 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#rkeyword" class="tsd-kind-icon">r<wbr>Keyword</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#rlabelcontent" class="tsd-kind-icon">r<wbr>Label<wbr>Content</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_lang_.html#rlabelstart" class="tsd-kind-icon">r<wbr>Label<wbr>Start</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -91,14 +93,46 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="reservednames" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> reserved<wbr>Names</h3>
-					<div class="tsd-signature tsd-kind-icon">reserved<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[/^list$/i]</span></div>
+					<a name="rkeyword" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> r<wbr>Keyword</h3>
+					<div class="tsd-signature tsd-kind-icon">r<wbr>Keyword<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;/\b((a(bstract|nd|rray|s))|(c(a(llable|se|tch)|l(ass|one)|on(st|tinue)))|(d(e(clare|fault)|ie|o))|(e(cho|lse(if)?|mpty|nd(declare|for(each)?|if|switch|while)|val|x(it|tends)))|(f(inal|or(each)?|unction))|(g(lobal|oto))|(i(f|mplements|n(clude(_once)?|st(anceof|eadof)|terface)|sset))|(n(amespace|ew))|(p(r(i(nt|vate)|otected)|ublic))|(re(quire(_once)?|turn))|(s(tatic|witch))|(t(hrow|r(ait|y)))|(u(nset|se))|(__halt_compiler|break|list|(x)?or|var|while))\b/i</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/6ba1982/src/utils/lang.ts#L5">utils/lang.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L9">utils/lang.ts:9</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>PHP 关键字</p>
+						</div>
+						<p>See <a href="https://www.php.net/manual/en/reserved.keywords.php">https://www.php.net/manual/en/reserved.keywords.php</a></p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="rlabelcontent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> r<wbr>Label<wbr>Content</h3>
+					<div class="tsd-signature tsd-kind-icon">r<wbr>Label<wbr>Content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;/[a-zA-Z0-9_\x80-\xff]/</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L17">utils/lang.ts:17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="rlabelstart" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> r<wbr>Label<wbr>Start</h3>
+					<div class="tsd-signature tsd-kind-icon">r<wbr>Label<wbr>Start<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> =&nbsp;/[a-zA-Z_\x80-\xff]/</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L16">utils/lang.ts:16</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>PHP label 规范（包括变量名、命名空间名）首字母、其他字母</p>
+						</div>
+						<p>See <a href="https://www.php.net/manual/en/language.variables.basics.php">https://www.php.net/manual/en/language.variables.basics.php</a></p>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -113,7 +147,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/6ba1982/src/utils/lang.ts#L11">utils/lang.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L23">utils/lang.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,12 +176,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/6ba1982/src/utils/lang.ts#L27">utils/lang.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L50">utils/lang.ts:50</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>返回 <code>name</code> 是否是 PHP 中的保留字，比如 list、require。</p>
+									<p>返回 <code>name</code> 是否是 PHP 中的关键字，比如 list、require。</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -170,7 +204,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/6ba1982/src/utils/lang.ts#L19">utils/lang.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L31">utils/lang.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -193,7 +227,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/6ba1982/src/utils/lang.ts#L7">utils/lang.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/utils/lang.ts#L19">utils/lang.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -233,6 +267,9 @@
 						<a href="_compilers_renderer_compiler_.html">"compilers/renderer-<wbr>compiler"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="_compilers_stringifier_.html">"compilers/stringifier"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="_compilers_ts2php_.html">"compilers/ts2php"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -240,9 +277,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_emitters_helpers_.html">"emitters/helpers"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_emitters_stringifier_.html">"emitters/stringifier"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_index_.html">"index"</a>
@@ -276,7 +310,13 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_lang_.html#reservednames" class="tsd-kind-icon">reserved<wbr>Names</a>
+						<a href="_utils_lang_.html#rkeyword" class="tsd-kind-icon">r<wbr>Keyword</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_utils_lang_.html#rlabelcontent" class="tsd-kind-icon">r<wbr>Label<wbr>Content</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_utils_lang_.html#rlabelstart" class="tsd-kind-icon">r<wbr>Label<wbr>Start</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_utils_lang_.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a>

@@ -1,3 +1,11 @@
+## [2.1.6](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.5...v2.1.6) (2020-07-10)
+
+
+### Bug Fixes
+
+* attribute value escape ([6f2d6ce](https://github.com/searchfe/san-ssr-target-php/commit/6f2d6ce3b4eb20498b88da56c8caa60f856a961f))
+* 属性名带横线时，只有合并数据时带横线 ([9e80ed6](https://github.com/searchfe/san-ssr-target-php/commit/9e80ed67ee3f24a260b5e3691f54110d43affb02))
+
 ## [2.1.5](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.4...v2.1.5) (2020-07-09)
 
 
