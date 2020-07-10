@@ -1,6 +1,7 @@
 import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
 import { SanSourceFile, ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
+import camelCase from 'camelcase'
 import { PHPEmitter } from '../emitters/emitter'
 import * as compileExprSource from '../compilers/expr-compiler'
 import { NormalizedCompileOptions } from '../compile-options'
@@ -251,7 +252,7 @@ export class ANodeCompiler {
 
         const givenData = []
         for (const prop of aNode.props) {
-            const key = emitter.stringify(prop.name)
+            const key = emitter.stringify(camelCase(prop.name))
             const val = compileExprSource.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }
