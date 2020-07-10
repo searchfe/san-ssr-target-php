@@ -1,9 +1,8 @@
-import { ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
+import { ExprNode, ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
 import { SanSourceFile, ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import camelCase from 'camelcase'
 import { PHPEmitter } from '../emitters/emitter'
-import * as compileExprSource from '../compilers/expr-compiler'
 import { NormalizedCompileOptions } from '../compile-options'
 import { dirname, resolve } from 'path'
 import { getNamespace } from '../utils/lang'
@@ -27,7 +26,7 @@ export class ANodeCompiler {
     constructor (
         private sourceFile: SanSourceFile,
         private info: ComponentInfo,
-        private options: NormalizedCompileOptions,
+        public options: NormalizedCompileOptions,
         private emitter: PHPEmitter
     ) {
         this.elementCompiler = new ElementCompiler(this, emitter)
@@ -59,7 +58,7 @@ export class ANodeCompiler {
         const { emitter } = this
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(compileExprSource.expr(aNode.textExpr))
+        emitter.writeHTMLExpression(this.expr(aNode.textExpr))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -84,14 +83,14 @@ export class ANodeCompiler {
         delete aNodeWithoutIf.directives['if']
 
         emitter.writeIf(
-            compileExprSource.expr(ifDirective.value),
+            this.expr(ifDirective.value),
             () => this.compile(aNodeWithoutIf, false)
         )
 
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                emitter.beginElseIf(compileExprSource.expr(elifDirective.value))
+                emitter.beginElseIf(this.expr(elifDirective.value))
             } else {
                 emitter.beginElse()
             }
@@ -117,7 +116,7 @@ export class ANodeCompiler {
         const listName = this.nextID()
         const { emitter } = this
 
-        emitter.writeLine(`$${listName} = ${compileExprSource.expr(forDirective.value)};`)
+        emitter.writeLine(`$${listName} = ${this.expr(forDirective.value)};`)
         emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
                 emitter.writeLine(`$ctx->data['${indexName}'] = $${indexName};`)
@@ -151,7 +150,7 @@ export class ANodeCompiler {
 
                 const nameProp = getANodePropByName(aNode, 'name')
                 if (nameProp) {
-                    emitter.writeLine('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
+                    emitter.writeLine('$slotName = ' + this.expr(nameProp.expr) + ';')
 
                     emitter.writeForeach('$ctxSourceSlots as $i => $slot', () => {
                         emitter.writeIf('count($slot) > 1 && $slot[1] == $slotName', () => {
@@ -175,13 +174,13 @@ export class ANodeCompiler {
                     emitter.writeLine(`$slotCtx = (object)['sanssrCid' => $slotCtx->sanssrCid, 'class' => $slotCtx->class, 'data' => $slotCtx->data, 'instance' => $slotCtx->instance, 'owner' => $slotCtx->owner];`)
                 }
                 if (aNode.directives.bind) {
-                    emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                    emitter.writeLine('_::extend($slotCtx->data, ' + this.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
                 }
 
                 for (const varItem of aNode.vars || []) {
                     emitter.writeLine(
                         `$slotCtx->data['${varItem.name}'] = ` +
-                        compileExprSource.expr(varItem.expr) + ';'
+                        this.expr(varItem.expr) + ';'
                     )
                 }
 
@@ -247,19 +246,19 @@ export class ANodeCompiler {
                 sourceSlotCode.children.forEach((child: ANode) => this.compile(child, false))
                 emitter.writeLine('return $html;')
             })
-            emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
+            emitter.feedLine(', ' + this.expr(sourceSlotCode.prop.expr) + ']);')
         }
 
         const givenData = []
         for (const prop of aNode.props) {
             const key = emitter.stringify(camelCase(prop.name))
-            const val = compileExprSource.expr(prop.expr)
+            const val = this.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }
 
         dataLiteral = '[' + givenData.join(', ') + ']'
         if (aNode.directives.bind) {
-            const bindData = compileExprSource.expr(aNode.directives.bind.value)
+            const bindData = this.expr(aNode.directives.bind.value)
             dataLiteral = `_::combine(${bindData}, ${dataLiteral})`
         }
 
@@ -274,8 +273,16 @@ export class ANodeCompiler {
         emitter.writeLine('$sourceSlots = null;')
     }
 
+    private expr (e: ExprNode) {
+        return this.options.exprCompiler.compile(e)
+    }
+
     private outputData () {
-        this.emitter.writeIf('!$noDataOutput', () => this.emitter.writeDataComment())
+        this.emitter.writeIf('!$noDataOutput', () => {
+            const data = this.options.exprCompiler.dataAccess()
+            const code = `'<!--s-data:' . _::json_encode(${data}) . '-->'`
+            this.emitter.writeHTMLExpression(code)
+        })
     }
 
     private nextID () {

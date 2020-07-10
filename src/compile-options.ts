@@ -1,4 +1,6 @@
 import { Modules } from './compilers/ts2php'
+import { Stringifier } from './compilers/stringifier'
+import { ExprCompiler } from './compilers/expr-compiler'
 
 export interface CompileOptions {
     /**
@@ -53,7 +55,9 @@ export interface CompileOptions {
 }
 
 /**
- * 解析过的，填充过默认值的 CompileOptions，程序内部使用
+ * 解析过的，程序内部使用。包括：
+ * 1. 填充过默认值的 CompileOptions
+ * 2. 由 CompileOptions 唯一决定的工具对象
  */
 export interface NormalizedCompileOptions extends CompileOptions {
     renderFunctionName: string,
@@ -62,6 +66,8 @@ export interface NormalizedCompileOptions extends CompileOptions {
     emitHeader: boolean,
     helpersNS: string,
     ssrOnly: boolean,
+    stringifier: Stringifier,
+    exprCompiler: ExprCompiler,
     modules: Modules
 }
 
@@ -86,5 +92,7 @@ export function normalizeCompileOptions ({
     // 定义如何引用 helpers，因此需要带 \ 前缀，比如
     // \san\helpers\_::escapeHTML('');
     const helpersNS = importHelpers || '\\' + defaultHelpersNS
-    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS }
+    const stringifier = new Stringifier(helpersNS)
+    const exprCompiler = new ExprCompiler(stringifier)
+    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, exprCompiler }
 }

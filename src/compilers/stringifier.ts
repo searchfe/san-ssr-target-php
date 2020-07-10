@@ -48,7 +48,7 @@ export class Stringifier {
      *
      * @param quote 用单引号还是双引号？
      */
-    str (source: string, quote: "'" | '"' = "'") {
+    str (source: string, quote: "'" | '"' = '"') {
         const escaped = source
             .replace(/\\/g, '\\\\')
             .replace(/\n/g, '\\n')
@@ -65,14 +65,18 @@ export class Stringifier {
         return `new ${this.helpers}\\Ts2Php_Date(` + source.getTime() + ')'
     }
 
+    number (source: number) {
+        if (isNaN(source)) return 'null'
+        return '' + source
+    }
+
     any (source: any): string {
         switch (typeof source) {
         case 'string':
             return this.str(source)
 
         case 'number':
-            if (isNaN(source)) return 'null'
-            return '' + source
+            return this.number(source)
 
         case 'boolean':
             return source ? 'true' : 'false'

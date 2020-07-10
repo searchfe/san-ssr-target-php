@@ -1,6 +1,5 @@
 import { Emitter } from 'san-ssr'
-import { dataAccess } from '../compilers/expr-compiler'
-import { Stringifier } from './stringifier'
+import { Stringifier } from '../compilers/stringifier'
 
 export class PHPEmitter extends Emitter {
     private stringifier: Stringifier
@@ -64,10 +63,6 @@ export class PHPEmitter extends Emitter {
 
     public writeHTMLExpression (code: string) {
         this.writeLine(`$html .= ${code};`)
-    }
-
-    public writeDataComment () {
-        this.writeHTMLExpression(`'<!--s-data:' . _::json_encode(${dataAccess()}) . '-->'`)
     }
 
     public clearStringLiteralBuffer () {
