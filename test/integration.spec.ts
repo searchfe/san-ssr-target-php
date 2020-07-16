@@ -27,7 +27,8 @@ for (const caseName of files) {
         const got = execFileSync(renderBin, [caseName]).toString()
         const [data, html] = parseSanHTML(got)
 
-        expect(data).toEqual(expectedData)
+        // PHP 关联数组为空时，JSON.stringify 后为 `[]` 而非 `{}`
+        expect({ ...data }).toEqual(expectedData)
         expect(html).toEqual(expectedHtml)
     })
 }

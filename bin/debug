@@ -10,12 +10,21 @@ const { compile } = require('../dist/utils/case')
 const caseName = process.argv[2]
 if (!caseName) throw new Error('echo specify a test case name')
 
+/**
+ * 打印期望输出
+ */
 const htmlPath = resolve(__dirname, '../test/cases', caseName, 'expected.html')
 const expected = fs.readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
+/**
+ * 编译 case 下所有文件
+ */
 compile(caseName)
 
+/**
+ * 打印实际输出
+ */
 let got
 try {
     got = execFileSync(resolve(__dirname, `./render.php`), [caseName]).toString()
