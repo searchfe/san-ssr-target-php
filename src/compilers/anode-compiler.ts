@@ -5,7 +5,7 @@ import camelCase from 'camelcase'
 import { PHPEmitter } from '../emitters/emitter'
 import { NormalizedCompileOptions } from '../compile-options'
 import { dirname, resolve } from 'path'
-import { getNamespace } from '../utils/lang'
+import { getNamespace, normalizeNamespaceSlug } from '../utils/lang'
 
 type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
@@ -58,7 +58,7 @@ export class ANodeCompiler {
         const { emitter } = this
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(this.expr(aNode.textExpr))
+        emitter.writeHTMLExpression(this.expr(aNode.textExpr, true))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -252,7 +252,7 @@ export class ANodeCompiler {
         const givenData = []
         for (const prop of aNode.props) {
             const key = emitter.stringify(camelCase(prop.name))
-            const val = this.expr(prop.expr)
+            const val = this.expr(prop.expr, false)
             givenData.push(`${key} => ${val}`)
         }
 
@@ -263,7 +263,7 @@ export class ANodeCompiler {
         }
 
         const name = ref.isDefault ? 'render' : 'render' + ref.id
-        const renderId = ref.relativeFilePath === '.'
+        const renderId = ref.specifier === '.'
             ? name
             : '\\' + this.getNamespace(ref) + '\\' + name
         const ndo = isRootElement ? '$noDataOutput' : 'true'
@@ -273,8 +273,8 @@ export class ANodeCompiler {
         emitter.writeLine('$sourceSlots = null;')
     }
 
-    private expr (e: ExprNode) {
-        return this.options.exprCompiler.compile(e)
+    private expr (e: ExprNode, escapeHTML?: boolean) {
+        return this.options.exprCompiler.compile(e, escapeHTML)
     }
 
     private outputData () {
@@ -293,7 +293,13 @@ export class ANodeCompiler {
      * 根据组件引用（通常是外部组件）得到被引用组件的命名空间
      */
     private getNamespace (ref: ComponentReference): string {
-        const filePath = resolve(dirname(this.sourceFile.getFilePath()), ref.relativeFilePath)
-        return getNamespace(this.options.nsPrefix, this.options.nsRootDir, filePath)
+        let ns = ''
+        const ret = this.options.getModuleNamespace(ref.specifier)
+        ns = ret.replace(/^\\/, '').replace(/\\$/, '').split('\\').map(normalizeNamespaceSlug).join('\\')
+        if (!ns) {
+            const filePath = resolve(dirname(this.sourceFile.getFilePath()), ref.specifier)
+            ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, filePath)
+        }
+        return ns
     }
 }

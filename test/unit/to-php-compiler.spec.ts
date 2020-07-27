@@ -1,6 +1,5 @@
 import { SanProject } from 'san-ssr'
 import ToPHPCompiler from '../../src/index'
-import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
 const fromTestDir = x => resolve(__dirname, '..', x)

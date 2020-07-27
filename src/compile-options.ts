@@ -52,6 +52,11 @@ export interface CompileOptions {
      * ts2php 的 CompileOptions#modules
      */
     modules?: Modules
+    /**
+     * ts2php 的 CompileOptions#getModuleNamespace
+     * 注意：getModuleNamespace 也作用于定位外部 render()，后两个参数不受支持
+     */
+    getModuleNamespace?: (moduleSpecifier: string) => string
 }
 
 /**
@@ -68,7 +73,8 @@ export interface NormalizedCompileOptions extends CompileOptions {
     ssrOnly: boolean,
     stringifier: Stringifier,
     exprCompiler: ExprCompiler,
-    modules: Modules
+    modules: Modules,
+    getModuleNamespace: (moduleSpecifier: string) => string
 }
 
 /**
@@ -87,12 +93,13 @@ export function normalizeCompileOptions ({
     importHelpers,
     emitHeader = true,
     ssrOnly = false,
-    modules = {}
+    modules = {},
+    getModuleNamespace = () => '\\'
 }: CompileOptions): NormalizedCompileOptions {
     // 定义如何引用 helpers，因此需要带 \ 前缀，比如
     // \san\helpers\_::escapeHTML('');
     const helpersNS = importHelpers || '\\' + defaultHelpersNS
     const stringifier = new Stringifier(helpersNS)
     const exprCompiler = new ExprCompiler(stringifier)
-    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, exprCompiler }
+    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, exprCompiler, getModuleNamespace }
 }

@@ -1,7 +1,7 @@
 /**
-* 编译源码的 helper 方法集合对象
-*/
-import { ExprBoolNode, ExprNumberNode, ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
+ * 把 ExprNode 转为 PHP 表达式
+ */
+import { ExprNumberNode, ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
 import { TypeGuards, _ } from 'san-ssr'
 import { Stringifier } from './stringifier'
 
@@ -72,8 +72,15 @@ export class ExprCompiler {
         return code
     }
 
-    // 生成插值代码
-    interp (interpExpr: ExprInterpNode) {
+    /*
+     * 生成插值代码，需要处理转义，几个场景
+     *
+     * - 并非所有表达式都需要转义，例如：
+     *     ExprTextNode[text=Hi {{san}}!]，只有其中的 ExprInterpNode[{{san}}] 部分需要转义
+     * - 插值有时不需要转义，比如：
+     *     <x-list list={{data | square}}></x-list>，list 作为数据传递给 <x-list> 时不转义
+     */
+    interp (interpExpr: ExprInterpNode, escapeHTML = !interpExpr.original) {
         let code = this.compile(interpExpr.expr)
 
         for (const filter of interpExpr.filters) {
@@ -102,16 +109,19 @@ export class ExprCompiler {
                 code += '])'
             }
         }
-
-        if (!interpExpr.original) {
-            return `_::escapeHTML(${code})`
-        }
-
-        return code
+        return escapeHTML ? `_::escapeHTML(${code})` : code
     }
 
-    str (e: ExprStringNode | ExprNumberNode | ExprBoolNode): string {
-        return this.stringifier.str(_.escapeHTML(e.value))
+    /**
+     * 常量字符串生成 PHP 表达式（字面量语法），需要处理转义。几个场景：
+     *
+     * - 作为 PHP 语句的一部分时，不需要转义。
+     * - 输出到 HTML 时，需要转义。
+     */
+    str (e: ExprStringNode, escapeHTML = false): string {
+        return escapeHTML
+            ? this.stringifier.str(_.escapeHTML(e.value))
+            : this.stringifier.str(e.value)
     }
 
     number (e: ExprNumberNode) {
@@ -184,26 +194,22 @@ export class ExprCompiler {
             ':' + this.compile(e.segs[2])
     }
 
-    compile (e: ExprNode): string {
-        const str = this.dispatch(e)
-        return e.parenthesized ? `(${str})` : str
-    }
-
-    // 根据表达式类型进行生成代码函数的中转分发
-    private dispatch (e: ExprNode): string {
-        if (TypeGuards.isExprUnaryNode(e)) return this.unary(e)
-        if (TypeGuards.isExprBinaryNode(e)) return this.binary(e)
-        if (TypeGuards.isExprTertiaryNode(e)) return this.tertiary(e)
-        if (TypeGuards.isExprStringNode(e)) return this.str(e)
-        if (TypeGuards.isExprNumberNode(e)) return this.number(e)
-        if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'
-        if (TypeGuards.isExprAccessorNode(e)) return this.dataAccess(e)
-        if (TypeGuards.isExprInterpNode(e)) return this.interp(e)
-        if (TypeGuards.isExprTextNode(e)) return this.text(e)
-        if (TypeGuards.isExprArrayNode(e)) return this.array(e)
-        if (TypeGuards.isExprObjectNode(e)) return this.object(e)
-        if (TypeGuards.isExprCallNode(e)) return this.callExpr(e)
-        if (TypeGuards.isExprNullNode(e)) return 'null'
-        throw new Error(`unexpected expression ${JSON.stringify(e)}`)
+    compile (e: ExprNode, escapeHTML?: boolean): string {
+        let code = ''
+        if (TypeGuards.isExprUnaryNode(e)) code = this.unary(e)
+        else if (TypeGuards.isExprBinaryNode(e)) code = this.binary(e)
+        else if (TypeGuards.isExprTertiaryNode(e)) code = this.tertiary(e)
+        else if (TypeGuards.isExprStringNode(e)) code = this.str(e, escapeHTML)
+        else if (TypeGuards.isExprNumberNode(e)) code = this.number(e)
+        else if (TypeGuards.isExprBoolNode(e)) code = e.value ? 'true' : 'false'
+        else if (TypeGuards.isExprAccessorNode(e)) code = this.dataAccess(e)
+        else if (TypeGuards.isExprInterpNode(e)) code = this.interp(e, escapeHTML)
+        else if (TypeGuards.isExprTextNode(e)) code = this.text(e)
+        else if (TypeGuards.isExprArrayNode(e)) code = this.array(e)
+        else if (TypeGuards.isExprObjectNode(e)) code = this.object(e)
+        else if (TypeGuards.isExprCallNode(e)) code = this.callExpr(e)
+        else if (TypeGuards.isExprNullNode(e)) code = 'null'
+        else throw new Error(`unexpected expression ${JSON.stringify(e)}`)
+        return e.parenthesized ? `(${code})` : code
     }
 }

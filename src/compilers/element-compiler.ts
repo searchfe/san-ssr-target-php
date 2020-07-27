@@ -1,6 +1,6 @@
 import { Directive, ANodeProperty, ANode, ExprType } from 'san'
 import { ANodeCompiler } from './anode-compiler'
-import { TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
+import { _, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
 import { ExprCompiler } from './expr-compiler'
 
@@ -76,6 +76,12 @@ export class ElementCompiler {
         else for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
     }
 
+    /**
+     * 输出一个属性键值对
+     *
+     * - 如果值是字面量（布尔、字符串、数字）则在编译时 escape HTML 后输出
+     * - 如果是表达式，则编译时只输出表达式，在运行时 excape HTML
+     */
     private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
         const { emitter } = this
         if (prop.name === 'slot') return
@@ -83,11 +89,10 @@ export class ElementCompiler {
             emitter.writeHTMLLiteral(` ${prop.name}`)
             return
         }
-        if (prop.expr.value != null) {
-            emitter.writeHTMLLiteral(` ${prop.name}=${this.expr.str(prop.expr)}`)
+        if (TypeGuards.isExprStringNode(prop.expr) || TypeGuards.isExprNumberNode(prop.expr)) {
+            emitter.writeHTMLLiteral(` ${prop.name}="${_.escapeHTML(prop.expr.value)}"`)
             return
         }
-
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
             if (tagName === 'select') {

@@ -1,4 +1,4 @@
-import { Ts2Php } from 'ts2php'
+import { Ts2Php, Ts2phpCompileOptions } from 'ts2php'
 import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
@@ -25,14 +25,16 @@ export class PHPTranspiler {
         this.ts2php = new Ts2Php({ compilerOptions })
     }
 
-    compile (sourceFile: SourceFile, modules: Modules, helperNamespace: string) {
-        const options = {
+    compile (sourceFile: SourceFile, modules: Modules, helperNamespace: string, getModuleNamespace?: (moduleSpecifier: string) => string) {
+        const options: Ts2phpCompileOptions = {
             source: sourceFile.getFullText(),
             emitHeader: false,
             plugins: [],
             modules,
             helperNamespace: `${helperNamespace}\\`
         }
+
+        if (getModuleNamespace) options.getModuleNamespace = getModuleNamespace
         debug('compile', sourceFile.getFilePath(), 'options:', options)
         const { errors, phpCode } = this.ts2php.compile(sourceFile.getFilePath(), options)
         if (errors.length) {

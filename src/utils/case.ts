@@ -15,6 +15,7 @@ export function compile (caseName: string) {
     const files = readdirSync(dir).filter(x => /\.(ts|js)$/.test(x))
 
     for (const file of files) {
+        if (/\.d\.ts$/.test(file)) continue
         const src = join(dir, file)
         const dst = join(dir, file.replace(/\.(ts|js)$/, '.php'))
         writeFileSync(dst, compileComponentFile(src))
@@ -34,7 +35,19 @@ export function compileComponentFile (filepath: string): string {
             modules: {
                 './php': {
                     required: true
+                },
+                '@cases/multi-files': {
+                    path: join(__dirname, '../../test/cases/multi-files')
+                },
+                '@cases/multi-component-files': {
+                    path: join(__dirname, '../../test/cases/multi-component-files')
                 }
+            },
+            getModuleNamespace: (moduleSpecifier: string) => {
+                if (/^@cases/.test(moduleSpecifier)) {
+                    return moduleSpecifier.replace(/^@cases/, '\\san').replace(/-/g, '_').replace(/\//g, '\\') + '\\'
+                }
+                return ''
             }
         }
     )
