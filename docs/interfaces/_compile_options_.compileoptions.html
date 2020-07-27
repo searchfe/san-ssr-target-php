@@ -90,6 +90,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_compile_options_.compileoptions.html#emitheader" class="tsd-kind-icon">emit<wbr>Header</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_compile_options_.compileoptions.html#getmodulenamespace" class="tsd-kind-icon">get<wbr>Module<wbr>Namespace</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_compile_options_.compileoptions.html#importhelpers" class="tsd-kind-icon">import<wbr>Helpers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_compile_options_.compileoptions.html#modules" class="tsd-kind-icon">modules</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_compile_options_.compileoptions.html#nsprefix" class="tsd-kind-icon">ns<wbr>Prefix</a></li>
@@ -110,7 +111,7 @@
 					<div class="tsd-signature tsd-kind-icon">emit<wbr>Header<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L45">compile-options.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L45">compile-options.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -121,12 +122,28 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="getmodulenamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> get<wbr>Module<wbr>Namespace</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>Module<wbr>Namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L59">compile-options.ts:59</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>ts2php 的 CompileOptions#getModuleNamespace
+							注意：getModuleNamespace 也作用于定位外部 render()，后两个参数不受支持</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="importhelpers" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> import<wbr>Helpers</h3>
 					<div class="tsd-signature tsd-kind-icon">import<wbr>Helpers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L39">compile-options.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L39">compile-options.ts:39</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -142,7 +159,7 @@
 					<div class="tsd-signature tsd-kind-icon">modules<span class="tsd-signature-symbol">:</span> <a href="_compilers_ts2php_.modules.html" class="tsd-signature-type">Modules</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L54">compile-options.ts:54</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L54">compile-options.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -157,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">ns<wbr>Prefix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L25">compile-options.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L25">compile-options.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -173,7 +190,7 @@
 					<div class="tsd-signature tsd-kind-icon">ns<wbr>Root<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L34">compile-options.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L34">compile-options.ts:34</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,7 +211,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Function<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L20">compile-options.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L20">compile-options.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -214,7 +231,7 @@
 					<div class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L9">compile-options.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L9">compile-options.ts:9</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -229,7 +246,7 @@
 					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/ad37d57/src/compile-options.ts#L50">compile-options.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/3142456/src/compile-options.ts#L50">compile-options.ts:50</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -312,6 +329,9 @@
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_compile_options_.compileoptions.html#emitheader" class="tsd-kind-icon">emit<wbr>Header</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_compile_options_.compileoptions.html#getmodulenamespace" class="tsd-kind-icon">get<wbr>Module<wbr>Namespace</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_compile_options_.compileoptions.html#importhelpers" class="tsd-kind-icon">import<wbr>Helpers</a>

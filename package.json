@@ -1,6 +1,6 @@
 {
   "name": "san-ssr-target-php",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "San SSR code generation targiting PHP",
   "main": "dist/index.js",
   "types": "index.d.ts",

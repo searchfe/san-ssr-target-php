@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.6...v2.2.0) (2020-07-27)
+
+
+### Features
+
+* 支持 getModuleNamespace() 引用单独 SSR 的组件 ([3142456](https://github.com/searchfe/san-ssr-target-php/commit/3142456bc163b66fec1d68c6a9e459128fb4231f))
+
 ## [2.1.6](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.5...v2.1.6) (2020-07-10)
 
 
