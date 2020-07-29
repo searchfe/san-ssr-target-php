@@ -3,7 +3,7 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 $caseName = $argv[1];
-$caseDir = "test/cases/" . $caseName;
+$caseDir = "node_modules/san-html-cases/src/" . $caseName;
 include('test/stub/helpers.php');
 include($caseDir . '/component.php');
 

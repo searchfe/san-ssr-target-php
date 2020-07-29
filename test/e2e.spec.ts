@@ -1,12 +1,11 @@
 import { writeFileSync, readFileSync, readdirSync } from 'fs'
 import { resolve, join } from 'path'
-import { parseSanHTML } from 'san-ssr'
+import { parseSanHTML, assertDeepEqual } from 'san-ssr'
 import { execFileSync } from 'child_process'
-import { compile } from '../src/utils/case'
+import { compile, caseRoot } from '../src/utils/case'
 import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:integration')
-const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
 const renderBin = resolve(__dirname, `../bin/render.php`)
 
@@ -25,10 +24,11 @@ for (const caseName of files) {
 
     it(caseName, async function () {
         const got = execFileSync(renderBin, [caseName]).toString()
-        const [data, html] = parseSanHTML(got)
+        const [receivedData, receivedHTML] = parseSanHTML(got)
 
+        // assertDeepEqual 用来对比 San Data
         // PHP 关联数组为空时，JSON.stringify 后为 `[]` 而非 `{}`
-        expect({ ...data }).toEqual(expectedData)
-        expect(html).toEqual(expectedHtml)
+        assertDeepEqual(receivedData, expectedData)
+        expect(receivedHTML).toEqual(expectedHtml)
     })
 }

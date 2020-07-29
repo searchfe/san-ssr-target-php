@@ -80,7 +80,7 @@ export class ExprCompiler {
      * - 插值有时不需要转义，比如：
      *     <x-list list={{data | square}}></x-list>，list 作为数据传递给 <x-list> 时不转义
      */
-    interp (interpExpr: ExprInterpNode, escapeHTML = !interpExpr.original) {
+    interp (interpExpr: ExprInterpNode, escapeHTML: boolean) {
         let code = this.compile(interpExpr.expr)
 
         for (const filter of interpExpr.filters) {
@@ -109,7 +109,8 @@ export class ExprCompiler {
                 code += '])'
             }
         }
-        return escapeHTML ? `_::escapeHTML(${code})` : code
+        const raw = interpExpr.original
+        return escapeHTML && !raw ? `_::escapeHTML(${code})` : code
     }
 
     /**
@@ -118,7 +119,7 @@ export class ExprCompiler {
      * - 作为 PHP 语句的一部分时，不需要转义。
      * - 输出到 HTML 时，需要转义。
      */
-    str (e: ExprStringNode, escapeHTML = false): string {
+    str (e: ExprStringNode, escapeHTML: boolean): string {
         return escapeHTML
             ? this.stringifier.str(_.escapeHTML(e.value))
             : this.stringifier.str(e.value)
@@ -128,14 +129,19 @@ export class ExprCompiler {
         return this.stringifier.number(e.value)
     }
 
-    // 生成文本片段代码
-    text (textExpr: ExprTextNode) {
+    /*
+     * 生成文本片段代码，需要支持转义和不转义两种模式
+     *
+     * class="{{foo}} bar" 不转义（可能有嵌套），最后在 attrFilter 中转义。
+     * <div>{{foo}} bar</div>，foo 和 bar 都需要转义。
+     */
+    text (textExpr: ExprTextNode, escapeHTML: boolean) {
         if (textExpr.segs.length === 0) {
             return `''`
         }
 
         return textExpr.segs
-            .map(seg => this.compile(seg))
+            .map(seg => this.compile(seg, escapeHTML))
             .map(seg => `(${seg})`)
             .join(' . ')
     }
@@ -194,7 +200,7 @@ export class ExprCompiler {
             ':' + this.compile(e.segs[2])
     }
 
-    compile (e: ExprNode, escapeHTML?: boolean): string {
+    compile (e: ExprNode, escapeHTML = false): string {
         let code = ''
         if (TypeGuards.isExprUnaryNode(e)) code = this.unary(e)
         else if (TypeGuards.isExprBinaryNode(e)) code = this.binary(e)
@@ -204,7 +210,7 @@ export class ExprCompiler {
         else if (TypeGuards.isExprBoolNode(e)) code = e.value ? 'true' : 'false'
         else if (TypeGuards.isExprAccessorNode(e)) code = this.dataAccess(e)
         else if (TypeGuards.isExprInterpNode(e)) code = this.interp(e, escapeHTML)
-        else if (TypeGuards.isExprTextNode(e)) code = this.text(e)
+        else if (TypeGuards.isExprTextNode(e)) code = this.text(e, escapeHTML)
         else if (TypeGuards.isExprArrayNode(e)) code = this.array(e)
         else if (TypeGuards.isExprObjectNode(e)) code = this.object(e)
         else if (TypeGuards.isExprCallNode(e)) code = this.callExpr(e)

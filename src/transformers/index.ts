@@ -14,7 +14,7 @@ export function transformToFavorPHP (sourceFile: SanSourceFile) {
     for (const clazz of sourceFile.getComponentClassDeclarations()) {
         clazz.setExtends(`SanSSRComponent`)
         for (const useless of uselessComponentProps) {
-            const comps = clazz.getStaticProperty(useless)
+            const comps = clazz.getProperty(useless)
             if (comps) comps.remove()
         }
 

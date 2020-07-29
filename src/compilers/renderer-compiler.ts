@@ -28,7 +28,7 @@ export class RendererCompiler {
         const rendererName = this.sourceFile.entryComponentInfo === info
             ? this.options.renderFunctionName
             : `render${info.id}`
-        const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', `$tagName = 'div'`, '$sourceSlots = []']
+        const argumentList = ['$data', '$noDataOutput = false', '$parentCtx = []', `$tagName = 'div'`, '$slots = []']
         this.emitter.carriageReturn()
         this.emitter.writeFunction(rendererName, argumentList, [], () => this.emitRendererBody(info))
     }
@@ -53,6 +53,7 @@ export class RendererCompiler {
         if (info.hasMethod('initData')) this.emitInitData(info)
         if (info.hasMethod('inited')) this.emitInited()
         emitter.writeLine('$ctx->instance->data->populateComputed();')
+        emitter.nextLine('$parentCtx = $ctx;')
 
         const aNodeCompiler = new ANodeCompiler(
             this.sourceFile,
@@ -115,9 +116,7 @@ export class RendererCompiler {
     private emitComponentContext (info: ComponentInfo) {
         const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
-        emitter.writeLine('$ctx->sourceSlots = $sourceSlots;')
-        emitter.writeLine('$ctx->owner = $parentCtx;')
-        emitter.writeLine('$ctx->slotRenderers = [];')
+        emitter.writeLine('$ctx->parentCtx = $parentCtx;')
         emitter.writeLine('$ctx->data = &$data;')
 
         if (isTypedComponentInfo(info)) {
@@ -126,11 +125,13 @@ export class RendererCompiler {
             const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
             emitter.writeLine(`$ctx->class = '${fullClassName}';`)
             emitter.writeLine(`$ctx->instance = new ${className}();`)
+            emitter.writeLine(`$ctx->instance->parentComponent = $parentCtx->instance;`)
         } else {
             emitter.writeLine(`$ctx->class = '${this.options.helpersNS}\\SanSSRComponent';`)
             emitter.writeLine(`$ctx->instance = new SanSSRComponent();`)
         }
         const computedList = info.getComputedNames().map(x => `'${x}'`)
         emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx, [${computedList.join(', ')}]);`)
+        emitter.writeLine(`$ctx->slots = $slots;`)
     }
 }

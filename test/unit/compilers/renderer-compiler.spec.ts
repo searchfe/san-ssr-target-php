@@ -42,7 +42,7 @@ describe('RendererCompiler', () => {
             )
 
             cc.compile(file.componentInfos[0])
-            expect(cc.getFullText()).toContain(`function customRender ($data, $noDataOutput = false, $parentCtx = [], $tagName = 'div', $sourceSlots = []) {`)
+            expect(cc.getFullText()).toContain(`function customRender ($data, $noDataOutput = false, $parentCtx = [], $tagName = 'div', $slots = []) {`)
         })
     })
 })

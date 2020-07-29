@@ -18,7 +18,8 @@ class SanSSRData {
         }
     }
 
-    public function &get ($path) {
+    public function &get ($path = null) {
+        if ($path == null) return $this->data;
         if (array_key_exists($path, $this->computedNames)) {
             return _::callComputed($this->ctx, $path);
         }

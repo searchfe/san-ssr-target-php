@@ -6,7 +6,7 @@ const fromTestDir = x => resolve(__dirname, '..', x)
 
 const tsConfigFilePath = fromTestDir('tsconfig.json')
 
-const compileComponent = (file: string, options = {}) => {
+const compileSourceFile = (file: string, options = {}) => {
     const proj = new SanProject(tsConfigFilePath)
     const cc = ToPHPCompiler.fromSanProject(proj)
 
@@ -18,7 +18,7 @@ const compileComponent = (file: string, options = {}) => {
 
 describe('ToPHPCompiler', function () {
     it('should compile a component file', function () {
-        const result = compileComponent('stub/a.comp.ts')
+        const result = compileSourceFile('stub/a.comp.ts')
 
         expect(result).toContain('namespace san\\test\\stub\\a_comp {')
         expect(result).toContain('class A extends SanSSRComponent {')
@@ -26,18 +26,18 @@ describe('ToPHPCompiler', function () {
     })
 
     it('should compile filters into static methods', function () {
-        const result = compileComponent('stub/filters.comp.ts')
+        const result = compileSourceFile('stub/filters.comp.ts')
 
         expect(result).toContain('A::$filters = array(')
         expect(result).toContain('A::$filters = array(')
         expect(result).toContain('"add" => function ($x, $y){')
     })
 
-    it('should respect to modules config for ts2php', function () {
-        const result1 = compileComponent('stub/b.comp.ts')
+    it('should support modules config for ts2php', function () {
+        const result1 = compileSourceFile('stub/b.comp.ts')
         expect(result1).toContain('require_once("lodash")')
 
-        const result2 = compileComponent('stub/b.comp.ts', {
+        const result2 = compileSourceFile('stub/b.comp.ts', {
             modules: {
                 lodash: {
                     name: 'lodash',
@@ -48,23 +48,21 @@ describe('ToPHPCompiler', function () {
         expect(result2).not.toContain('require_once("lodash")')
     })
 
-    it('should respect to modules config for ts2php', function () {
-        const result1 = compileComponent('stub/b.comp.ts')
-        expect(result1).toContain('require_once("lodash")')
-
-        const result2 = compileComponent('stub/b.comp.ts', {
-            modules: {
-                lodash: {
-                    name: 'lodash',
-                    required: true
+    it('should support getModuleNamespace', function () {
+        const result = compileSourceFile('stub/external.comp.ts', {
+            importHelpers: '/helpers',
+            getModuleNamespace: (moduleSpecifier) => {
+                if (/^@cases/.test(moduleSpecifier)) {
+                    return moduleSpecifier.replace(/^@cases/, '\\san').replace(/-/g, '_').replace(/\//g, '\\') + '\\'
                 }
             }
         })
-        expect(result2).not.toContain('require_once("lodash")')
+        expect(result).toContain('\\san\\multi_component_files\\SanSSRClasslist\\renderXList(')
+        expect(result).toContain('\\san\\multi_files\\square\\square($num)')
     })
 
     it('should not bundle dependency', function () {
-        const result = compileComponent('stub/c.comp.ts')
+        const result = compileSourceFile('stub/c.comp.ts')
         expect(result).toContain('class C extends SanSSRComponent')
         expect(result).toContain('function render ($data, $noDataOutput')
         expect(result).not.toContain('function sum($a, $b)')

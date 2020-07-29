@@ -13,9 +13,11 @@ import { ANode, ComponentConstructor } from 'san'
  * 组件基类声明，输入源码重构后，进入 ts2php 之前，需要继承自 SanSSRComponent
  */
 export abstract class SanSSRComponent {
+    constructor (...args: any[])
     initData?(): any
     inited?(): void
     getComponentType?(aNode: ANode): ComponentConstructor<{}, {}>
+    parentComponent?: SanSSRComponent
     components: {
         [key: string]: SanSSRComponent
     }
@@ -26,7 +28,7 @@ export abstract class SanSSRComponent {
  * 组件数据声明，用于 SanSSRComponent#data
  */
 export abstract class SanSSRData {
-    get<T = any> (path: string): T
+    get<T = any> (path?: string): T
     set (path: string, value: any): void
     removeAt (path: string, index: number): void
 }

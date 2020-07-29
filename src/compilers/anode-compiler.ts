@@ -128,70 +128,67 @@ export class ANodeCompiler {
 
     // 编译 slot 节点
     compileSlot (aNode: ASlotNode) {
-        const rendererId = this.nextID()
+        const { emitter } = this
+        const fnName = `$renderSlot${this.nextID()}`
+
+        emitter.nextLine(`${fnName} = `)
+        emitter.writeAnonymousFunction([], ['&$ctx', '&$html', '&$parentCtx'], () => {
+            /*
+             * 产生调用 slot 的数据
+             */
+            emitter.writeLine('$data = [];')
+            // <div slot="foo" s-bind="{foo, bar}">
+            if (aNode.directives.bind) {
+                emitter.writeLine('_::extend($data, ' + this.expr(aNode.directives.bind.value) + ');')
+            }
+            // <div slot="foo" var-foo=foo var-bar=bar>
+            for (const item of aNode.vars || []) {
+                emitter.writeLine(`$data["${item.name}"] = ${this.expr(item.expr)};`)
+            }
+
+            /*
+             * 获得 slot render 函数
+             */
+            emitter.nextLine('$defaultSlotRender = ')
+            this.compileSlotRenderer(aNode.children)
+            emitter.feedLine(';')
+
+            const nameProp = getANodePropByName(aNode, 'name')
+            const slotNameExpr = nameProp ? this.expr(nameProp.expr) : '""'
+            emitter.writeLine(`$slotRenders = $ctx->slots[${slotNameExpr}];`)
+
+            emitter.writeIf('!isset($slotRenders) || !count($slotRenders)', () => {
+                emitter.writeLine('$slotRenders = [$defaultSlotRender];')
+            })
+
+            /*
+             * 调用 slot render 函数
+             */
+            emitter.writeForeach('$slotRenders as $slotRender', () => {
+                emitter.writeLine(`$html .= $slotRender($parentCtx, $data);`)
+            })
+        })
+        emitter.feedLine(';')
+        emitter.writeLine(`${fnName}();`)
+    }
+
+    private compileSlotRenderer (content: ANode[]) {
         const { emitter } = this
 
-        emitter.writeIf(`!isset($ctx->slotRenderers['${rendererId}'])`, () => {
-            emitter.carriageReturn()
-            emitter.write(`$ctx->slotRenderers['${rendererId}'] = `)
-            emitter.writeAnonymousFunction([], ['&$ctx', '&$html'], () => {
-                emitter.carriageReturn()
-                emitter.write('$defaultSlotRender = ')
-                emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                    emitter.writeLine(`$html = '';`)
-                    for (const aNodeChild of aNode.children) this.compile(aNodeChild, false)
-                    emitter.writeLine('return $html;')
-                })
-                emitter.write(';')
-
-                emitter.writeLine('$isInserted = false;')
-                emitter.writeLine('$ctxSourceSlots = $ctx->sourceSlots;')
-                emitter.writeLine('$mySourceSlots = [];')
-
-                const nameProp = getANodePropByName(aNode, 'name')
-                if (nameProp) {
-                    emitter.writeLine('$slotName = ' + this.expr(nameProp.expr) + ';')
-
-                    emitter.writeForeach('$ctxSourceSlots as $i => $slot', () => {
-                        emitter.writeIf('count($slot) > 1 && $slot[1] == $slotName', () => {
-                            emitter.writeLine('array_push($mySourceSlots, $slot[0]);')
-                            emitter.writeLine('$isInserted = true;')
-                        })
-                    })
-                } else {
-                    emitter.writeIf('count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])', () => {
-                        emitter.writeLine('array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
-                        emitter.writeLine('$isInserted = true;')
-                    })
-                }
-
-                emitter.writeIf('!$isInserted', () => {
-                    emitter.writeLine('array_push($mySourceSlots, $defaultSlotRender);')
-                })
-                emitter.writeLine('$slotCtx = $isInserted ? $ctx->owner : $ctx;')
-
-                if (aNode.vars || aNode.directives.bind) {
-                    emitter.writeLine(`$slotCtx = (object)['sanssrCid' => $slotCtx->sanssrCid, 'class' => $slotCtx->class, 'data' => $slotCtx->data, 'instance' => $slotCtx->instance, 'owner' => $slotCtx->owner];`)
-                }
-                if (aNode.directives.bind) {
-                    emitter.writeLine('_::extend($slotCtx->data, ' + this.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
-                }
-
-                for (const varItem of aNode.vars || []) {
-                    emitter.writeLine(
-                        `$slotCtx->data['${varItem.name}'] = ` +
-                        this.expr(varItem.expr) + ';'
-                    )
-                }
-
-                emitter.writeForeach('$mySourceSlots as $renderIndex => $slot', () => {
-                    emitter.writeHTMLExpression('$slot($slotCtx);')
-                })
-            })
-            emitter.write(';')
-            emitter.writeNewLine()
+        /**
+         * $parentCtx：调用该 slot render 的上下文。
+         * 如：父组件定义的 slot render 会被子组件调用，此时 parentCtx 为子组件 ctx
+         */
+        emitter.writeAnonymousFunction(['$parentCtx', '$data'], ['$ctx'], () => {
+            if (!content.length) {
+                emitter.writeLine('return "";')
+                return
+            }
+            emitter.writeLine('$html = "";')
+            emitter.writeLine('_::extend($ctx->data, $data);')
+            for (const child of content) this.compile(child, false)
+            emitter.writeLine('return $html;')
         })
-        emitter.writeLine(`call_user_func($ctx->slotRenderers['${rendererId}']);`)
     }
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
@@ -202,53 +199,31 @@ export class ANodeCompiler {
     }
 
     /**
-     * @param aNode 要被编译的 aNode
+     * @param aNode 要被编译的 AComponentNode
      * @param ref 这个 aNode 引用的组件（一般是外部组件，不同于 aNode 所属组件）
      * @param isRootElement 是否需要输出数据，如果该组件是根组件，它为 true
      */
     compileComponent (aNode: ANode, ref: ComponentReference, isRootElement: boolean) {
         const { emitter } = this
-        let dataLiteral = '[]'
 
-        emitter.writeLine('$sourceSlots = [];')
-        const defaultSourceSlots: ANode[] = []
-        const sourceSlotCodes = {}
-
+        /**
+         * 收集使用组件时，子元素里所有的 slots
+         */
+        emitter.writeLine('$slots = [];')
         for (const child of aNode.children!) {
             const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
-            if (slotBind) {
-                const slotName = slotBind.expr.value
-                sourceSlotCodes[slotName] = sourceSlotCodes[slotName] || {
-                    children: [],
-                    prop: slotBind
-                }
-                sourceSlotCodes[slotName].children.push(child)
-            } else {
-                defaultSourceSlots.push(child)
-            }
+            const name = slotBind ? '$slotName' + this.nextID() : '""'
+            if (slotBind) emitter.writeLine(`${name} = ${this.expr(slotBind.expr)};`)
+
+            emitter.writeLine(`if (!array_key_exists(${name}, $slots)) $slots[${name}] = [];`)
+            emitter.nextLine(`array_push($slots[${name}], `)
+            this.compileSlotRenderer([child])
+            emitter.feedLine(');')
         }
 
-        if (defaultSourceSlots.length) {
-            emitter.nextLine('array_push($sourceSlots, [')
-            emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                emitter.writeLine(`$html = '';`)
-                defaultSourceSlots.forEach((child: ANode) => this.compile(child, false))
-                emitter.writeLine('return $html;')
-            })
-            emitter.feedLine(']);')
-        }
-
-        for (const key in sourceSlotCodes) {
-            const sourceSlotCode = sourceSlotCodes[key]
-            emitter.nextLine('array_push($sourceSlots, [')
-            emitter.writeAnonymousFunction(['$ctx'], [], () => {
-                emitter.writeLine(`$html = '';`)
-                sourceSlotCode.children.forEach((child: ANode) => this.compile(child, false))
-                emitter.writeLine('return $html;')
-            })
-            emitter.feedLine(', ' + this.expr(sourceSlotCode.prop.expr) + ']);')
-        }
-
+        /**
+         * 生成使用子组件时，传入的数据
+         */
         const givenData = []
         for (const prop of aNode.props) {
             const key = emitter.stringify(camelCase(prop.name))
@@ -256,21 +231,23 @@ export class ANodeCompiler {
             givenData.push(`${key} => ${val}`)
         }
 
-        dataLiteral = '[' + givenData.join(', ') + ']'
+        let dataLiteral = '[' + givenData.join(', ') + ']'
         if (aNode.directives.bind) {
             const bindData = this.expr(aNode.directives.bind.value)
             dataLiteral = `_::combine(${bindData}, ${dataLiteral})`
         }
 
+        /**
+         * 调用子组件 render，并传给它父组件定义的 $slots 和 $data
+         */
         const name = ref.isDefault ? 'render' : 'render' + ref.id
         const renderId = ref.specifier === '.'
             ? name
             : '\\' + this.getNamespace(ref) + '\\' + name
         const ndo = isRootElement ? '$noDataOutput' : 'true'
         emitter.nextLine(`$html .= `)
-        emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$ctx', emitter.stringify(aNode.tagName), '$sourceSlots'])
+        emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$parentCtx', emitter.stringify(aNode.tagName), '$slots'])
         emitter.feedLine(';')
-        emitter.writeLine('$sourceSlots = null;')
     }
 
     private expr (e: ExprNode, escapeHTML?: boolean) {
@@ -279,8 +256,7 @@ export class ANodeCompiler {
 
     private outputData () {
         this.emitter.writeIf('!$noDataOutput', () => {
-            const data = this.options.exprCompiler.dataAccess()
-            const code = `'<!--s-data:' . _::json_encode(${data}) . '-->'`
+            const code = `'<!--s-data:' . _::json_encode(_::getRootContext($ctx)->data) . '-->'`
             this.emitter.writeHTMLExpression(code)
         })
     }

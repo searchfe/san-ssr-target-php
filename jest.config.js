@@ -4,7 +4,7 @@ module.exports = {
     ],
     testMatch: [
         '<rootDir>/test/unit/**/*.ts',
-        '<rootDir>/test/integration.spec.ts'
+        '<rootDir>/test/e2e.spec.ts'
     ],
     collectCoverageFrom: [
         'src/**/*.ts'

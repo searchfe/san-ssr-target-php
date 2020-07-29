@@ -1,9 +1,0 @@
-{
-    "sb": {
-        "nul": null,
-        "falsy": false,
-        "truth": true,
-        "estr": "",
-        "zero": 0
-    }
-}

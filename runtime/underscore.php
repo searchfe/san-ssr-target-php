@@ -199,6 +199,11 @@ final class _ {
         }
     }
 
+    public static function getRootContext($ctx) {
+        while ($ctx->parentCtx) $ctx = $ctx->parentCtx;
+        return $ctx;
+    }
+
     public static function stringifyStyles($source)
     {
         if (is_array($source) || is_object($source)) {
