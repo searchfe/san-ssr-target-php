@@ -20,7 +20,7 @@
     "clean": "rm -rf ./dist test/cases/*/ssr.php",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "rm -rf node_modules/typedoc/node_modules/typescript && typedoc --out docs src && touch docs/.nojekyll",
-    "build": "tsc && ./bin/helpers > test/stub/helpers.php",
+    "build": "tsc && ./bin/helpers > runtime/helpers.php",
     "watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit test/unit",
     "unit-ts": "jest test/unit",

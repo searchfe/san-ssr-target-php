@@ -6,5 +6,5 @@ vendor/
 dist/
 test/cases/*/*.php
 test/perf/*.san.php
-test/stub/helpers.php
+/runtime/helpers.php
 templates_c/

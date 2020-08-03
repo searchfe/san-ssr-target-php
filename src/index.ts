@@ -13,19 +13,20 @@ import { getNamespace, resolveFrom } from './utils/lang'
 const debug = debugFactory('san-ssr:target-php')
 
 export default class ToPHPCompiler implements Compiler {
-    private root: string
+    private tsRoot: string
     private phpTranspiler: PHPTranspiler
 
     constructor (private project: SanProject) {
         const tsConfigFilePath = project.tsConfigFilePath
         if (!tsConfigFilePath) throw new Error('tsconfig.json path is required')
-        this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
+        this.tsRoot = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.phpTranspiler = new PHPTranspiler(
             this.normalizeCompilerOptions(require(tsConfigFilePath)['compilerOptions'])
         )
     }
 
     public compileToSource (sourceFile: SanSourceFile, options: CompileOptions) {
+        if (!options.nsRootDir) options.nsRootDir = this.tsRoot
         const opts = normalizeCompileOptions(options)
         const emitter = new PHPEmitter(opts.emitHeader, opts.importHelpers)
         transformToFavorPHP(sourceFile)
@@ -125,8 +126,8 @@ export default class ToPHPCompiler implements Compiler {
      */
     private normalizeCompilerOptions (compilerOptions: CompilerOptions) {
         let baseUrl = compilerOptions.baseUrl
-        if (baseUrl && !isAbsolute(baseUrl) && this.root) {
-            baseUrl = resolve(this.root, baseUrl)
+        if (baseUrl && !isAbsolute(baseUrl) && this.tsRoot) {
+            baseUrl = resolve(this.tsRoot, baseUrl)
             compilerOptions.baseUrl = baseUrl
         }
         return compilerOptions

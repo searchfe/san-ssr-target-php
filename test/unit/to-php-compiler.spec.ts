@@ -1,32 +1,46 @@
-import { SanProject } from 'san-ssr'
+import { SanProject, CompileInput } from 'san-ssr'
 import ToPHPCompiler from '../../src/index'
-import { resolve } from 'path'
+import { join } from 'path'
 
-const fromTestDir = x => resolve(__dirname, '..', x)
+const tsConfigFilePath = join(__dirname, '../tsconfig.json')
 
-const tsConfigFilePath = fromTestDir('tsconfig.json')
-
-const compileSourceFile = (file: string, options = {}) => {
+const compileSourceFile = (input: CompileInput, options = {}) => {
     const proj = new SanProject(tsConfigFilePath)
     const cc = ToPHPCompiler.fromSanProject(proj)
-
-    const filepath = fromTestDir(file)
-    const app = proj.parseSanSourceFile(filepath)
-
+    const app = proj.parseSanSourceFile(input)
     return cc.compileToSource(app, options)
 }
 
 describe('ToPHPCompiler', function () {
     it('should compile a component file', function () {
-        const result = compileSourceFile('stub/a.comp.ts')
+        const result = compileSourceFile({
+            filePath: join(__dirname, 'comp/a.comp.ts'),
+            fileContent: `
+                import { Component } from 'san'
 
-        expect(result).toContain('namespace san\\test\\stub\\a_comp {')
+                export default class A extends Component {
+                    public static template = 'A'
+                }`
+        })
+
+        expect(result).toContain('namespace san\\unit\\comp\\a_comp {')
         expect(result).toContain('class A extends SanSSRComponent {')
         expect(result).toContain('namespace san\\helpers {')
     })
 
     it('should compile filters into static methods', function () {
-        const result = compileSourceFile('stub/filters.comp.ts')
+        const result = compileSourceFile({
+            filePath: '/stub/filters.comp.ts',
+            fileContent: `
+                import { Component } from 'san'
+
+                export default class A extends Component {
+                    public static template = 'empty'
+                    public static filters = {
+                        'add': (x, y) => x + y
+                    }
+                }`
+        })
 
         expect(result).toContain('A::$filters = array(')
         expect(result).toContain('A::$filters = array(')
@@ -34,10 +48,27 @@ describe('ToPHPCompiler', function () {
     })
 
     it('should support modules config for ts2php', function () {
-        const result1 = compileSourceFile('stub/b.comp.ts')
+        const fileContent = `
+            import { Component } from 'san'
+            import { defaultTo } from 'lodash'
+
+            export default class B extends Component {
+                public static template = 'B'
+                someMethod () {
+                    console.log(defaultTo(0, 10))
+                }
+            }
+        `
+        const result1 = compileSourceFile({
+            filePath: '/stub/b.comp.ts',
+            fileContent
+        })
         expect(result1).toContain('require_once("lodash")')
 
-        const result2 = compileSourceFile('stub/b.comp.ts', {
+        const result2 = compileSourceFile({
+            filePath: '/stub/b.comp.ts',
+            fileContent
+        }, {
             modules: {
                 lodash: {
                     name: 'lodash',
@@ -49,7 +80,31 @@ describe('ToPHPCompiler', function () {
     })
 
     it('should support getModuleNamespace', function () {
-        const result = compileSourceFile('stub/external.comp.ts', {
+        const result = compileSourceFile({
+            filePath: '/stub/external.comp.ts',
+            fileContent: `
+                import { Component } from 'san'
+                import { XList } from '@cases/multi-component-files/list'
+                import { square } from '@cases/multi-files/square'
+
+                export default class MyComponent extends Component {
+                    static components = {
+                        'x-l': XList
+                    }
+                    static filters = {
+                        square: function (arr) {
+                            return arr.map(num => square(num))
+                        }
+                    }
+                    initData () {
+                        return {
+                            list: [1, 2, 3]
+                        }
+                    }
+                    static template = '<div><x-l list="{{list | square}}"/></div>'
+                }
+            `
+        }, {
             importHelpers: '/helpers',
             getModuleNamespace: (moduleSpecifier) => {
                 if (/^@cases/.test(moduleSpecifier)) {
@@ -62,7 +117,19 @@ describe('ToPHPCompiler', function () {
     })
 
     it('should not bundle dependency', function () {
-        const result = compileSourceFile('stub/c.comp.ts')
+        const result = compileSourceFile({
+            filePath: '/stub/c.comp.ts',
+            fileContent: `
+                import { Component } from 'san'
+                import { sum } from './sum'
+
+                export default class C extends Component {
+                    public static template = 'B'
+                    someMethod () {
+                        sum(2, 3)
+                    }
+                }`
+        })
         expect(result).toContain('class C extends SanSSRComponent')
         expect(result).toContain('function render ($data, $noDataOutput')
         expect(result).not.toContain('function sum($a, $b)')

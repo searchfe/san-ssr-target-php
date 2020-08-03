@@ -4,7 +4,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 $caseName = $argv[1];
 $caseDir = "node_modules/san-html-cases/src/" . $caseName;
-include('test/stub/helpers.php');
+include('runtime/helpers.php');
 include($caseDir . '/component.php');
 
 $data = getData($caseDir);
