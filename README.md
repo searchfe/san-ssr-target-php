@@ -23,7 +23,7 @@ npm i san san-ssr san-ssr-target-php
 
 ## 编程接口
 
-[SanProject#compile(filepath, target, options)][.compile()] 方法第二参传 `'php'`，第三参为 [ToPHPCompiler 的 compileToSource() 选项][compile-options]。
+[SanProject#compile(filepath, target, options)][compile] 方法第二参传 `'php'`，第三参为 [ToPHPCompiler 的 compileToSource() 选项][compile-options]。
 
 TypeScript 作为输入，可以支持 method、filters、computed。
 
