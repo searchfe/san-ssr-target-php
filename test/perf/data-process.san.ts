@@ -1,7 +1,7 @@
 import { Component } from 'san'
 
 export default class App extends Component {
-    static template = `<div>{{stat | raw}}</div>`
+    static template = '<div>{{stat | raw}}</div>'
     static computed = {
         stat () {
             const stat = { count: 0, seven: 0 }

@@ -58,35 +58,6 @@ const targetCode = project.compile('src/component.ts', 'php')
 writeFileSync('ssr.php', targetCode)
 ```
 
-## Known Issues
-
-- noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同
-- getTemplateType 需要运行时编译，不在 PHP 版本中支持。
-
-## Contribution Guide
-
-Development Prerequisites:
-
-* Node.js &gt;= 8
-* PHP 7
-* [composer](https://getcomposer.org)
-
-Install dependencies and run tests:
-
-```bash
-npm install
-composer install
-npm test
-```
-
-Debug a single case (e.g. `test/cases/array-literal`):
-
-```bash
-./bin/debug array-literal
-```
-
-`source ./bin/auto-complete` to make zsh to auto complete test case names.
-
 [san]: https://github.com/baidu/san
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
 [compile]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile

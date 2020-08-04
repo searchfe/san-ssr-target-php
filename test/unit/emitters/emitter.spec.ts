@@ -16,7 +16,7 @@ describe('PHPEmitter', function () {
         it('should write buffer html literal', function () {
             emitter.writeHTMLLiteral('foo')
             emitter.write('bar')
-            expect(emitter.fullText()).toEqual(`$html .= "foo";\nbar`)
+            expect(emitter.fullText()).toEqual('$html .= "foo";\nbar')
         })
     })
 

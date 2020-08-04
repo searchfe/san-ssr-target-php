@@ -14,6 +14,7 @@ export class ElementCompiler {
         private expr: ExprCompiler,
         private emitter: PHPEmitter = new PHPEmitter()
     ) {}
+
     /**
      * 编译元素标签头
      *
@@ -104,7 +105,7 @@ export class ElementCompiler {
                 emitter.writeLine(`$optionValue = ${this.expr.compile(prop.expr)};`)
                 // value
                 emitter.writeIf('isset($optionValue)', () => {
-                    emitter.writeHTMLExpression(`' value="' . $optionValue . '"'`)
+                    emitter.writeHTMLExpression('\' value="\' . $optionValue . \'"\'')
                 })
                 // selected
                 emitter.writeIf('$optionValue == $selectValue', () => {

@@ -31,7 +31,7 @@ export class Stringifier {
             .replace(/\n/g, '\\n')
             .replace(/\t/g, '\\t')
             .replace(/\r/g, '\\r')
-            .replace(/"/g, `\\"`)
+            .replace(/"/g, '\\"')
             .replace(/\$/g, '\\$')
         return `"${escaped}"`
     }

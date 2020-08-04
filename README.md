@@ -110,7 +110,7 @@ composer install
 npm test
 ```
 
-debug 一个用例，以 `test/cases/array-literal` 为例：
+debug 一个用例，以 `node_modules/san-html-cases/src/array-literal` 为例：
 
 ```bash
 ./bin/debug array-literal

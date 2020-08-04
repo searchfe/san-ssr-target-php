@@ -31,10 +31,10 @@ $html .= ">";
         const aNode = parseTemplate('<div><input readonly></div>').children[0].children[0]
         compiler.tagStart(aNode)
         compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`$html .= "<input readonly>";\n`)
+        expect(compiler.emitter.fullText()).toEqual('$html .= "<input readonly>";\n')
     })
     it('should compile input with readonly value', () => {
-        const aNode = parseTemplate(`<div><input readonly="{{foo}}"></div>`).children[0].children[0]
+        const aNode = parseTemplate('<div><input readonly="{{foo}}"></div>').children[0].children[0]
         compiler.tagStart(aNode)
         compiler.tagEnd(aNode)
         expect(compiler.emitter.fullText()).toEqual(`$html .= "<input";
@@ -74,6 +74,6 @@ $html .= " value=\\"1\\" type=\\"bar\\">";
         compiler.tagStart(aNode)
         compiler.inner(aNode)
         compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`$html .= "<textarea></textarea>";\n`)
+        expect(compiler.emitter.fullText()).toEqual('$html .= "<textarea></textarea>";\n')
     })
 })

@@ -40,7 +40,7 @@ export class PHPEmitter extends Emitter {
 
     public endNamespace () {
         this.unindent()
-        this.writeLine(`}`)
+        this.writeLine('}')
     }
 
     public writeNamespace (ns: string, cb?: Function) {
@@ -104,9 +104,11 @@ export class PHPEmitter extends Emitter {
         this.unindent()
         this.nextLine('}')
     }
+
     public writeAnonymousFunction (args: string[] = [], use: string[] = [], body: Function = () => null) {
         this.writeFunction('', args, use, body)
     }
+
     public writeFunctionCall (name: string, args: string[]) {
         this.write(`${name}(${args.join(', ')})`)
     }
@@ -116,15 +118,19 @@ export class PHPEmitter extends Emitter {
         cb()
         this.endIf()
     }
+
     public beginIf (expr: string) {
         this.beginBlock(`if (${expr})`)
     }
+
     public beginElseIf (expr: string) {
         this.beginBlock(`else if (${expr})`)
     }
+
     public beginElse () {
-        this.beginBlock(`else`)
+        this.beginBlock('else')
     }
+
     public endIf () {
         this.endBlock()
     }
@@ -134,12 +140,15 @@ export class PHPEmitter extends Emitter {
         cb()
         this.endForeach()
     }
+
     public beginForeach (expr: string) {
         this.beginBlock(`foreach (${expr})`)
     }
+
     public endForeach () {
         this.endBlock()
     }
+
     public writeContinue () {
         this.writeLine('continue;')
     }
@@ -149,13 +158,15 @@ export class PHPEmitter extends Emitter {
         cb()
         this.endBlock()
     }
+
     public beginBlock (expr: string) {
         this.writeLine(`${expr} {`)
         this.indent()
     }
+
     public endBlock () {
         this.clearStringLiteralBuffer()
         this.unindent()
-        this.writeLine(`}`)
+        this.writeLine('}')
     }
 }

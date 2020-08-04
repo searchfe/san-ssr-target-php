@@ -12,7 +12,7 @@ export function transformToFavorPHP (sourceFile: SanSourceFile) {
     refactorReservedNames(sourceFile)
 
     for (const clazz of sourceFile.getComponentClassDeclarations()) {
-        clazz.setExtends(`SanSSRComponent`)
+        clazz.setExtends('SanSSRComponent')
         for (const useless of uselessComponentProps) {
             const comps = clazz.getProperty(useless)
             if (comps) comps.remove()

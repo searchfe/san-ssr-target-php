@@ -7,7 +7,7 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:integration')
 const files = readdirSync(caseRoot)
-const renderBin = resolve(__dirname, `../bin/render.php`)
+const renderBin = resolve(__dirname, '../bin/render.php')
 
 jest.setTimeout(10000)
 

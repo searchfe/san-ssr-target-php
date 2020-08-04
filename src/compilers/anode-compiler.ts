@@ -78,9 +78,9 @@ export class ANodeCompiler {
 
     compileIf (aNode: AIfNode) {
         const { emitter } = this
-        const ifDirective = aNode.directives['if']
+        const ifDirective = aNode.directives.if
         const aNodeWithoutIf = Object.assign({}, aNode)
-        delete aNodeWithoutIf.directives['if']
+        delete aNodeWithoutIf.directives.if
 
         emitter.writeIf(
             this.expr(ifDirective.value),
@@ -165,7 +165,7 @@ export class ANodeCompiler {
              * 调用 slot render 函数
              */
             emitter.writeForeach('$slotRenders as $slotRender', () => {
-                emitter.writeLine(`$html .= $slotRender($parentCtx, $data);`)
+                emitter.writeLine('$html .= $slotRender($parentCtx, $data);')
             })
         })
         emitter.feedLine(';')
@@ -245,7 +245,7 @@ export class ANodeCompiler {
             ? name
             : '\\' + this.getNamespace(ref) + '\\' + name
         const ndo = isRootElement ? '$noDataOutput' : 'true'
-        emitter.nextLine(`$html .= `)
+        emitter.nextLine('$html .= ')
         emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$parentCtx', emitter.stringify(aNode.tagName), '$slots'])
         emitter.feedLine(';')
     }
@@ -256,7 +256,7 @@ export class ANodeCompiler {
 
     private outputData () {
         this.emitter.writeIf('!$noDataOutput', () => {
-            const code = `'<!--s-data:' . _::json_encode(_::getRootContext($ctx)->data) . '-->'`
+            const code = '\'<!--s-data:\' . _::json_encode(_::getRootContext($ctx)->data) . \'-->\''
             this.emitter.writeHTMLExpression(code)
         })
     }

@@ -137,7 +137,7 @@ export class ExprCompiler {
      */
     text (textExpr: ExprTextNode, escapeHTML: boolean) {
         if (textExpr.segs.length === 0) {
-            return `''`
+            return '\'\''
         }
 
         return textExpr.segs

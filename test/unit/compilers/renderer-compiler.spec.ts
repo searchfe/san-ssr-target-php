@@ -19,7 +19,7 @@ describe('RendererCompiler', () => {
             }))
             const cc = new RendererCompiler(file, options)
             cc.emitInitDataInCompileTime(file.componentInfos[0])
-            expect(cc.getFullText()).toContain(`$ctx->data["foo"] = isset($ctx->data["foo"]) ? $ctx->data["foo"] : "bar"`)
+            expect(cc.getFullText()).toContain('$ctx->data["foo"] = isset($ctx->data["foo"]) ? $ctx->data["foo"] : "bar"')
         })
         it('should not throw if initData() returned null', () => {
             const file = proj.parseSanSourceFile(defineComponent({
@@ -42,7 +42,7 @@ describe('RendererCompiler', () => {
             )
 
             cc.compile(file.componentInfos[0])
-            expect(cc.getFullText()).toContain(`function customRender ($data, $noDataOutput = false, $parentCtx = [], $tagName = 'div', $slots = []) {`)
+            expect(cc.getFullText()).toContain('function customRender ($data, $noDataOutput = false, $parentCtx = [], $tagName = \'div\', $slots = []) {')
         })
     })
 })

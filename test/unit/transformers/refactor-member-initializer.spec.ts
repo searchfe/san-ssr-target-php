@@ -16,8 +16,8 @@ describe('refactorMemberInitializer()', function () {
         sourceFile.formatText()
         const text = sourceFile.getFullText()
 
-        expect(text).toContain(`static staticLiteralStr: string = "foo"`)
-        expect(text).not.toContain(`Foo.staticLiteralStr =`)
+        expect(text).toContain('static staticLiteralStr: string = "foo"')
+        expect(text).not.toContain('Foo.staticLiteralStr =')
     })
 
     it('should refactor string variable static initializer', function () {
@@ -33,8 +33,8 @@ describe('refactorMemberInitializer()', function () {
         sourceFile.formatText()
         const text = sourceFile.getFullText()
 
-        expect(text).toContain(`static staticLiteralStr: string`)
-        expect(text).toContain(`Foo.staticLiteralStr = str`)
+        expect(text).toContain('static staticLiteralStr: string')
+        expect(text).toContain('Foo.staticLiteralStr = str')
     })
 
     it('should skip string literal initializer', function () {
@@ -48,8 +48,8 @@ describe('refactorMemberInitializer()', function () {
         }
         const text = sourceFile.getFullText()
 
-        expect(text).toContain(`literalStr: string = "str"`)
-        expect(text).not.toContain(`constructor()`)
+        expect(text).toContain('literalStr: string = "str"')
+        expect(text).not.toContain('constructor()')
     })
 
     it('should refactor string assignment initializer', function () {
@@ -65,10 +65,10 @@ describe('refactorMemberInitializer()', function () {
         sourceFile.formatText()
         const text = sourceFile.getFullText()
 
-        expect(text).toContain(`literalStr: string\n`)
-        expect(text).toContain(`constructor() {`)
-        expect(text).toContain(`super()`)
-        expect(text).toContain(`this.literalStr = str`)
+        expect(text).toContain('literalStr: string\n')
+        expect(text).toContain('constructor() {')
+        expect(text).toContain('super()')
+        expect(text).toContain('this.literalStr = str')
     })
 
     it('should append assignment into into existing constructor', function () {
