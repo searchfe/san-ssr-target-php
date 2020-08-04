@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.0...v2.2.1) (2020-08-04)
+
+
+### Bug Fixes
+
+* upgrade dependencies ([c6e00e3](https://github.com/searchfe/san-ssr-target-php/commit/c6e00e32090ed4404395f5538e9bb70635ff0f7c))
+
 # [2.2.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.1.6...v2.2.0) (2020-07-27)
 
 

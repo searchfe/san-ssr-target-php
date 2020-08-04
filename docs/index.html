@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>san-ssr-target-php</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for san-ssr-target-php">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> san-ssr-target-php</h1>
+			<h1>san-ssr-target-php</h1>
 		</div>
 	</div>
 </header>
@@ -91,41 +91,41 @@
 				</a>
 				<p>[SanProject#compile(filepath, target, options)][.compile()] 方法第二参传 <code>&#39;php&#39;</code>，第三参为 <a href="https://searchfe.github.io/san-ssr-target-php/modules/_compile_options_.html#compileoptions">ToPHPCompiler 的 compileToSource() 选项</a>。</p>
 				<p>TypeScript 作为输入，可以支持 method、filters、computed。</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
-<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;san-ssr&#x27;</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, <span class="hljs-string">'php'</span>)
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">&#x27;src/component.ts&#x27;</span>, <span class="hljs-string">&#x27;php&#x27;</span>)
 
-writeFileSync(<span class="hljs-string">'dist/component.php'</span>, targetCode)</code></pre>
+writeFileSync(<span class="hljs-string">&#x27;dist/component.php&#x27;</span>, targetCode)</code></pre>
 				<p>或者 JavaScript 作为输入，只支持 template:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
-<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, <span class="hljs-string">'php'</span>)
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">&#x27;src/component.ts&#x27;</span>, <span class="hljs-string">&#x27;php&#x27;</span>)
 
-writeFileSync(<span class="hljs-string">'dist/component.php'</span>, targetCode)</code></pre>
+writeFileSync(<span class="hljs-string">&#x27;dist/component.php&#x27;</span>, targetCode)</code></pre>
 				<p>默认产出的 PHP 中包含了一个 helpers 运行时工具。为了避免重复产出，可以手动维护一份 helpers 并让每次编译使用外部 helpers：</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
-<span class="hljs-keyword">import</span> ToPHPCompiler <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr-target-php'</span>
-<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;san-ssr&#x27;</span>
+<span class="hljs-keyword">import</span> ToPHPCompiler <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;san-ssr-target-php&#x27;</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span>
 
 <span class="hljs-comment">// 指定 importHelpers，targetCode 中不产出 helpers 代码</span>
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, <span class="hljs-string">'php'</span>, {
-    importHelpers: <span class="hljs-string">'\\san\\my-helpers'</span>
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">&#x27;src/component.ts&#x27;</span>, <span class="hljs-string">&#x27;php&#x27;</span>, {
+    importHelpers: <span class="hljs-string">&#x27;\\san\\my-helpers&#x27;</span>
 })
-writeFileSync(<span class="hljs-string">'dist/component.php'</span>, targetCode)
+writeFileSync(<span class="hljs-string">&#x27;dist/component.php&#x27;</span>, targetCode)
 
-<span class="hljs-comment">// 单独产出一份 helpers，注意这里没有 "\\" 前缀</span>
-<span class="hljs-keyword">const</span> helpersCode = ToPHPCompiler.emitHelpers({ <span class="hljs-keyword">namespace</span>: <span class="hljs-string">'san\\my-helpers'</span> })
-writeFileSync(<span class="hljs-string">'dist/helpers.php'</span>, targetCode)</code></pre>
+<span class="hljs-comment">// 单独产出一份 helpers，注意这里没有 &quot;\\&quot; 前缀</span>
+<span class="hljs-keyword">const</span> helpersCode = ToPHPCompiler.emitHelpers({ <span class="hljs-keyword">namespace</span>: <span class="hljs-string">&#x27;san\\my-helpers&#x27;</span> })
+writeFileSync(<span class="hljs-string">&#x27;dist/helpers.php&#x27;</span>, targetCode)</code></pre>
 				<a href="#命令行接口" id="命令行接口" style="color: inherit; text-decoration: none;">
 					<h2>命令行接口</h2>
 				</a>
 				<p>使用 <code>san-ssr</code> 命令并指定 <code>--target php</code> 即可调用目标到 PHP 的 SSR 渲染。</p>
-				<pre><code class="language-bash">san-ssr --target php --compile <span class="hljs-string">'{"nsPrefix":"demo\\"}'</span> ./component.ts &gt; ssr.php</code></pre>
+				<pre><code class="language-bash">san-ssr --target php --compile <span class="hljs-string">&#x27;{&quot;nsPrefix&quot;:&quot;demo\\&quot;}&#x27;</span> ./component.ts &gt; ssr.php</code></pre>
 				<p>全局安装 <code>san-ssr-target-php</code> 后，可以用命令来产出一份 helpers：</p>
 				<pre><code class="language-bash">$ san-ssr-target-php-helpers --<span class="hljs-built_in">help</span>
 san-ssr-target-php-helpers [-n &lt;NAMESPACE&gt;]
@@ -134,7 +134,7 @@ Options:
   --namespace, -n    Specify the namespace of helpers
 
 Example:
-$ san-ssr-target-php-helpers -n <span class="hljs-string">'san\helpers'</span></code></pre>
+$ san-ssr-target-php-helpers -n <span class="hljs-string">&#x27;san\helpers&#x27;</span></code></pre>
 				<a href="#已知问题" id="已知问题" style="color: inherit; text-decoration: none;">
 					<h2>已知问题</h2>
 				</a>
@@ -155,7 +155,7 @@ $ san-ssr-target-php-helpers -n <span class="hljs-string">'san\helpers'</span></
 				<pre><code class="language-bash">npm install
 composer install
 npm <span class="hljs-built_in">test</span></code></pre>
-				<p>debug 一个用例，以 <code>test/cases/array-literal</code> 为例：</p>
+				<p>debug 一个用例，以 <code>node_modules/san-html-cases/src/array-literal</code> 为例：</p>
 				<pre><code class="language-bash">./bin/debug array-literal</code></pre>
 				<p><code>source ./bin/auto-complete</code> 来让 zsh 自动补全用例全名。</p>
 			</div>
@@ -166,59 +166,59 @@ npm <span class="hljs-built_in">test</span></code></pre>
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compile_options_.html">"compile-<wbr>options"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compile_options_.html">&quot;src/compile-<wbr>options&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_anode_compiler_.html">"compilers/anode-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_anode_compiler_.html">&quot;src/compilers/anode-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_element_compiler_.html">"compilers/element-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_element_compiler_.html">&quot;src/compilers/element-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_expr_compiler_.html">"compilers/expr-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_expr_compiler_.html">&quot;src/compilers/expr-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_renderer_compiler_.html">"compilers/renderer-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_renderer_compiler_.html">&quot;src/compilers/renderer-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_stringifier_.html">"compilers/stringifier"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_stringifier_.html">&quot;src/compilers/stringifier&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_ts2php_.html">"compilers/ts2php"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_ts2php_.html">&quot;src/compilers/ts2php&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_emitter_.html">"emitters/emitter"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_emitters_emitter_.html">&quot;src/emitters/emitter&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_helpers_.html">"emitters/helpers"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_emitters_helpers_.html">&quot;src/emitters/helpers&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_index_.html">&quot;src/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_index_.html">"transformers/index"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transformers_index_.html">&quot;src/transformers/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_refactor_member_initializer_.html">"transformers/refactor-<wbr>member-<wbr>initializer"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transformers_refactor_member_initializer_.html">&quot;src/transformers/refactor-<wbr>member-<wbr>initializer&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_refactor_method_collection_.html">"transformers/refactor-<wbr>method-<wbr>collection"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transformers_refactor_method_collection_.html">&quot;src/transformers/refactor-<wbr>method-<wbr>collection&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_refactor_reserved_names_.html">"transformers/refactor-<wbr>reserved-<wbr>names"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transformers_refactor_reserved_names_.html">&quot;src/transformers/refactor-<wbr>reserved-<wbr>names&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_replace_san_module_.html">"transformers/replace-<wbr>san-<wbr>module"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transformers_replace_san_module_.html">&quot;src/transformers/replace-<wbr>san-<wbr>module&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_case_.html">"utils/case"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_case_.html">&quot;src/utils/case&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_fs_.html">"utils/fs"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_fs_.html">&quot;src/utils/fs&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_lang_.html">"utils/lang"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_lang_.html">&quot;src/utils/lang&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -234,57 +234,16 @@ npm <span class="hljs-built_in">test</span></code></pre>
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
@@ -294,6 +253,5 @@ npm <span class="hljs-built_in">test</span></code></pre>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
