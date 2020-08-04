@@ -26,8 +26,7 @@ export default class ToPHPCompiler implements Compiler {
     }
 
     public compileToSource (sourceFile: SanSourceFile, options: CompileOptions) {
-        if (!options.nsRootDir) options.nsRootDir = this.tsRoot
-        const opts = normalizeCompileOptions(options)
+        const opts = normalizeCompileOptions(options, this.tsRoot)
         const emitter = new PHPEmitter(opts.emitHeader, opts.importHelpers)
         transformToFavorPHP(sourceFile)
 

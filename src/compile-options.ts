@@ -89,13 +89,14 @@ export const defaultHelpersNS = 'san\\helpers'
 export function normalizeCompileOptions ({
     renderFunctionName = 'render',
     nsPrefix = 'san\\',
-    nsRootDir = process.cwd(),
+    nsRootDir,
     importHelpers,
     emitHeader = true,
     ssrOnly = false,
     modules = {},
     getModuleNamespace = () => '\\'
-}: CompileOptions): NormalizedCompileOptions {
+}: CompileOptions, tsRoot: string): NormalizedCompileOptions {
+    nsRootDir = nsRootDir || tsRoot
     // 定义如何引用 helpers，因此需要带 \ 前缀，比如
     // \san\helpers\_::escapeHTML('');
     const helpersNS = importHelpers || '\\' + defaultHelpersNS
