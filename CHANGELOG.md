@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.1...v2.2.2) (2020-08-19)
+
+
+### Bug Fixes
+
+* upgrade to ts2php@0.29.0 ([830baf4](https://github.com/searchfe/san-ssr-target-php/commit/830baf4f804ec15b18c2409b2003a4e5c8da3dcd))
+
 ## [2.2.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.0...v2.2.1) (2020-08-04)
 
 
