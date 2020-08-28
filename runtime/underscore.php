@@ -107,13 +107,11 @@ final class _ {
         return strval($source);
     }
 
-    public static function escapeHTML($source)
+    public static function output($source, $needEscape)
     {
-        if (!isset($source)) {
-            return "";
-        }
+        if (!isset($source)) return "";
         $str = _::toString($source);
-        return htmlspecialchars($str, ENT_QUOTES);
+        return $needEscape ? htmlspecialchars($str, ENT_QUOTES) : $str;
     }
 
     public static function json_encode ($obj, $flag = 0) {
@@ -165,7 +163,7 @@ final class _ {
     public static function attrFilter($name, $value, $needEscape = false)
     {
         if (isset($value) && $value) {
-            $value = $needEscape ? _::escapeHTML($value) : _::toString($value);
+            $value = _::output($value, $needEscape);
             return " " . $name . '="' . $value . '"';
         }
         if (isset($value) && !array_key_exists($name, _::$BASE_PROPS)) {

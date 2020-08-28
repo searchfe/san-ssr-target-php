@@ -6,6 +6,7 @@ import { PHPEmitter } from '../emitters/emitter'
 import { NormalizedCompileOptions } from '../compile-options'
 import { dirname, resolve } from 'path'
 import { getNamespace, normalizeNamespaceSlug } from '../utils/lang'
+import type { OutputType } from './expr-compiler'
 
 type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
@@ -58,7 +59,7 @@ export class ANodeCompiler {
         const { emitter } = this
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(this.expr(aNode.textExpr, true))
+        emitter.writeHTMLExpression(this.expr(aNode.textExpr, 'escape'))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -227,7 +228,7 @@ export class ANodeCompiler {
         const givenData = []
         for (const prop of aNode.props) {
             const key = emitter.stringify(camelCase(prop.name))
-            const val = this.expr(prop.expr, false)
+            const val = this.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }
 
@@ -250,8 +251,8 @@ export class ANodeCompiler {
         emitter.feedLine(';')
     }
 
-    private expr (e: ExprNode, escapeHTML?: boolean) {
-        return this.options.exprCompiler.compile(e, escapeHTML)
+    private expr (e: ExprNode, output?: OutputType) {
+        return this.options.exprCompiler.compile(e, output)
     }
 
     private outputData () {

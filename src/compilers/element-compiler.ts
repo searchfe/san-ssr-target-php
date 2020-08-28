@@ -1,4 +1,4 @@
-import { Directive, ANodeProperty, ANode, ExprType } from 'san'
+import { ExprNode, Directive, ANodeProperty, ANode, ExprType } from 'san'
 import { ANodeCompiler } from './anode-compiler'
 import { _, TypeGuards, autoCloseTags, getANodePropByName } from 'san-ssr'
 import { PHPEmitter } from '../emitters/emitter'
@@ -68,12 +68,12 @@ export class ElementCompiler {
     inner (aNode: ANode) {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) this.emitter.writeHTMLExpression(`_::escapeHTML(${this.expr.compile(valueProp.expr)})`)
+            if (valueProp) this.emitter.writeHTMLExpression(`_::output(${this.expr.compile(valueProp.expr)}, true)`)
             return
         }
 
         const htmlDirective = aNode.directives.html
-        if (htmlDirective) this.emitter.writeHTMLExpression(this.expr.compile(htmlDirective.value))
+        if (htmlDirective) this.emitter.writeHTMLExpression(this.expr.compile(htmlDirective.value, 'plain'))
         else for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
     }
 
@@ -86,14 +86,6 @@ export class ElementCompiler {
     private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
         const { emitter } = this
         if (prop.name === 'slot') return
-        if (TypeGuards.isExprBoolNode(prop.expr)) {
-            emitter.writeHTMLLiteral(` ${prop.name}`)
-            return
-        }
-        if (TypeGuards.isExprStringNode(prop.expr) || TypeGuards.isExprNumberNode(prop.expr)) {
-            emitter.writeHTMLLiteral(` ${prop.name}="${_.escapeHTML(prop.expr.value)}"`)
-            return
-        }
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
             if (tagName === 'select') {
@@ -115,7 +107,11 @@ export class ElementCompiler {
             }
         }
         if (prop.name === 'readonly' || prop.name === 'disabled' || prop.name === 'multiple') {
-            emitter.writeHTMLExpression(`_::boolAttrFilter('${prop.name}', ${this.expr.compile(prop.expr)})`)
+            if (this.isLiteral(prop.expr)) {
+                if (_.boolAttrFilter(prop.name, prop.expr.value)) emitter.writeHTMLLiteral(` ${prop.name}`)
+            } else {
+                emitter.writeHTMLExpression(`_::boolAttrFilter('${prop.name}', ${this.expr.compile(prop.expr)})`)
+            }
             return
         }
 
@@ -137,7 +133,16 @@ export class ElementCompiler {
         }
         const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
         const needEscape = prop.x || onlyOneAccessor
-        emitter.writeHTMLExpression(`_::attrFilter('${prop.name}', ${this.expr.compile(prop.expr)}, ${needEscape})`)
+
+        if (this.isLiteral(prop.expr)) {
+            emitter.writeHTMLLiteral(_.attrFilter(prop.name, prop.expr.value, true))
+        } else {
+            emitter.writeHTMLExpression(`_::attrFilter('${prop.name}', ${this.expr.compile(prop.expr)}, ${needEscape})`)
+        }
+    }
+
+    private isLiteral (expr: ExprNode) {
+        return TypeGuards.isExprBoolNode(expr) || TypeGuards.isExprStringNode(expr) || TypeGuards.isExprNumberNode(expr)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {

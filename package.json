@@ -75,7 +75,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.2.2",
     "san-html-cases": "^2.1.1",
-    "san-ssr": "^3.0.0",
+    "san-ssr": "^3.0.1",
     "semantic-release": "^17.1.1",
     "typedoc": "^0.17.8",
     "wdio-sauce-service": "^0.4.14",

@@ -62,10 +62,10 @@ final class UnderscoreTest extends TestCase
             _::htmlFilterReplacer(">")
         );
     }
-    public function testEscapeHtml(): void {
+    public function testOutput(): void {
         $this->assertEquals(
             "&lt;a class=&#039;&amp;&quot;&#039;&gt;",
-            _::escapeHTML("<a class='&\"'>")
+            _::output("<a class='&\"'>", "escape")
         );
     }
     public function testClassFilter(): void {
