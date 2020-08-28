@@ -1,3 +1,10 @@
+## [2.2.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.2...v2.2.3) (2020-08-28)
+
+
+### Bug Fixes
+
+* literal property and raw output ([c899e0f](https://github.com/searchfe/san-ssr-target-php/commit/c899e0fbf6248598cfa787a37b477da00390e998))
+
 ## [2.2.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.1...v2.2.2) (2020-08-19)
 
 
