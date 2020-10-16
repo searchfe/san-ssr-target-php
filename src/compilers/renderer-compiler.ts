@@ -116,6 +116,7 @@ export class RendererCompiler {
     private emitComponentContext (info: ComponentInfo) {
         const { emitter } = this
         emitter.nextLine('$ctx = (object)[];')
+        emitter.nextLine('$ctx->data = &$data;')
         emitter.writeLine('$ctx->parentCtx = $parentCtx;')
         emitter.writeLine('$ctx->data = &$data;')
 
