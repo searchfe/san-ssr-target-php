@@ -114,7 +114,7 @@ export default class ToPHPCompiler implements Compiler {
         emitter.writeLines(this.phpTranspiler.compile(
             sourceFile.tsSourceFile,
             { ...modules, ...options.modules },
-            helpersNS,
+            helpersNS.substr(0, 1) === '\\' ? helpersNS : '\\' + helpersNS,
             options.getModuleNamespace
         ))
     }
