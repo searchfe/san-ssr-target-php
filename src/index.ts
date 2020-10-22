@@ -7,7 +7,7 @@ import { PHPEmitter } from './emitters/emitter'
 import { sep, isAbsolute, resolve } from 'path'
 import debugFactory from 'debug'
 import { emitHelpers } from './emitters/helpers'
-import { defaultHelpersNS, normalizeCompileOptions, CompileOptions, NormalizedCompileOptions } from './compile-options'
+import { defaultHelpersNS, defaultImportHelpersNS, normalizeCompileOptions, CompileOptions, NormalizedCompileOptions } from './compile-options'
 import { getNamespace, resolveFrom } from './utils/lang'
 
 const debug = debugFactory('san-ssr:target-php')
@@ -92,6 +92,7 @@ export default class ToPHPCompiler implements Compiler {
         if (!isTypedSanSourceFile(sourceFile)) return ''
 
         const helpersNS = options.importHelpers || defaultHelpersNS
+        const importHelpersNS = '\\' + options.importHelpers || defaultImportHelpersNS
         const modules = {
             'san-ssr-target-php': {
                 name: 'san-ssr-target-php',
@@ -114,7 +115,7 @@ export default class ToPHPCompiler implements Compiler {
         emitter.writeLines(this.phpTranspiler.compile(
             sourceFile.tsSourceFile,
             { ...modules, ...options.modules },
-            '\\' + helpersNS,
+            importHelpersNS,
             options.getModuleNamespace
         ))
     }

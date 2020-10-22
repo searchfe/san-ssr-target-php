@@ -70,6 +70,7 @@ export interface NormalizedCompileOptions extends CompileOptions {
     nsRootDir: string,
     emitHeader: boolean,
     helpersNS: string,
+    importHelpersNS: string,
     ssrOnly: boolean,
     stringifier: Stringifier,
     exprCompiler: ExprCompiler,
@@ -85,6 +86,7 @@ export interface NormalizedCompileOptions extends CompileOptions {
  * }
  */
 export const defaultHelpersNS = 'san\\helpers'
+export const defaultImportHelpersNS = '\\san\\helpers'
 
 export function normalizeCompileOptions ({
     renderFunctionName = 'render',
@@ -99,8 +101,9 @@ export function normalizeCompileOptions ({
     nsRootDir = nsRootDir || tsRoot
     // 定义如何引用 helpers，因此需要带 \ 前缀，比如
     // \san\helpers\_::escapeHTML('');
-    const helpersNS = importHelpers || '\\' + defaultHelpersNS
-    const stringifier = new Stringifier(helpersNS)
+    const importHelpersNS = '\\' + importHelpers || '\\' + defaultImportHelpersNS
+    const helpersNS = importHelpers || defaultHelpersNS
+    const stringifier = new Stringifier(importHelpersNS)
     const exprCompiler = new ExprCompiler(stringifier)
-    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, exprCompiler, getModuleNamespace }
+    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, importHelpersNS, stringifier, exprCompiler, getModuleNamespace }
 }
