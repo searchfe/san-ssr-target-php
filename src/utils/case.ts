@@ -29,7 +29,7 @@ export function compileComponentFile (filepath: string): string {
         {
             nsPrefix,
             nsRootDir: caseRoot,
-            importHelpers: '\\san\\helpers',
+            importHelpers: 'san\\helpers',
             ssrOnly
         }
     )
