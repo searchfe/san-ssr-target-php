@@ -22,6 +22,16 @@ export abstract class SanSSRComponent {
         [key: string]: SanSSRComponent
     }
     data: SanSSRData
+    // 以下方法、属性都是在浏览器端运行时需要
+    el?: HTMLElement
+    fire(eventName: string, eventData: any): void
+    dispatch(eventName: string, eventData: any): void
+    on(eventName: string, listener: any): void
+    un(eventName: string, listener?: any): void
+    watch(propName: string, watcher: (newValue: any) => any): void
+    ref(refName: string): any
+    slot(name?: string): Array<any>
+    nextTick(doNextTick: () => any): void
 }
 
 /**
