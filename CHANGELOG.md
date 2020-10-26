@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.3...v2.2.4) (2020-10-26)
+
+
+### Bug Fixes
+
+* this.fire error ([590cf9c](https://github.com/searchfe/san-ssr-target-php/commit/590cf9c61bab2fb2b72f0bc14ad241fb6049ccd0))
+
 ## [2.2.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.2...v2.2.3) (2020-08-28)
 
 
