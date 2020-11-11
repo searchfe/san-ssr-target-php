@@ -112,7 +112,7 @@ describe('ToPHPCompiler', function () {
                 }
             }
         })
-        expect(result).toContain('\\san\\multi_component_files\\SanSSRClasslist\\renderXList(')
+        expect(result).toContain('\\san\\multi_component_files\\SanSSRClasslist\\renderXList')
         expect(result).toContain('\\san\\multi_files\\square\\square($num)')
     })
 
