@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.4...v2.3.0) (2020-11-11)
+
+
+### Features
+
+* s-is directive ([5c848a5](https://github.com/searchfe/san-ssr-target-php/commit/5c848a5a64f755028f8507f77af297e526ac0d6e))
+
 ## [2.2.4](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.3...v2.2.4) (2020-10-26)
 
 
