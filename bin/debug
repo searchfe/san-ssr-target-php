@@ -27,7 +27,7 @@ compile(caseName)
  */
 let got
 try {
-    got = execFileSync(join(__dirname, `./render.php`), [caseName]).toString()
+    got = execFileSync(join(__dirname, './render.php'), [caseName]).toString()
 } catch (err) {
     console.error(err.output[1].toString())
     process.exit(1)

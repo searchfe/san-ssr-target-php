@@ -1,11 +1,9 @@
 import { ExprNode, ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
-import { SanSourceFile, ComponentReference, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
+import { SanSourceFile, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
 import camelCase from 'camelcase'
 import { PHPEmitter } from '../emitters/emitter'
 import { NormalizedCompileOptions } from '../compile-options'
-import { dirname, resolve } from 'path'
-import { getNamespace, normalizeNamespaceSlug } from '../utils/lang'
 import type { OutputType } from './expr-compiler'
 
 type ComponentInfoGetter = (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
@@ -47,12 +45,21 @@ export class ANodeCompiler {
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
-        const ref = this.info.getChildComponentRenference(aNode)
-        if (ref) {
-            return this.compileComponent(aNode, ref, isRootElement)
+        const childComponentReference = this.compileReference(aNode)
+        if (childComponentReference) {
+            return this.compileComponent(aNode, childComponentReference, isRootElement)
         }
 
         this.compileElement(aNode, isRootElement)
+    }
+
+    private compileReference (aNode: ANode) {
+        if (aNode.directives.is) {
+            return `$ctx->refs[${this.expr(aNode.directives.is.value)}]`
+        }
+        if (this.info.childComponents.has(aNode.tagName)) {
+            return `$ctx->refs["${aNode.tagName}"]`
+        }
     }
 
     compileText (aNode: ATextNode) {
@@ -201,10 +208,10 @@ export class ANodeCompiler {
 
     /**
      * @param aNode 要被编译的 AComponentNode
-     * @param ref 这个 aNode 引用的组件（一般是外部组件，不同于 aNode 所属组件）
+     * @param ref 这个 aNode 引用的组件 render 函数名
      * @param isRootElement 是否需要输出数据，如果该组件是根组件，它为 true
      */
-    compileComponent (aNode: ANode, ref: ComponentReference, isRootElement: boolean) {
+    compileComponent (aNode: ANode, ref: string, isRootElement: boolean) {
         const { emitter } = this
 
         /**
@@ -241,13 +248,9 @@ export class ANodeCompiler {
         /**
          * 调用子组件 render，并传给它父组件定义的 $slots 和 $data
          */
-        const name = ref.isDefault ? 'render' : 'render' + ref.id
-        const renderId = ref.specifier === '.'
-            ? name
-            : '\\' + this.getNamespace(ref) + '\\' + name
         const ndo = isRootElement ? '$noDataOutput' : 'true'
         emitter.nextLine('$html .= ')
-        emitter.writeFunctionCall(renderId, [dataLiteral, ndo, '$parentCtx', emitter.stringify(aNode.tagName), '$slots'])
+        emitter.writeFunctionCall('call_user_func', [ref, dataLiteral, ndo, '$parentCtx', emitter.stringify(aNode.tagName), '$slots'])
         emitter.feedLine(';')
     }
 
@@ -264,19 +267,5 @@ export class ANodeCompiler {
 
     private nextID () {
         return 'sanssrId' + (this.id++)
-    }
-
-    /**
-     * 根据组件引用（通常是外部组件）得到被引用组件的命名空间
-     */
-    private getNamespace (ref: ComponentReference): string {
-        let ns = ''
-        const ret = this.options.getModuleNamespace(ref.specifier)
-        ns = ret.replace(/^\\/, '').replace(/\\$/, '').split('\\').map(normalizeNamespaceSlug).join('\\')
-        if (!ns) {
-            const filePath = resolve(dirname(this.sourceFile.getFilePath()), ref.specifier)
-            ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, filePath)
-        }
-        return ns
     }
 }

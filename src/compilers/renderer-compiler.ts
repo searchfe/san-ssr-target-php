@@ -1,10 +1,14 @@
-import { SanSourceFile, DynamicComponentInfo, ComponentInfo, isTypedComponentInfo } from 'san-ssr'
+import { SanSourceFile, DynamicComponentInfo, TypedComponentInfo, ComponentInfo } from 'san-ssr'
+import assert from 'assert'
 import { NormalizedCompileOptions } from '../compile-options'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
 import { getNamespace } from '../utils/lang'
+import { ReferenceCompiler } from './reference-compiler'
 
 export class RendererCompiler {
+    private referenceCompiler: ReferenceCompiler
+
     constructor (
         /**
          * 当前编译的源文件
@@ -16,7 +20,7 @@ export class RendererCompiler {
          */
         private emitter: PHPEmitter = new PHPEmitter()
     ) {
-
+        this.referenceCompiler = new ReferenceCompiler(this.sourceFile.getFilePath(), options)
     }
 
     /**
@@ -77,20 +81,8 @@ export class RendererCompiler {
      * 产生组件 initData() 的代码
      */
     emitInitData (info: ComponentInfo) {
-        if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
-        else this.emitInitDataInCompileTime(info)
-    }
-
-    /**
-     * 动态组件（输入是 JavaScript、ComponentClass）是可以在编译期拿到数据的
-     */
-    emitInitDataInCompileTime (info: DynamicComponentInfo) {
-        const defaultData = info.proto.initData!() || {}
-        for (const key of Object.keys(defaultData)) {
-            const val = this.emitter.stringify(defaultData[key])
-            const keyStr = this.options.stringifier.str(key)
-            this.emitter.writeLine(`$ctx->data[${keyStr}] = isset($ctx->data[${keyStr}]) ? $ctx->data[${keyStr}] : ${val};`)
-        }
+        assert(!(info instanceof DynamicComponentInfo))
+        this.emitInitDataInRuntime()
     }
 
     /**
@@ -119,7 +111,7 @@ export class RendererCompiler {
         emitter.writeLine('$ctx->parentCtx = $parentCtx;')
         emitter.writeLine('$ctx->data = &$data;')
 
-        if (isTypedComponentInfo(info)) {
+        if (info instanceof TypedComponentInfo) {
             const className = info.classDeclaration.getName()
             const ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, this.sourceFile.getFilePath())
             const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
@@ -133,5 +125,11 @@ export class RendererCompiler {
         const computedList = info.getComputedNames().map(x => `'${x}'`)
         emitter.writeLine(`$ctx->instance->data = new SanSSRData($ctx, [${computedList.join(', ')}]);`)
         emitter.writeLine('$ctx->slots = $slots;')
+
+        const refs = [...info.childComponents.entries()].map(([key, val]) => {
+            const fnFullName = this.referenceCompiler.compileToFunctionFullName(val)
+            return `"${key}" => '${fnFullName}'`
+        }).join(', ')
+        emitter.writeLine(`$ctx->refs = [${refs}];`)
     }
 }
