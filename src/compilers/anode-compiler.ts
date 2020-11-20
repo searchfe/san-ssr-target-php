@@ -1,3 +1,4 @@
+import assert from 'assert'
 import { ExprNode, ANode, ASlotNode, ATextNode, AForNode, ComponentConstructor, AIfNode, AFragmentNode } from 'san'
 import { SanSourceFile, TypeGuards, ComponentInfo, getANodePropByName } from 'san-ssr'
 import { ElementCompiler } from './element-compiler'
@@ -16,6 +17,7 @@ export class ANodeCompiler {
     private id = 0
     // 用来编译普通 DOM 节点类型的 ANode
     private elementCompiler: ElementCompiler
+    private inScript = false
 
     /**
      * @param info 所述的组件
@@ -64,9 +66,10 @@ export class ANodeCompiler {
 
     compileText (aNode: ATextNode) {
         const { emitter } = this
-        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly
+        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.options.ssrOnly && !this.inScript
+        const outputType = this.inScript ? 'plain' : 'escape'
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(this.expr(aNode.textExpr, 'escape'))
+        emitter.writeHTMLExpression(this.expr(aNode.textExpr, outputType))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -75,11 +78,11 @@ export class ANodeCompiler {
     }
 
     compileFragment (aNode: AFragmentNode) {
-        if (TypeGuards.isATextNode(aNode.children[0]) && !this.options.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[0]) && !this.options.ssrOnly && !this.inScript) {
             this.emitter.writeHTMLLiteral('<!--s-frag-->')
         }
         this.elementCompiler.inner(aNode)
-        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.options.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.options.ssrOnly && !this.inScript) {
             this.emitter.writeHTMLLiteral('<!--/s-frag-->')
         }
     }
@@ -138,6 +141,7 @@ export class ANodeCompiler {
     compileSlot (aNode: ASlotNode) {
         const { emitter } = this
         const fnName = `$renderSlot${this.nextID()}`
+        assert(!this.inScript, '<slot> is not allowed inside <script>')
 
         emitter.nextLine(`${fnName} = `)
         emitter.writeAnonymousFunction([], ['&$ctx', '&$html', '&$parentCtx'], () => {
@@ -201,8 +205,15 @@ export class ANodeCompiler {
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
         this.elementCompiler.tagStart(aNode)
-        if (isRootElement && !this.options.ssrOnly) this.outputData()
+        if (aNode.tagName === 'script') this.inScript = true
+        if (isRootElement && !this.options.ssrOnly && !this.inScript) {
+            this.emitter.writeIf('!$noDataOutput', () => {
+                const code = '\'<!--s-data:\' . _::json_encode(_::getRootContext($ctx)->data) . \'-->\''
+                this.emitter.writeHTMLExpression(code)
+            })
+        }
         this.elementCompiler.inner(aNode)
+        if (aNode.tagName === 'script') this.inScript = false
         this.elementCompiler.tagEnd(aNode)
     }
 
@@ -213,6 +224,7 @@ export class ANodeCompiler {
      */
     compileComponent (aNode: ANode, ref: string, isRootElement: boolean) {
         const { emitter } = this
+        assert(!this.inScript, 'component reference is not allowed inside <script>')
 
         /**
          * 收集使用组件时，子元素里所有的 slots
@@ -256,13 +268,6 @@ export class ANodeCompiler {
 
     private expr (e: ExprNode, output?: OutputType) {
         return this.options.exprCompiler.compile(e, output)
-    }
-
-    private outputData () {
-        this.emitter.writeIf('!$noDataOutput', () => {
-            const code = '\'<!--s-data:\' . _::json_encode(_::getRootContext($ctx)->data) . \'-->\''
-            this.emitter.writeHTMLExpression(code)
-        })
     }
 
     private nextID () {

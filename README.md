@@ -93,6 +93,8 @@ $ san-ssr-target-php-helpers -n 'san\helpers'
 
 - `noDataOutput` 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同
 - `getTemplateType()` 需要运行时编译，不在 PHP 版本中支持。
+- 模板（san 组件的 template 属性）中读取数据属性时，有些属性是平台相关的。比如 `{{ arr.length }}` 总会渲染为空（因为 PHP array 下不存在 length 属性）。
+- script 元素内容不可在组件间传递。即 script 内不可引用组件，也不可包含 slot。
 
 ## 贡献指南
 
