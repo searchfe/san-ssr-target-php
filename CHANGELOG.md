@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.0...v2.3.1) (2020-11-20)
+
+
+### Bug Fixes
+
+* script 内容跳过转义，见 https://github.com/baidu/san-ssr/issues/73 ([3597804](https://github.com/searchfe/san-ssr-target-php/commit/35978049fde2a6c6a34c21da91d749150fbeb94c))
+
 # [2.3.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.2.4...v2.3.0) (2020-11-11)
 
 
