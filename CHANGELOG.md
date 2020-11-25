@@ -1,3 +1,10 @@
+## [2.3.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.1...v2.3.2) (2020-11-25)
+
+
+### Bug Fixes
+
+* change string '+' operator to '.' ([2737b08](https://github.com/searchfe/san-ssr-target-php/commit/2737b08c6f4b2a3f0bec8eb01d7b1013a62c14e2))
+
 ## [2.3.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.0...v2.3.1) (2020-11-20)
 
 
