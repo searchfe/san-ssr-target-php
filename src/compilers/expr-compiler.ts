@@ -187,7 +187,7 @@ export class ExprCompiler {
         const rhs = this.compile(e.segs[1])
         let op = binaryOp[e.operator]
         if (op === '||') return `(${lhs} ? ${lhs} : ${rhs})`
-        if (TypeGuards.isExprStringNode(e.segs[0]) || TypeGuards.isExprStringNode(e.segs[1])) {
+        if ((TypeGuards.isExprStringNode(e.segs[0]) || TypeGuards.isExprStringNode(e.segs[1])) && op === '+') {
             op = '.'
         }
         return outputCode(`${lhs} ${op} ${rhs}`, output)
