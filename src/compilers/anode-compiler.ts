@@ -208,7 +208,7 @@ export class ANodeCompiler {
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.options.ssrOnly && !this.inScript) {
             this.emitter.writeIf('!$noDataOutput', () => {
-                const code = '\'<!--s-data:\' . _::json_encode(_::getRootContext($ctx)->data) . \'-->\''
+                const code = '\'<!--s-data:\' . preg_replace(\'/(?<=-)-/\', \'\\\\-\', _::json_encode(_::getRootContext($ctx)->data)) . \'-->\''
                 this.emitter.writeHTMLExpression(code)
             })
         }
