@@ -3,7 +3,6 @@ import assert from 'assert'
 import { NormalizedCompileOptions } from '../compile-options'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
-import { getNamespace } from '../utils/lang'
 import { ReferenceCompiler } from './reference-compiler'
 
 export class RendererCompiler {
