@@ -111,7 +111,7 @@ export class RendererCompiler {
         emitter.writeLine('$ctx->parentCtx = $parentCtx;')
         emitter.writeLine('$ctx->data = &$data;')
 
-        if (info instanceof TypedComponentInfo) {
+        if (isTypedComponentInfo(info)) {
             const className = info.classDeclaration.getName()
             const ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, this.sourceFile.getFilePath())
             const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
@@ -132,4 +132,8 @@ export class RendererCompiler {
         }).join(', ')
         emitter.writeLine(`$ctx->refs = [${refs}];`)
     }
+}
+
+function isTypedComponentInfo (info: any): info is TypedComponentInfo {
+    return typeof info.classDeclaration !== 'undefined'
 }
