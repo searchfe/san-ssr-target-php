@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.2...v2.4.0) (2020-12-07)
+
+
+### Features
+
+* s-data 注释转义特殊字符消除 XSS 隐患 ([f957d11](https://github.com/searchfe/san-ssr-target-php/commit/f957d11bcf4f1d11993a839641320c6c5460ce8f))
+
 ## [2.3.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.1...v2.3.2) (2020-11-25)
 
 
