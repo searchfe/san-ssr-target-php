@@ -3,7 +3,6 @@ import assert from 'assert'
 import { NormalizedCompileOptions } from '../compile-options'
 import { PHPEmitter } from '../emitters/emitter'
 import { ANodeCompiler } from './anode-compiler'
-import { getNamespace } from '../utils/lang'
 import { ReferenceCompiler } from './reference-compiler'
 
 export class RendererCompiler {
@@ -113,13 +112,9 @@ export class RendererCompiler {
 
         if (isTypedComponentInfo(info)) {
             const className = info.classDeclaration.getName()
-            const ns = getNamespace(this.options.nsPrefix, this.options.nsRootDir, this.sourceFile.getFilePath())
-            const fullClassName = `\\${ns}\\${className}`.replace(/\\/g, '\\\\')
-            emitter.writeLine(`$ctx->class = '${fullClassName}';`)
             emitter.writeLine(`$ctx->instance = new ${className}();`)
             emitter.writeLine('$ctx->instance->parentComponent = $parentCtx->instance;')
         } else {
-            emitter.writeLine(`$ctx->class = '${this.options.helpersNS}\\SanSSRComponent';`)
             emitter.writeLine('$ctx->instance = new SanSSRComponent();')
         }
         const computedList = info.getComputedNames().map(x => `'${x}'`)
