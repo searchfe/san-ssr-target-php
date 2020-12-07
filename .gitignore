@@ -3,7 +3,7 @@ node_modules/
 npm-debug.log
 coverage
 vendor/
-dist/
+/dist/
 test/cases/*/*.php
 test/perf/*.san.php
 /runtime/helpers.php
