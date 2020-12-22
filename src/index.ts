@@ -1,8 +1,8 @@
 import { isTypedSanSourceFile, SanProject, Compiler, SanSourceFile } from 'san-ssr'
 import { PHPTranspiler } from './compilers/ts2php'
+import { ReferenceCompiler } from './compilers/reference-compiler'
 import { transformToFavorPHP } from './transformers/index'
 import { CompilerOptions } from 'ts-morph'
-import { RendererCompiler } from './compilers/renderer-compiler'
 import { PHPEmitter } from './emitters/emitter'
 import { sep, isAbsolute, resolve } from 'path'
 import debugFactory from 'debug'
@@ -77,12 +77,21 @@ export default class ToPHPCompiler implements Compiler {
         emitter.writeLine(`use ${options.helpersNS}\\SanSSRData;`)
         emitter.writeLine(`use ${options.helpersNS}\\SanSSRComponent;`)
 
-        const rc = new RendererCompiler(
-            sourceFile,
-            options,
-            emitter
-        )
-        for (const info of sourceFile.componentInfos) rc.compile(info)
+        // 解析 refs
+        const referenceCompiler = new ReferenceCompiler(sourceFile.getFilePath(), options)
+        emitter.setReferenceCompiler(referenceCompiler)
+
+        for (const info of sourceFile.componentInfos) {
+            const rendererName = sourceFile.entryComponentInfo === info
+                ? options.renderFunctionName
+                : `render${info.id}`
+            const renderFunctionDefinition = info.compileToRenderer({
+                ...options,
+                functionName: rendererName
+            })
+            emitter.carriageReturn()
+            emitter.writeFunctionDefinition(renderFunctionDefinition)
+        }
     }
 
     /**

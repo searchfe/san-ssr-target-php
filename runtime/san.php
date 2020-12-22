@@ -1,27 +1,18 @@
 <?php
 class SanSSRData {
-    private $ctx;
+    private $instance;
     private $data;
-    private $computedNames;
-    private $computedList;
 
-    public function __construct(&$ctx, $computedList) {
-        $this->ctx = &$ctx;
-        $this->data = &$ctx->data;
-        $this->computedList = $computedList;
-        $this->computedNames = array_flip($computedList);
-    }
-
-    public function populateComputed () {
-        foreach ($this->computedList as $computedName) {
-            $this->data[$computedName] = $this->get($computedName);
-        }
+    public function __construct(&$data, &$instance) {
+        $this->instance = &$instance;
+        $this->data = &$data;
     }
 
     public function &get ($path = null) {
         if ($path == null) return $this->data;
-        if (array_key_exists($path, $this->computedNames)) {
-            return _::callComputed($this->ctx, $path);
+        if (property_exists($this->instance, 'computed') &&
+            array_key_exists($path, $this->instance::$computed)) {
+            return _::callComputed($this->instance, $path);
         }
         $seq = $this->parseExpr($path);
         $val = &$this->data;
