@@ -1,8 +1,8 @@
+import { RenderOptions } from 'san-ssr'
 import { Modules } from './compilers/ts2php'
 import { Stringifier } from './compilers/stringifier'
-import { ExprCompiler } from './compilers/expr-compiler'
 
-export interface CompileOptions {
+export interface CompileOptions extends RenderOptions {
     /**
      * 当传入文件名时，自定义文件内容
      */
@@ -72,7 +72,6 @@ export interface NormalizedCompileOptions extends CompileOptions {
     helpersNS: string,
     ssrOnly: boolean,
     stringifier: Stringifier,
-    exprCompiler: ExprCompiler,
     modules: Modules,
     getModuleNamespace: (moduleSpecifier: string) => string
 }
@@ -101,6 +100,5 @@ export function normalizeCompileOptions ({
     // \san\helpers\_::escapeHTML('');
     const helpersNS = importHelpers || '\\' + defaultHelpersNS
     const stringifier = new Stringifier(helpersNS)
-    const exprCompiler = new ExprCompiler(stringifier)
-    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, exprCompiler, getModuleNamespace }
+    return { renderFunctionName, nsPrefix, nsRootDir, importHelpers, emitHeader, ssrOnly, modules, helpersNS, stringifier, getModuleNamespace }
 }

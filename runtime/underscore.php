@@ -43,11 +43,16 @@ final class _ {
         return $ret;
     }
 
-    public static function extend(&$target, $source)
+    public static function &extend(&$target)
     {
-        if ($source) {
-            foreach ($source as $key => $val) {
-                $target["$key"] = $val;
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+        for ($i = 1; $i < $numargs; $i++) {
+            $source = $arg_list[$i];
+            if ($source) {
+                foreach ($source as $key => $val) {
+                    $target["$key"] = $val;
+                }
             }
         }
         return $target;
@@ -127,7 +132,7 @@ final class _ {
         echo "\n";
     }
 
-    public static function _classFilter($source)
+    public static function classFilter($source)
     {
         if (is_array($source)) {
             return join(" ", $source);
@@ -135,12 +140,12 @@ final class _ {
         return $source;
     }
 
-    public static function _styleFilter($source)
+    public static function styleFilter($source)
     {
         return _::stringifyStyles($source);
     }
 
-    public static function _xclassFilter($outer, $inner)
+    public static function xclassFilter($outer, $inner)
     {
         if (is_array($outer)) {
             $outer = join(" ", $outer);
@@ -151,7 +156,7 @@ final class _ {
         return $inner;
     }
 
-    public static function _xstyleFilter($outer, $inner)
+    public static function xstyleFilter($outer, $inner)
     {
         if ($outer) {
             $outer = _::stringifyStyles($outer);
@@ -187,12 +192,12 @@ final class _ {
         }
     }
 
-    public static function callComputed($ctx, $name)
+    public static function callComputed(&$instance, $name)
     {
-        $class = get_class($ctx->instance);
+        $class = get_class($instance);
         $func = $class::$computed[$name];
         if (is_callable($func)) {
-            $result = call_user_func($func, $ctx->instance);
+            $result = call_user_func($func, $instance);
             return $result;
         }
     }
