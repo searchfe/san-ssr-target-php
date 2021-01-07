@@ -1,6 +1,6 @@
 import { RenderOptions } from 'san-ssr'
-import { Modules } from './compilers/ts2php'
-import { Stringifier } from './compilers/stringifier'
+import { Modules } from './emitters/ts2php'
+import { Stringifier } from './emitters/stringifier'
 
 export interface CompileOptions extends RenderOptions {
     /**
