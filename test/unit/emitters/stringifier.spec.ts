@@ -1,4 +1,4 @@
-import { Stringifier } from '../../../src/compilers/stringifier'
+import { Stringifier } from '../../../src/emitters/stringifier'
 
 describe('Stringifier', function () {
     let stringifier

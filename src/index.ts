@@ -90,7 +90,7 @@ export default class ToPHPCompiler implements Compiler {
                 functionName: rendererName
             })
             emitter.carriageReturn()
-            emitter.writeFunctionDefinition(renderFunctionDefinition)
+            emitter.writeSyntaxNode(renderFunctionDefinition)
         }
     }
 

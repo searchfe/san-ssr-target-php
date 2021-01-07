@@ -1,6 +1,5 @@
-import { ExprNode } from 'san'
 import { Project } from 'ts-morph'
-import { PHPTranspiler } from '../../../src/compilers/ts2php'
+import { PHPTranspiler } from '../../../src/emitters/ts2php'
 
 describe('ts2php', function () {
     it('string literalize', function () {
