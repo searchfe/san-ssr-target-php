@@ -1,6 +1,6 @@
 import { Emitter, ComponentInfo, TypedComponentInfo, SyntaxKind, Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition, assertNever } from 'san-ssr'
-import { Stringifier } from '../compilers/stringifier'
-import { ReferenceCompiler } from '../compilers/reference-compiler'
+import { Stringifier } from './stringifier'
+import { ReferenceCompiler } from './reference-compiler'
 export class PHPEmitter extends Emitter {
     private stringifier: Stringifier
     private referenceCompiler?: ReferenceCompiler
