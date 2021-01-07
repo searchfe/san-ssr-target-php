@@ -71,25 +71,25 @@ final class UnderscoreTest extends TestCase
     public function testClassFilter(): void {
         $this->assertEquals(
             "foo bar coo",
-            _::_classFilter(["foo", "bar", "coo"])
+            _::classFilter(["foo", "bar", "coo"])
         );
     }
     public function testStyleFilter(): void {
         $this->assertEquals(
             "height:20px;width:30px;",
-            _::_styleFilter(["height" => "20px", "width" => "30px"])
+            _::styleFilter(["height" => "20px", "width" => "30px"])
         );
     }
     public function testXClassFilter(): void {
         $this->assertEquals(
             "haha foo bar coo",
-            _::_xclassFilter(["foo", "bar", "coo"], "haha")
+            _::xclassFilter(["foo", "bar", "coo"], "haha")
         );
     }
     public function testXStyleFilter(): void {
         $this->assertEquals(
             "haha;height:20px;width:30px;",
-            _::_xstyleFilter(["height" => "20px", "width" => "30px"], "haha")
+            _::xstyleFilter(["height" => "20px", "width" => "30px"], "haha")
         );
     }
     public function testAttrFilter(): void {

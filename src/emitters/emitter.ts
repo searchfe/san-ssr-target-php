@@ -19,7 +19,7 @@ export class PHPEmitter extends Emitter {
         this.referenceCompiler = referenceCompiler
     }
 
-    private writeSyntaxNode (node: Expression | Statement) {
+    public writeSyntaxNode (node: Expression | Statement) {
         switch (node.kind) {
         case SyntaxKind.Literal:
             return this.writeLiteral(node)
@@ -275,7 +275,7 @@ export class PHPEmitter extends Emitter {
         }
     }
 
-    public writeFunctionDefinition (node: FunctionDefinition | SlotRendererDefinition, use: string[] = []) {
+    private writeFunctionDefinition (node: FunctionDefinition | SlotRendererDefinition, use: string[] = []) {
         const nameStr = node.name ? `${node.name} ` : ''
         const useStr = use.length ? `use (${use.join(', ')}) ` : ''
         this.write('function ')
