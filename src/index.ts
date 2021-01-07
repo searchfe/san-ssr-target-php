@@ -1,6 +1,6 @@
 import { isTypedSanSourceFile, SanProject, Compiler, SanSourceFile } from 'san-ssr'
-import { PHPTranspiler } from './compilers/ts2php'
-import { ReferenceCompiler } from './compilers/reference-compiler'
+import { PHPTranspiler } from './emitters/ts2php'
+import { ReferenceCompiler } from './emitters/reference-compiler'
 import { transformToFavorPHP } from './transformers/index'
 import { CompilerOptions } from 'ts-morph'
 import { PHPEmitter } from './emitters/emitter'
