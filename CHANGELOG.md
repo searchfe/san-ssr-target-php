@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.4.0...v2.5.0) (2021-01-11)
+
+
+### Features
+
+* update san-ssr ([6bba4dd](https://github.com/searchfe/san-ssr-target-php/commit/6bba4dd642e238b9180f6e665aec4f7113fc6a08))
+
 # [2.4.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.3.2...v2.4.0) (2020-12-07)
 
 

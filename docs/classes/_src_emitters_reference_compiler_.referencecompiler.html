@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PHPTranspiler | san-ssr-target-php</title>
+	<title>ReferenceCompiler | san-ssr-target-php</title>
 	<meta name="description" content="Documentation for san-ssr-target-php">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_compilers_ts2php_.html">&quot;src/compilers/ts2php&quot;</a>
+					<a href="../modules/_src_emitters_reference_compiler_.html">&quot;src/emitters/reference-compiler&quot;</a>
 				</li>
 				<li>
-					<a href="_src_compilers_ts2php_.phptranspiler.html">PHPTranspiler</a>
+					<a href="_src_emitters_reference_compiler_.referencecompiler.html">ReferenceCompiler</a>
 				</li>
 			</ul>
-			<h1>Class PHPTranspiler</h1>
+			<h1>Class ReferenceCompiler</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PHPTranspiler</span>
+						<span class="target">ReferenceCompiler</span>
 					</li>
 				</ul>
 			</section>
@@ -84,19 +84,21 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_compilers_ts2php_.phptranspiler.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_emitters_reference_compiler_.referencecompiler.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_ts2php_.phptranspiler.html#ts2php" class="tsd-kind-icon">ts2php</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_emitters_reference_compiler_.referencecompiler.html#currentfilepath" class="tsd-kind-icon">current<wbr>File<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_emitters_reference_compiler_.referencecompiler.html#options" class="tsd-kind-icon">options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_ts2php_.phptranspiler.html#compile" class="tsd-kind-icon">compile</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_emitters_reference_compiler_.referencecompiler.html#compiletofunctionfullname" class="tsd-kind-icon">compile<wbr>ToFunction<wbr>Full<wbr>Name</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_emitters_reference_compiler_.referencecompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a></li>
 							</ul>
 						</section>
 					</div>
@@ -108,24 +110,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new PHPTranspiler<span class="tsd-signature-symbol">(</span>compilerOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_compilers_ts2php_.phptranspiler.html" class="tsd-signature-type">PHPTranspiler</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Reference<wbr>Compiler<span class="tsd-signature-symbol">(</span>currentFilePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_compile_options_.normalizedcompileoptions.html" class="tsd-signature-type">NormalizedCompileOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_emitters_reference_compiler_.referencecompiler.html" class="tsd-signature-type">ReferenceCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/f957d11/src/compilers/ts2php.ts#L20">src/compilers/ts2php.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/2d481b7/src/emitters/reference-compiler.ts#L6">src/emitters/reference-compiler.ts:6</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> compilerOptions: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
-									<ul class="tsd-parameters">
-									</ul>
+									<h5>currentFilePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/_src_compile_options_.normalizedcompileoptions.html" class="tsd-signature-type">NormalizedCompileOptions</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_compilers_ts2php_.phptranspiler.html" class="tsd-signature-type">PHPTranspiler</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_emitters_reference_compiler_.referencecompiler.html" class="tsd-signature-type">ReferenceCompiler</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -133,12 +136,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="ts2php" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> ts2php</h3>
-					<div class="tsd-signature tsd-kind-icon">ts2php<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Ts2Php</span></div>
+					<a name="currentfilepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> current<wbr>File<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/f957d11/src/compilers/ts2php.ts#L20">src/compilers/ts2php.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/2d481b7/src/emitters/reference-compiler.ts#L8">src/emitters/reference-compiler.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="options" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> options</h3>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_compile_options_.normalizedcompileoptions.html" class="tsd-signature-type">NormalizedCompileOptions</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/2d481b7/src/emitters/reference-compiler.ts#L9">src/emitters/reference-compiler.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -146,31 +159,50 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="compile" class="tsd-anchor"></a>
-					<h3>compile</h3>
+					<a name="compiletofunctionfullname" class="tsd-anchor"></a>
+					<h3>compile<wbr>ToFunction<wbr>Full<wbr>Name</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SourceFile</span>, modules<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_compilers_ts2php_.modules.html" class="tsd-signature-type">Modules</a>, helperNamespace<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, getModuleNamespace<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>moduleSpecifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToFunction<wbr>Full<wbr>Name<span class="tsd-signature-symbol">(</span>ref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentReference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/f957d11/src/compilers/ts2php.ts#L28">src/compilers/ts2php.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/2d481b7/src/emitters/reference-compiler.ts#L12">src/emitters/reference-compiler.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sourceFile: <span class="tsd-signature-type">SourceFile</span></h5>
+									<h5>ref: <span class="tsd-signature-type">ComponentReference</span></h5>
 								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getnamespace" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Namespace</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Namespace<span class="tsd-signature-symbol">(</span>specifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr-target-php/blob/2d481b7/src/emitters/reference-compiler.ts#L21">src/emitters/reference-compiler.ts:21</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>根据组件引用（通常是外部组件）得到被引用组件的命名空间</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
 								<li>
-									<h5>modules: <a href="../interfaces/_src_compilers_ts2php_.modules.html" class="tsd-signature-type">Modules</a></h5>
-								</li>
-								<li>
-									<h5>helperNamespace: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> getModuleNamespace: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>moduleSpecifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span></h5>
+									<h5>specifier: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -189,31 +221,19 @@
 						<a href="../modules/_src_compile_options_.html">&quot;src/compile-<wbr>options&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_anode_compiler_.html">&quot;src/compilers/anode-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_element_compiler_.html">&quot;src/compilers/element-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_expr_compiler_.html">&quot;src/compilers/expr-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_reference_compiler_.html">&quot;src/compilers/reference-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_renderer_compiler_.html">&quot;src/compilers/renderer-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_src_compilers_stringifier_.html">&quot;src/compilers/stringifier&quot;</a>
-					</li>
-					<li class="current tsd-kind-module">
-						<a href="../modules/_src_compilers_ts2php_.html">&quot;src/compilers/ts2php&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="../modules/_src_emitters_emitter_.html">&quot;src/emitters/emitter&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_src_emitters_helpers_.html">&quot;src/emitters/helpers&quot;</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_src_emitters_reference_compiler_.html">&quot;src/emitters/reference-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_src_emitters_stringifier_.html">&quot;src/emitters/stringifier&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_src_emitters_ts2php_.html">&quot;src/emitters/ts2php&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_src_index_.html">&quot;src/index&quot;</a>
@@ -249,30 +269,27 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_src_compilers_ts2php_.phptranspiler.html" class="tsd-kind-icon">PHPTranspiler</a>
+						<a href="_src_emitters_reference_compiler_.referencecompiler.html" class="tsd-kind-icon">Reference<wbr>Compiler</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_src_compilers_ts2php_.phptranspiler.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_src_emitters_reference_compiler_.referencecompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_src_compilers_ts2php_.phptranspiler.html#ts2php" class="tsd-kind-icon">ts2php</a>
+								<a href="_src_emitters_reference_compiler_.referencecompiler.html#currentfilepath" class="tsd-kind-icon">current<wbr>File<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_emitters_reference_compiler_.referencecompiler.html#options" class="tsd-kind-icon">options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_compilers_ts2php_.phptranspiler.html#compile" class="tsd-kind-icon">compile</a>
+								<a href="_src_emitters_reference_compiler_.referencecompiler.html#compiletofunctionfullname" class="tsd-kind-icon">compile<wbr>ToFunction<wbr>Full<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_emitters_reference_compiler_.referencecompiler.html#getnamespace" class="tsd-kind-icon">get<wbr>Namespace</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_src_compilers_ts2php_.modules.html" class="tsd-kind-icon">Modules</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_compilers_ts2php_.html#moduleinfo" class="tsd-kind-icon">Module<wbr>Info</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_compilers_ts2php_.html#debug" class="tsd-kind-icon">debug</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -283,7 +300,6 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
@@ -294,10 +310,11 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>
