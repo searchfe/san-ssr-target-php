@@ -10,8 +10,9 @@ class SanSSRData {
 
     public function &get ($path = null) {
         if ($path == null) return $this->data;
-        if (property_exists($this->instance, 'computed') &&
-            array_key_exists($path, $this->instance::$computed)) {
+        $class = get_class($this->instance);
+        if (property_exists($class, 'computed') &&
+            array_key_exists($path, $class::$computed)) {
             return _::callComputed($this->instance, $path);
         }
         $seq = $this->parseExpr($path);
