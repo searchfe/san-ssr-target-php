@@ -1,3 +1,10 @@
+## [2.5.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.5.0...v2.5.1) (2021-01-14)
+
+
+### Bug Fixes
+
+* san get computed ([4280d54](https://github.com/searchfe/san-ssr-target-php/commit/4280d5467fcbda0af98ba8e356579451abe6e79b))
+
 # [2.5.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.4.0...v2.5.0) (2021-01-11)
 
 
