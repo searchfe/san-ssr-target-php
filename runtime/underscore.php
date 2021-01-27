@@ -112,6 +112,12 @@ final class _ {
         return strval($source);
     }
 
+    public static function escapeHTML($source)
+    {
+        if (!is_string($source)) return $source;
+        return htmlspecialchars($source, ENT_QUOTES);
+    }
+
     public static function output($source, $needEscape)
     {
         if (!isset($source)) return "";
