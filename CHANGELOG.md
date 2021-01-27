@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.5.1...v2.6.0) (2021-01-27)
+
+
+### Features
+
+* SlotRenderCall 兼容旧版 $slots ([71c9a46](https://github.com/searchfe/san-ssr-target-php/commit/71c9a46aabf49a016f6394e7fb7f5cd11e4f5a8e))
+
 ## [2.5.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.5.0...v2.5.1) (2021-01-14)
 
 
