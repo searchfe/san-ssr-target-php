@@ -218,6 +218,21 @@ final class _ {
         }
         return $source;
     }
+
+    public static function callSlotRender($render, $args)
+    {
+        /**
+         * @deprecated 兼容 2.5.0 以下版本
+         */
+        if (is_array($render)) {
+            $result = '';
+            foreach ($render as $slotRender) {
+                $result .= call_user_func_array($slotRender, $args);
+            }
+            return $result;
+        }
+        return call_user_func_array($render, $args);
+    }
 }
 
 _::$HTML_ENTITY = [

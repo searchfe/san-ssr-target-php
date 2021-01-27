@@ -104,6 +104,13 @@ export class PHPEmitter extends Emitter {
             this.writeExpressionList(node.args)
             this.write(')')
             break
+        case SyntaxKind.SlotRenderCall:
+            this.write('_::callSlotRender(')
+            this.writeSyntaxNode(node.fn)
+            this.write(', [')
+            this.writeExpressionList(node.args)
+            this.write('])')
+            break
         case SyntaxKind.CreateComponentInstance:
             this.createComponentInstance(node.info)
             break
@@ -154,7 +161,16 @@ export class PHPEmitter extends Emitter {
             this.nextLine('')
             this.writeSyntaxNode(node.lhs)
             this.write(' = ')
-            this.writeSyntaxNode(node.rhs)
+            /**
+             * @deprecated 为了兼容 2.5.0 以下版本的 $slots 数据格式
+             */
+            if (node.rhs.kind === SyntaxKind.SlotRendererDefinition) {
+                this.write('[')
+                this.writeSyntaxNode(node.rhs)
+                this.write(']')
+            } else {
+                this.writeSyntaxNode(node.rhs)
+            }
             this.feedLine(';')
             break
         case SyntaxKind.VariableDefinition:
