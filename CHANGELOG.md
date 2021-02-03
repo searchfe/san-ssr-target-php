@@ -1,3 +1,10 @@
+## [2.6.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.1...v2.6.2) (2021-02-03)
+
+
+### Bug Fixes
+
+* compile || ([214058b](https://github.com/searchfe/san-ssr-target-php/commit/214058b3b0ca012275200910c235f45e891ab7dd))
+
 ## [2.6.1](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.0...v2.6.1) (2021-01-27)
 
 
