@@ -369,9 +369,7 @@ export class PHPEmitter extends Emitter {
             this.writeSyntaxNode(node.rhs)
             break
         case '||':
-            this.write('isset(')
             this.writeSyntaxNode(node.lhs)
-            this.write(')')
             this.write(' ? ')
             this.writeSyntaxNode(node.lhs)
             this.write(' : ')
