@@ -354,7 +354,7 @@ describe('PHPEmitter', function () {
                 }
             })
 
-            expect(emitter.fullText()).toEqual('isset($foo) ? $foo : $bar')
+            expect(emitter.fullText()).toEqual('$foo ? $foo : $bar')
         })
 
         it('should write isset', function () {
