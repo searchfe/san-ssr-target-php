@@ -115,6 +115,7 @@ export class PHPEmitter extends Emitter {
             this.createComponentInstance(node.info)
             break
         case SyntaxKind.Null:
+        case SyntaxKind.Undefined:
             this.write('null')
             break
         case SyntaxKind.NewExpression:
@@ -376,9 +377,34 @@ export class PHPEmitter extends Emitter {
             this.writeSyntaxNode(node.rhs)
             break
         case '!=':
-            if (node.lhs.kind === SyntaxKind.Null) {
+        case '!==':
+            if (node.lhs.kind === SyntaxKind.Null ||
+                node.lhs.kind === SyntaxKind.Undefined) {
                 this.write('isset(')
                 this.writeSyntaxNode(node.rhs)
+                this.write(')')
+            } else if (node.rhs.kind === SyntaxKind.Null ||
+                node.rhs.kind === SyntaxKind.Undefined) {
+                this.write('isset(')
+                this.writeSyntaxNode(node.lhs)
+                this.write(')')
+            } else {
+                this.writeSyntaxNode(node.lhs)
+                this.write(` ${node.op} `)
+                this.writeSyntaxNode(node.rhs)
+            }
+            break
+        case '==':
+        case '===':
+            if (node.lhs.kind === SyntaxKind.Null ||
+                node.lhs.kind === SyntaxKind.Undefined) {
+                this.write('!isset(')
+                this.writeSyntaxNode(node.rhs)
+                this.write(')')
+            } else if (node.rhs.kind === SyntaxKind.Null ||
+                node.rhs.kind === SyntaxKind.Undefined) {
+                this.write('!isset(')
+                this.writeSyntaxNode(node.lhs)
                 this.write(')')
             } else {
                 this.writeSyntaxNode(node.lhs)
