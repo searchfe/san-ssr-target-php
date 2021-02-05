@@ -1,3 +1,10 @@
+## [2.6.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.2...v2.6.3) (2021-02-05)
+
+
+### Bug Fixes
+
+* initData 初始值为 Falsy 时会赋值成默认值 ([5f683d1](https://github.com/searchfe/san-ssr-target-php/commit/5f683d127b02edc7dada5f95115240ebd0a1360f))
+
 ## [2.6.2](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.1...v2.6.2) (2021-02-03)
 
 
