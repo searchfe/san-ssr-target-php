@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.3...v2.7.0) (2021-02-18)
+
+
+### Features
+
+* update san-ssr 支持 component 通过 self 引用自己作为组件 ([26eea1e](https://github.com/searchfe/san-ssr-target-php/commit/26eea1e7f186c179a1cc93b5b76ea502d63b3ef5))
+
 ## [2.6.3](https://github.com/searchfe/san-ssr-target-php/compare/v2.6.2...v2.6.3) (2021-02-05)
 
 
