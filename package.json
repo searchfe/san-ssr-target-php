@@ -76,7 +76,7 @@
     "jest": "^26.2.2",
     "san-html-cases": "^3.10.12",
     "san-ssr": "^4.5.0",
-    "semantic-release": "^17.1.1",
+    "semantic-release": "^19.0.3",
     "typedoc": "^0.17.8",
     "wdio-sauce-service": "^0.4.14",
     "wdio-spec-reporter": "^0.1.5"
